@@ -18,13 +18,13 @@ import {
   FaCompass,
   FaCheckCircle,
   FaTrashAlt,
+  FaRocket,
 } from "react-icons/fa";
 import Loader from "../../components/Loader";
 import { useToast } from "../../components/Toaster";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { useAuth } from "../../context/AuthContext";
-import CheckoutModal from "../../components/CheckoutModal";
 import ProductCard from "../../components/ProductCard";
 
 const ProductPage = () => {
@@ -39,7 +39,6 @@ const ProductPage = () => {
   const [error, setError] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [showCheckout, setShowCheckout] = useState(false);
   const [elementImages, setElementImages] = useState([]);
   const [benefitImages, setBenefitImages] = useState([]);
   const [staticImagesLoading, setStaticImagesLoading] = useState(false);
@@ -273,29 +272,10 @@ const ProductPage = () => {
     return 5 + (productId % 3);
   };
 
-  const handleAddToCart = () => {
+  const handlePreorder = () => {
     if (!product) return;
     addToCart(product, quantity);
-    toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} of ${product.name} to cart!`);
-  };
-
-  const handleBuyNow = () => {
-    if (!product) return;
-    if (authLoading) {
-      toast.info('Please wait, checking authentication...');
-      return;
-    }
-    if (!isAuthenticated) {
-      navigate('/auth', { state: { from: { pathname: `/product/${id}` } } });
-      return;
-    }
-    // Add to cart first if not already in cart
-    const existingItem = cartItems.find(item => item.id === product.id);
-    if (!existingItem) {
-      addToCart(product, quantity);
-    }
-    // Open checkout modal
-    setShowCheckout(true);
+    toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} to preorder. Go to cart and click "Notify Me" when ready!`);
   };
   
   const calculateTotalAmount = () => {
@@ -627,6 +607,14 @@ const ProductPage = () => {
               </button>
             </div>
 
+            {/* Launching soon – preorder CTA */}
+            <div className="mb-4 p-3 sm:p-4 bg-primary/10 border border-primary/30 rounded-lg">
+              <p className="text-sm sm:text-base font-semibold text-primary flex items-center gap-2">
+                <FaRocket className="shrink-0" />
+                We&apos;re launching very soon! Preorder now and we&apos;ll email you when we&apos;re live so you can buy.
+              </p>
+            </div>
+
             {/* Star Rating and Reviews */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
@@ -763,22 +751,14 @@ const ProductPage = () => {
               </div>
             </div>
 
-            {/* Buy Now and Add to Cart Buttons – full width on mobile, touch-friendly */}
+            {/* Preorder button – adds to cart; user can then click Notify Me in cart */}
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
-                onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="w-full sm:flex-1 px-6 py-4 min-h-[48px] sm:min-h-0 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all font-semibold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl touch-manipulation"
+                onClick={handlePreorder}
+                className="w-full sm:flex-1 px-6 py-4 min-h-[48px] sm:min-h-0 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl touch-manipulation"
               >
                 <FaShoppingCart className="text-xl shrink-0" />
-                <span>{product.stock > 0 ? "Add to Cart" : "Out of Stock"}</span>
-              </button>
-              <button
-                onClick={handleBuyNow}
-                disabled={product.stock === 0}
-                className="w-full sm:flex-1 px-6 py-4 min-h-[48px] sm:min-h-0 bg-black text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all font-semibold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl touch-manipulation"
-              >
-                Buy Now
+                <span>Preorder</span>
               </button>
             </div>
 
@@ -1203,14 +1183,6 @@ const ProductPage = () => {
         )}
       </div>
 
-      {/* Checkout Modal */}
-      <CheckoutModal
-        isOpen={showCheckout}
-        onClose={() => setShowCheckout(false)}
-        cartItems={cartItems}
-        totalAmount={calculateTotalAmount()}
-        userId={userId}
-      />
     </div>
   );
 };

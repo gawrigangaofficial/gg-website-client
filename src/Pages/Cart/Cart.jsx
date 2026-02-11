@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaTrash, FaPlus, FaMinus, FaShoppingCart, FaArrowLeft } from 'react-icons/fa';
+import { FaTrash, FaPlus, FaMinus, FaShoppingCart, FaArrowLeft, FaBell } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../components/Toaster';
 import { useAuth } from '../../context/AuthContext';
-import CheckoutModal from '../../components/CheckoutModal';
+
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'http://localhost:3001');
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
   const toast = useToast();
-  const { isAuthenticated, userId, loading: authLoading } = useAuth();
+  const { isAuthenticated, userEmail, userId, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [notifyLoading, setNotifyLoading] = useState(false);
 
   const handleRemoveItem = (productId, productName) => {
     removeFromCart(productId);
@@ -32,11 +33,53 @@ const Cart = () => {
   };
 
   const totalPrice = getTotalPrice();
-  const discountPercent = 25;
-  const originalTotal = totalPrice / (1 - discountPercent / 100);
-  const discountAmount = originalTotal - totalPrice;
 
-  const showEmptyCart = cartItems.length === 0 && !showCheckout;
+  const showEmptyCart = cartItems.length === 0;
+
+  const handleNotifyMe = async () => {
+    if (cartItems.length === 0) {
+      toast.info('Your cart is empty. Add items to preorder first.');
+      return;
+    }
+    if (!isAuthenticated) {
+      navigate('/auth', { state: { from: { pathname: '/cart' } } });
+      toast.info('Please log in with your email so we can notify you when we launch.');
+      return;
+    }
+    if (!userEmail) {
+      toast.error('We need your email to notify you. Please use email login.');
+      return;
+    }
+    setNotifyLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/preorders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userId || null,
+          email: userEmail,
+          items: cartItems.map((item) => ({
+            product_id: item.id,
+            product_name: item.name,
+            product_price: item.price,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        clearCart();
+        toast.success(`You're on the list! We'll email you at ${userEmail} when we launch.`);
+      } else {
+        toast.error(json.message || 'Could not save preorder. Try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setNotifyLoading(false);
+    }
+  };
 
   if (showEmptyCart) {
     return (
@@ -192,54 +235,37 @@ const Cart = () => {
             ))}
           </div>
 
-          {/* Order Summary */}
+          {/* Preorder summary – no payment */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg sm:rounded-xl shadow-md border border-primary/20 p-3 sm:p-4 md:p-6 sticky top-4">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
-                Order Summary
+                Preorder summary
               </h2>
 
               <div className="space-y-2 sm:space-y-3 md:space-y-4 mb-3 sm:mb-4 md:mb-6">
                 <div className="flex justify-between text-xs sm:text-sm md:text-base text-gray-600">
-                  <span>Subtotal ({cartItems.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
-                  <span>₹{originalTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                  <span>Items ({cartItems.reduce((sum, item) => sum + item.quantity, 0)})</span>
+                  <span>₹{totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                 </div>
-                <div className="flex justify-between text-xs sm:text-sm md:text-base text-gray-600">
-                  <span>Discount (25%)</span>
-                  <span className="text-green-600 font-semibold">
-                    -₹{discountAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                  </span>
-                </div>
-                <div className="border-t border-gray-200 pt-2 sm:pt-3 md:pt-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-base sm:text-lg md:text-xl font-bold text-gray-900">Total</span>
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
-                      ₹{totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    You save ₹{discountAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                  </p>
-                </div>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  We&apos;re launching soon. Click &quot;Notify Me&quot; and we&apos;ll email you when we&apos;re live so you can buy.
+                </p>
               </div>
 
-              <button 
-                onClick={() => {
-                  if (cartItems.length === 0) {
-                    toast.info('Your cart is empty. Add items to proceed to checkout.');
-                    return;
-                  }
-                  if (!isAuthenticated) {
-                    navigate('/auth', { state: { from: { pathname: '/cart' } } });
-                    return;
-                  }
-                  setShowCheckout(true);
-                }}
-                disabled={cartItems.length === 0}
-                className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl mb-2 sm:mb-3 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              <button
+                onClick={handleNotifyMe}
+                disabled={cartItems.length === 0 || notifyLoading}
+                className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-semibold text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl mb-2 sm:mb-3 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Proceed to Checkout
+                <FaBell className="text-lg shrink-0" />
+                {notifyLoading ? 'Saving…' : 'Notify Me When Launched'}
               </button>
+
+              {!isAuthenticated && (
+                <p className="text-xs text-amber-700 mb-2">
+                  Log in with your email so we can notify you when we launch.
+                </p>
+              )}
 
               <Link
                 to="/"
@@ -251,14 +277,6 @@ const Cart = () => {
           </div>
         </div>
       </div>
-
-      <CheckoutModal
-        isOpen={showCheckout}
-        onClose={() => setShowCheckout(false)}
-        cartItems={cartItems}
-        totalAmount={totalPrice}
-        userId={userId}
-      />
     </div>
     </>
   );

@@ -126,7 +126,8 @@ export const AuthProvider = ({ children }) => {
     signInWithGoogle,
     signOut,
     isAuthenticated: !!user,
-    userId: user?.id || null
+    userId: user?.id || null,
+    userEmail: user?.email || null
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
