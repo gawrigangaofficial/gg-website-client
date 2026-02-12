@@ -18,3 +18,24 @@ h1, h2, h3, h4, h5, h6 {
 [class*="text-5xl"] {
   font-family: var(--font-heading);
 }
+
+/* Moving zodiac row – infinite scroll (row is duplicated, so -50% loops) */
+@keyframes zodiac-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-zodiac-scroll {
+  animation: zodiac-scroll 40s linear infinite;
+}
+.rashi-scroll-container:hover .animate-zodiac-scroll {
+  animation-play-state: paused;
+}
+
+/* Explore more button – arrow nudge */
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+.animate-arrow-nudge {
+  animation: arrow-nudge 1.5s ease-in-out infinite;
+}

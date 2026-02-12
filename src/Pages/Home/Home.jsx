@@ -1,10 +1,14 @@
 import React from 'react'
 import WebsiteCarousel from '../../components/WebsiteCarousel'
+import RashiSection from '../Home/RashiSection'
+import FAQAccordion from '../Home/FAQAccordion'
 
 const Home = () => {
   return (
     <>
-    <WebsiteCarousel/>
+      <WebsiteCarousel />
+      <RashiSection />
+      <FAQAccordion />
     </>
   )
 }

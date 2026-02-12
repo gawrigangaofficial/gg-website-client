@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { FaTimes, FaChevronDown, FaArrowRight } from 'react-icons/fa';
 import ProductCard from '../../components/ProductCard';
 import Loader from '../../components/Loader';
+import RashiSection from '../Home/RashiSection';
+
 const Rashi = () => {
   const [selectedRashi, setSelectedRashi] = useState('');
   const [rashiInfo, setRashiInfo] = useState(null);
@@ -14,6 +17,18 @@ const Rashi = () => {
   const [imageLoading, setImageLoading] = useState(false);
   const [mukhiImagesLoaded, setMukhiImagesLoaded] = useState(() => new Set());
   const [modalImageLoading, setModalImageLoading] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -344,6 +359,15 @@ const Rashi = () => {
     else setModalImageLoading(false);
   }, [modalMukhi]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (modalMukhi) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [modalMukhi]);
+
   const fetchAllRudraksha = async () => {
     try {
       setLoading(true);
@@ -406,82 +430,99 @@ const Rashi = () => {
   };
 
   return (
-    <div className="min-h-screen py-4 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white">
-      <style>{`
-        select option {
-          color: #ff914d !important;
-          background-color: white !important;
-        }
-        select option:hover {
-          background-color: rgba(255, 145, 77, 0.1) !important;
-        }
-        select:focus option:checked {
-          background-color: rgba(255, 145, 77, 0.2) !important;
-        }
-      `}</style>
-      <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8 text-center sm:text-left">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-2">
-            Find Your Rashi Rudraksha
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600">
-            Discover the perfect Rudraksha beads for your zodiac sign
-          </p>
-        </div>
+    <div className="min-h-screen bg-linear-to-br from-orange-50/30 to-white">
+      <div className="w-full max-w-[1920px] mx-auto">
+        {/* Rashi section – moving zodiac row only (no CTA on this page) */}
+        <RashiSection hideCta />
 
-        {/* Rashi Selection */}
-        <div className="mb-8 max-w-2xl mx-auto">
-          <label className="block text-sm font-semibold text-primary mb-3">
-            Select Your Rashi (Zodiac Sign)
-          </label>
-          <div className="relative">
-            <select
-              value={selectedRashi}
-              onChange={(e) => setSelectedRashi(e.target.value)}
-              className="w-full px-4 py-3 pr-12 text-base border-2 border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 bg-linear-to-br from-white to-primary/5 text-primary font-medium appearance-none cursor-pointer hover:border-primary transition-all shadow-sm hover:shadow-md"
-              style={{
-                color: '#ff914d'
-              }}
-            >
-              <option value="" style={{ color: '#ff914d', backgroundColor: 'white' }}>Select Your Rashi</option>
-              {rashis.map((rashi) => (
-                <option 
-                  key={rashi.value} 
-                  value={rashi.value} 
-                  style={{ color: '#ff914d', backgroundColor: 'white' }}
-                  className="hover:bg-primary/10 py-2"
-                >
-                  {rashi.label}
-                </option>
-              ))}
-            </select>
-            {/* Custom dropdown arrow overlay for better visibility */}
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+        <div className="px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 py-6 sm:py-8">
+          {/* Header */}
+          <div className="mb-6 sm:mb-8 text-center">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
+              Find Your Rashi Rudraksha
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600">
+              Discover the perfect Rudraksha beads for your zodiac sign
+            </p>
+          </div>
+
+          {/* Custom Rashi dropdown */}
+          <div className="mb-8 max-w-xl mx-auto" ref={dropdownRef}>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Select Your Rashi (Zodiac Sign)
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setDropdownOpen((o) => !o)}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-primary/30 bg-white text-left shadow-sm hover:border-primary hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                {selectedRashi ? (
+                  <>
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0 bg-gray-100">
+                      <img
+                        src={rashiImages[selectedRashi] || `https://via.placeholder.com/40?text=${selectedRashi.slice(0, 2)}`}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="font-medium text-gray-800">
+                      {rashis.find((r) => r.value === selectedRashi)?.label || selectedRashi}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-gray-500 font-medium">Choose your zodiac sign</span>
+                )}
+                <FaChevronDown className={`ml-auto w-5 h-5 text-primary shrink-0 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {dropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 rounded-xl border-2 border-primary/20 bg-white shadow-xl z-50 overflow-hidden max-h-[320px] overflow-y-auto">
+                  {rashis.map((rashi) => (
+                    <button
+                      key={rashi.value}
+                      type="button"
+                      onClick={() => {
+                        setSelectedRashi(rashi.value);
+                        setDropdownOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-primary/10 transition-colors border-b border-gray-100 last:border-0 ${selectedRashi === rashi.value ? 'bg-primary/10' : ''}`}
+                    >
+                      <div className="w-9 h-9 rounded-full overflow-hidden border border-primary/20 shrink-0 bg-gray-100">
+                        <img
+                          src={rashiImages[rashi.value] || `https://via.placeholder.com/36?text=${rashi.value.slice(0, 2)}`}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="font-medium text-gray-800">{rashi.label}</span>
+                      {selectedRashi === rashi.value && (
+                        <span className="ml-auto text-xs font-semibold text-primary">Selected</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
 
         {/* Rashi Information with Image */}
         {rashiInfo && (
-          <div className="mb-8 max-w-5xl mx-auto">
-            <div className="bg-linear-to-br from-primary/10 to-primary/5 rounded-xl shadow-lg overflow-hidden border-2 border-primary/30">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          <div className="mb-10 max-w-7xl mx-auto px-1">
+            <div className="rounded-2xl overflow-hidden shadow-xl border border-primary/20 bg-white">
+              <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[320px]">
                 {/* Rashi Image */}
-                <div className="lg:order-1 relative min-h-[300px] bg-primary/5">
+                <div className="lg:order-1 relative min-h-[260px] sm:min-h-[320px] bg-linear-to-br from-primary/20 to-primary/5">
                   {imageLoading && (
                     <div className="absolute inset-0 z-20 flex items-center justify-center bg-primary/5">
                       <Loader size="lg" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-transparent z-10 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent z-10 pointer-events-none" />
                   <img
                     src={rashiImages[selectedRashi] || `https://via.placeholder.com/400x300?text=${selectedRashi || 'Rashi'}`}
                     alt={rashiInfo.name}
-                    className={`w-full h-full object-cover min-h-[300px] transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+                    className={`w-full h-full object-cover min-h-[260px] sm:min-h-[320px] transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                     onLoad={() => setImageLoading(false)}
                     onError={(e) => {
                       e.target.src = `https://via.placeholder.com/400x300?text=${selectedRashi || 'Rashi'}`;
@@ -491,23 +532,26 @@ const Rashi = () => {
                 </div>
 
                 {/* Rashi Details */}
-                <div className="p-6 sm:p-8 lg:order-2 bg-white">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
-                    {rashiInfo.name}
-                  </h2>
+                <div className="p-6 sm:p-8 lg:order-2 flex flex-col justify-center">
+                  <div className="border-l-4 border-primary pl-4 mb-4">
+                    <h2 className="font-heading text-2xl sm:text-3xl font-bold text-primary mb-1">
+                      {rashiInfo.name}
+                    </h2>
+                    <div className="h-0.5 w-12 bg-primary/60 rounded-full" />
+                  </div>
                   <p className="text-gray-600 text-base sm:text-lg leading-relaxed mb-6">
                     {rashiInfo.description}
                   </p>
 
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {/* Characteristics */}
                     <div>
-                      <h3 className="text-lg font-semibold text-primary mb-3">Key Characteristics</h3>
-                      <div className="flex flex-wrap gap-2">
+                      <h3 className="text-base sm:text-lg font-semibold text-primary mb-3">Key Characteristics</h3>
+                      <div className="flex flex-wrap gap-2.5">
                         {rashiInfo.characteristics.map((char, idx) => (
                           <span
                             key={idx}
-                            className="px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium border border-primary/30"
+                            className="px-4 py-2 bg-primary/5 text-primary rounded-full text-base font-medium border border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-colors"
                           >
                             {char}
                           </span>
@@ -515,25 +559,25 @@ const Rashi = () => {
                       </div>
                     </div>
 
-                    {/* Details */}
+                    {/* Details grid */}
                     <div>
-                      <h3 className="text-lg font-semibold text-primary mb-3">Rashi Details</h3>
-                      <div className="space-y-2 text-sm sm:text-base">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-primary">Ruling Planet:</span>
-                          <span className="text-gray-700">{rashiInfo.rulingPlanet}</span>
+                      <h3 className="text-base sm:text-lg font-semibold text-primary mb-3">Rashi Details</h3>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div className="rounded-lg bg-gray-50 border border-gray-100 p-4">
+                          <span className="block text-sm font-medium text-primary/90 mb-1">Ruling Planet</span>
+                          <span className="text-base font-semibold text-gray-800">{rashiInfo.rulingPlanet}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-primary">Element:</span>
-                          <span className="text-gray-700">{rashiInfo.element}</span>
+                        <div className="rounded-lg bg-gray-50 border border-gray-100 p-4">
+                          <span className="block text-sm font-medium text-primary/90 mb-1">Element</span>
+                          <span className="text-base font-semibold text-gray-800">{rashiInfo.element}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-primary">Lucky Colors:</span>
-                          <span className="text-gray-700">{rashiInfo.luckyColors.join(', ')}</span>
+                        <div className="rounded-lg bg-gray-50 border border-gray-100 p-4">
+                          <span className="block text-sm font-medium text-primary/90 mb-1">Lucky Colors</span>
+                          <span className="text-base font-semibold text-gray-800">{rashiInfo.luckyColors.join(', ')}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-primary">Lucky Numbers:</span>
-                          <span className="text-gray-700">{rashiInfo.luckyNumbers.join(', ')}</span>
+                        <div className="rounded-lg bg-gray-50 border border-gray-100 p-4">
+                          <span className="block text-sm font-medium text-primary/90 mb-1">Lucky Numbers</span>
+                          <span className="text-base font-semibold text-gray-800">{rashiInfo.luckyNumbers.join(', ')}</span>
                         </div>
                       </div>
                     </div>
@@ -547,13 +591,13 @@ const Rashi = () => {
         {/* Suggested Rudraksha Cards (Modal) */}
         {selectedRashi && rashiToRudrakshaMapping[selectedRashi] && (
           <div className="mb-8">
-            <div className="mb-6 text-center sm:text-left">
-              <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
+            <div className="mb-5 text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-primary mb-1">
                 Recommended Rudraksha for {rashiInfo?.name}
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 mb-8 max-w-4xl mx-auto">
               {rashiToRudrakshaMapping[selectedRashi].map((mukhi) => {
                 const mukhiInfo = mukhiDetails[mukhi];
 
@@ -561,50 +605,37 @@ const Rashi = () => {
                   <div
                     key={mukhi}
                     onClick={() => setModalMukhi(mukhi)}
-                    className="bg-linear-to-br from-primary/10 to-primary/5 rounded-lg sm:rounded-xl shadow-md border-2 border-primary/30 overflow-hidden hover:shadow-xl hover:border-primary transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                    className="bg-linear-to-br from-primary/10 to-primary/5 rounded-xl shadow-md border-2 border-primary/30 overflow-hidden hover:shadow-lg hover:border-primary transition-all duration-300 cursor-pointer"
                   >
-                    {/* Rudraksha Image */}
-                    <div className="aspect-square bg-linear-to-br from-primary/20 to-primary/10 overflow-hidden relative">
+                    <div className="aspect-square bg-primary/5 overflow-hidden relative">
                       {!mukhiImagesLoaded.has(mukhi) && (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/10">
                           <Loader size="sm" />
                         </div>
                       )}
                       <img
-                        src={mukhiImages[mukhi] || `https://via.placeholder.com/400x400?text=${mukhi.replace(' ', '+')}+Rudraksha`}
+                        src={mukhiImages[mukhi] || `https://via.placeholder.com/400?text=${mukhi.replace(' ', '+')}`}
                         alt={mukhi}
                         className={`w-full h-full object-cover transition-opacity duration-300 ${mukhiImagesLoaded.has(mukhi) ? 'opacity-100' : 'opacity-0'}`}
                         onLoad={() => setMukhiImagesLoaded((prev) => new Set(prev).add(mukhi))}
                         onError={(e) => {
-                          e.target.src = `https://via.placeholder.com/400x400?text=${mukhi.replace(' ', '+')}+Rudraksha`;
+                          e.target.src = `https://via.placeholder.com/400?text=${mukhi.replace(' ', '+')}`;
                           setMukhiImagesLoaded((prev) => new Set(prev).add(mukhi));
                         }}
                       />
-                      <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-primary text-white text-[10px] sm:text-xs md:text-sm font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 md:px-3 md:py-1.5 rounded-md shadow-lg">
+                      <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-primary text-white text-xs sm:text-sm font-bold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg shadow">
                         {mukhi}
                       </div>
                     </div>
 
-                    {/* Rudraksha Info */}
-                    <div className="p-2 sm:p-3 md:p-5">
-                      <h3 className="text-xs sm:text-sm md:text-lg lg:text-xl font-bold text-primary mb-1.5 sm:mb-2 md:mb-3 line-clamp-1">{mukhi}</h3>
-
-                      <div className="space-y-1 sm:space-y-1.5 md:space-y-2">
-                        <div className="flex items-center gap-1 sm:gap-2">
-                          <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">Deity:</span>
-                          <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 truncate">{mukhiInfo.deity}</span>
-                        </div>
-                        <div className="flex items-center gap-1 sm:gap-2">
-                          <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">Planet:</span>
-                          <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 truncate">{mukhiInfo.planet}</span>
-                        </div>
-                        <div className="hidden sm:flex items-center gap-1 sm:gap-2">
-                          <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary">Chakra:</span>
-                          <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 truncate">{mukhiInfo.chakra}</span>
-                        </div>
+                    <div className="p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-primary mb-2 line-clamp-1">{mukhi}</h3>
+                      <div className="space-y-1 text-xs sm:text-sm text-gray-700">
+                        <p className="truncate"><span className="font-medium text-primary">Deity:</span> {mukhiInfo.deity}</p>
+                        <p className="truncate"><span className="font-medium text-primary">Planet:</span> {mukhiInfo.planet}</p>
+                        <p className="hidden sm:block truncate"><span className="font-medium text-primary">Chakra:</span> {mukhiInfo.chakra}</p>
                       </div>
-
-                      <button className="mt-2 sm:mt-3 md:mt-4 w-full px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-primary text-white rounded-md sm:rounded-lg hover:bg-primary/90 transition-colors text-[10px] sm:text-xs md:text-sm font-medium">
+                      <button type="button" className="mt-3 w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-xs sm:text-sm font-semibold">
                         View Details
                       </button>
                     </div>
@@ -617,89 +648,89 @@ const Rashi = () => {
 
         {/* Modal for Rudraksha Details */}
         {modalMukhi && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md overflow-hidden"
             onClick={() => setModalMukhi(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
           >
-            <div 
-              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            <div
+              className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full my-8 max-h-[calc(100vh-4rem)] overflow-y-auto border border-gray-100"
               onClick={(e) => e.stopPropagation()}
             >
               {(() => {
                 const mukhiInfo = mukhiDetails[modalMukhi];
                 return (
                   <>
-                    {/* Modal Header */}
-                    <div className="bg-linear-to-r from-primary to-primary/80 p-6 text-white">
-                      <div className="flex items-center justify-between">
-                        <h2 className="text-2xl sm:text-3xl font-bold">{modalMukhi} Rudraksha</h2>
-                        <button
-                          onClick={() => setModalMukhi(null)}
-                          className="text-white hover:text-gray-200 transition-colors p-2 hover:bg-white/20 rounded-full"
-                          aria-label="Close"
-                        >
-                          <FaTimes className="text-xl" />
-                        </button>
-                      </div>
+                    {/* Hero image with title overlay */}
+                    <div className="relative aspect-4/3 sm:aspect-5/3 bg-gray-100 overflow-hidden">
+                      {modalImageLoading && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100">
+                          <Loader size="lg" />
+                        </div>
+                      )}
+                      <img
+                        src={mukhiImages[modalMukhi] || `https://via.placeholder.com/600x360?text=${modalMukhi.replace(' ', '+')}`}
+                        alt={modalMukhi}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${modalImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                        onLoad={() => setModalImageLoading(false)}
+                        onError={(e) => {
+                          e.target.src = `https://via.placeholder.com/600x360?text=${modalMukhi.replace(' ', '+')}`;
+                          setModalImageLoading(false);
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+                      <h2 id="modal-title" className="absolute bottom-0 left-0 right-0 p-6 font-heading text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">
+                        {modalMukhi} Rudraksha
+                      </h2>
+                      <button
+                        onClick={() => setModalMukhi(null)}
+                        className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/95 shadow-lg flex items-center justify-center text-gray-700 hover:bg-white hover:scale-105 transition-transform"
+                        aria-label="Close"
+                      >
+                        <FaTimes className="text-lg" />
+                      </button>
                     </div>
 
-                    {/* Modal Content */}
-                    <div className="p-6">
-                      {/* Image */}
-                      <div className="mb-6 relative h-64 bg-primary/5 rounded-lg border-2 border-primary/30 overflow-hidden">
-                        {modalImageLoading && (
-                          <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/5">
-                            <Loader size="lg" />
-                          </div>
-                        )}
-                        <img
-                          src={mukhiImages[modalMukhi] || `https://via.placeholder.com/600x400?text=${modalMukhi.replace(' ', '+')}+Rudraksha`}
-                          alt={modalMukhi}
-                          className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${modalImageLoading ? 'opacity-0' : 'opacity-100'}`}
-                          onLoad={() => setModalImageLoading(false)}
-                          onError={(e) => {
-                            e.target.src = `https://via.placeholder.com/600x400?text=${modalMukhi.replace(' ', '+')}+Rudraksha`;
-                            setModalImageLoading(false);
-                          }}
-                        />
+                    {/* Content */}
+                    <div className="p-6 sm:p-8">
+                      {/* Info pills - high contrast for readability */}
+                      <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
+                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border-2 border-gray-200 text-base">
+                          <span className="text-gray-700 font-bold shrink-0">Deity:</span>
+                          <span className="text-gray-900 font-medium">{mukhiInfo.deity}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border-2 border-gray-200 text-base">
+                          <span className="text-gray-700 font-bold shrink-0">Planet:</span>
+                          <span className="text-gray-900 font-medium">{mukhiInfo.planet}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border-2 border-gray-200 text-base">
+                          <span className="text-gray-700 font-bold shrink-0">Chakra:</span>
+                          <span className="text-gray-900 font-medium">{mukhiInfo.chakra}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary border-2 border-primary text-white text-base">
+                          <span className="font-bold shrink-0">Mantra:</span>
+                          <span className="font-medium">{mukhiInfo.mantra}</span>
+                        </span>
                       </div>
 
-                      {/* Basic Info */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div className="bg-primary/10 p-4 rounded-lg border border-primary/30">
-                          <span className="text-sm font-medium text-primary block mb-1">Deity</span>
-                          <span className="text-lg font-semibold text-gray-800">{mukhiInfo.deity}</span>
-                        </div>
-                        <div className="bg-primary/10 p-4 rounded-lg border border-primary/30">
-                          <span className="text-sm font-medium text-primary block mb-1">Planet</span>
-                          <span className="text-lg font-semibold text-gray-800">{mukhiInfo.planet}</span>
-                        </div>
-                        <div className="bg-primary/10 p-4 rounded-lg border border-primary/30">
-                          <span className="text-sm font-medium text-primary block mb-1">Chakra</span>
-                          <span className="text-lg font-semibold text-gray-800">{mukhiInfo.chakra}</span>
-                        </div>
-                        <div className="bg-primary/10 p-4 rounded-lg border border-primary/30">
-                          <span className="text-sm font-medium text-primary block mb-1">Mantra</span>
-                          <span className="text-lg font-semibold text-primary">{mukhiInfo.mantra}</span>
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <div className="mb-6">
-                        <h3 className="text-xl font-bold text-primary mb-3">Description</h3>
-                        <p className="text-gray-700 leading-relaxed">{mukhiInfo.description}</p>
+                      {/* Description - clear heading and body contrast */}
+                      <div className="mb-6 pl-4 border-l-4 border-primary">
+                        <h3 className="font-heading text-base sm:text-lg font-bold text-gray-900 mb-2">Description</h3>
+                        <p className="text-gray-800 leading-relaxed text-base sm:text-[17px]">{mukhiInfo.description}</p>
                       </div>
 
                       {/* Benefits */}
-                      <div className="mb-6">
-                        <h3 className="text-xl font-bold text-primary mb-3">Benefits</h3>
-                        <p className="text-gray-700 leading-relaxed">{mukhiInfo.benefits}</p>
+                      <div className="mb-8 pl-4 border-l-4 border-primary">
+                        <h3 className="font-heading text-base sm:text-lg font-bold text-gray-900 mb-2">Benefits</h3>
+                        <p className="text-gray-800 leading-relaxed text-base sm:text-[17px]">{mukhiInfo.benefits}</p>
                       </div>
 
-                      {/* Close Button */}
+                      {/* Close - solid button for visibility */}
                       <button
                         onClick={() => setModalMukhi(null)}
-                        className="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-semibold text-lg"
+                        className="w-full py-4 px-6 rounded-2xl bg-primary text-white font-bold text-base hover:bg-primary/90 transition-colors shadow-lg"
                       >
                         Close
                       </button>
@@ -714,12 +745,12 @@ const Rashi = () => {
         {/* Buy Cards - Actual Products */}
         {selectedRashi && (
           <div className="mb-8">
-            <div className="mb-6 text-center sm:text-left">
-              <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
+            <div className="mb-4 text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-primary mb-1">
                 Available Rudraksha Products
               </h2>
-              <p className="text-gray-600">
-                Purchase the recommended Rudraksha beads for your rashi:
+              <p className="text-sm text-gray-600">
+                Purchase the recommended Rudraksha beads for your rashi
               </p>
             </div>
 
@@ -738,54 +769,80 @@ const Rashi = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-5 xl:gap-6">
-                {suggestedRudraksha.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    variant="rashi"
-                    calculatePricing={calculatePricing}
-                    getReviewCount={getReviewCount}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+                  {suggestedRudraksha.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      variant="rashi"
+                      calculatePricing={calculatePricing}
+                      getReviewCount={getReviewCount}
+                    />
+                  ))}
+                </div>
+                <div className="mt-6 text-center">
+                  <Link
+                    to="/rudraksha"
+                    className="inline-flex items-center gap-2 py-3 px-5 rounded-xl bg-primary/10 border-2 border-primary/30 text-primary font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                  >
+                    Explore more Rudraksha
+                    <FaArrowRight className="text-sm animate-arrow-nudge" />
+                  </Link>
+                </div>
+              </>
             )}
           </div>
         )}
 
-        {/* Info Section when no rashi selected */}
+        {/* How it works - when no rashi selected */}
         {!selectedRashi && (
-          <div className="max-w-4xl mx-auto mt-12">
-            <div className="bg-linear-to-br from-primary/10 to-primary/5 rounded-xl p-8 border-2 border-primary/30 text-center">
-              <h3 className="text-2xl font-bold text-primary mb-4">
+          <div className="max-w-5xl mx-auto mt-14 mb-6">
+            <div className="text-center mb-10">
+              <h3 className="font-heading text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 How It Works
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-primary/20">
-                  <div className="text-3xl font-bold text-primary mb-2">1</div>
-                  <h4 className="font-semibold text-primary mb-2">Select Your Rashi</h4>
-                  <p className="text-sm text-gray-600">
-                    Choose your zodiac sign from the dropdown above
-                  </p>
+              <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto">
+                Find your ideal Rudraksha in three simple steps
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative">
+              {/* Connector line on desktop */}
+              <div className="hidden md:block absolute top-12 left-1/4 right-1/4 h-0.5 bg-primary/30 pointer-events-none" aria-hidden />
+
+              <div className="relative bg-white rounded-2xl p-6 sm:p-7 shadow-lg border border-gray-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+                <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold mb-4 shadow-md">
+                  1
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-primary/20">
-                  <div className="text-3xl font-bold text-primary mb-2">2</div>
-                  <h4 className="font-semibold text-primary mb-2">Learn About Your Rashi</h4>
-                  <p className="text-sm text-gray-600">
-                    Discover detailed information about your zodiac sign
-                  </p>
+                <h4 className="font-heading text-lg font-bold text-gray-900 mb-2">Select Your Rashi</h4>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  Choose your zodiac sign from the dropdown above
+                </p>
+              </div>
+
+              <div className="relative bg-white rounded-2xl p-6 sm:p-7 shadow-lg border border-gray-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+                <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold mb-4 shadow-md">
+                  2
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-primary/20">
-                  <div className="text-3xl font-bold text-primary mb-2">3</div>
-                  <h4 className="font-semibold text-primary mb-2">Get Recommendations</h4>
-                  <p className="text-sm text-gray-600">
-                    Find the perfect Rudraksha beads recommended for your rashi
-                  </p>
+                <h4 className="font-heading text-lg font-bold text-gray-900 mb-2">Learn About Your Rashi</h4>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  Discover detailed information about your zodiac sign
+                </p>
+              </div>
+
+              <div className="relative bg-white rounded-2xl p-6 sm:p-7 shadow-lg border border-gray-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+                <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold mb-4 shadow-md">
+                  3
                 </div>
+                <h4 className="font-heading text-lg font-bold text-gray-900 mb-2">Get Recommendations</h4>
+                <p className="text-gray-600 text-base leading-relaxed">
+                  Find the perfect Rudraksha beads recommended for your rashi
+                </p>
               </div>
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
