@@ -70,7 +70,8 @@ const Cart = () => {
       if (json.success) {
         clearCart();
         if (json.emailSent === false) {
-          toast.success(`Preorder saved! Confirmation email couldn't be sent; we'll still notify you at ${userEmail} when we launch.`);
+          const reason = json.emailError ? ` (${json.emailError})` : '';
+          toast.success(`Preorder saved! Confirmation email couldn't be sent${reason}; we'll still notify you at ${userEmail} when we launch.`);
         } else {
           toast.success(`You're on the list! We'll email you at ${userEmail} when we launch.`);
         }
