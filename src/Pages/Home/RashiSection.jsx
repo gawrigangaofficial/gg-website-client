@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaArrowRight } from 'react-icons/fa'
 
@@ -7,38 +7,27 @@ const ZODIAC_ORDER = [
   'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
 ]
 
-const SUPABASE_STORAGE_BASE = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '')
-const buildImageUrl = (folder, file_name) =>
-  SUPABASE_STORAGE_BASE
-    ? `${SUPABASE_STORAGE_BASE}/storage/v1/object/public/GGIMG/StaticImg/${encodeURIComponent(folder)}/${encodeURIComponent(file_name)}`
-    : null
+// Load all zodiac sign images from local assets (Client/src/assets/Zodiac)
+// File names should match sign names, e.g. Aries.png, Taurus.png, etc.
+const zodiacImageModules = import.meta.glob('../../assets/Zodiac/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+  import: 'default',
+})
+
+const ZODIAC_IMAGES = Object.entries(zodiacImageModules).reduce((acc, [path, src]) => {
+  const fileName = path.split('/').pop() || ''
+  const baseName = fileName.split('.')[0].toLowerCase() // e.g. 'aries'
+  acc[baseName] = src
+  return acc
+}, {})
 
 const RashiSection = ({ hideCta = false }) => {
-  const [zodiacImages, setZodiacImages] = useState({})
-
-  useEffect(() => {
-    const fetchZodiacImages = async () => {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      try {
-        const res = await fetch(`${API_URL}/api/static-images?folder=Zodiac`)
-        if (!res.ok) return
-        const data = await res.json()
-        const byKey = (data || []).reduce((acc, item) => {
-          const url = item.url || buildImageUrl(item.folder, item.file_name)
-          if (url) acc[item.key] = url
-          return acc
-        }, {})
-        setZodiacImages(byKey)
-      } catch (err) {
-        console.error('Error fetching zodiac images:', err)
-      }
-    }
-    fetchZodiacImages()
-  }, [])
+  // Use local zodiac assets; fall back to first available image if any are missing
+  const fallbackImage = Object.values(ZODIAC_IMAGES)[0]
 
   const zodiacItems = ZODIAC_ORDER.map((key) => ({
     key,
-    url: zodiacImages[key] || `https://via.placeholder.com/80x80?text=${key.slice(0, 2)}`,
+    url: ZODIAC_IMAGES[key.toLowerCase()] || fallbackImage || '',
     label: key
   }))
 
