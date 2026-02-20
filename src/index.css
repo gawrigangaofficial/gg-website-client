@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=DM+Serif+Display:ital@0;1&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import "tailwindcss";
 @theme {
   --color-primary: #ff914d;
@@ -17,6 +18,10 @@ h1, h2, h3, h4, h5, h6 {
 [class*="text-4xl"],
 [class*="text-5xl"] {
   font-family: var(--font-heading);
+}
+
+.font-dm-serif {
+  font-family: 'DM Serif Display', serif;
 }
 
 /* Moving zodiac row – infinite scroll (row is duplicated, so -50% loops) */
@@ -38,4 +43,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 .animate-arrow-nudge {
   animation: arrow-nudge 1.5s ease-in-out infinite;
+}
+
+/* Spray section: image fades in slow, then text falls fast from above */
+.spray-panel-fade {
+  animation: spray-panel-fade 1.2s ease-out forwards;
+}
+
+@keyframes spray-panel-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Text: falls fast from a distance above */
+.spray-slide-content {
+  opacity: 0;
+  animation: spray-content-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+}
+
+@keyframes spray-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(-80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
