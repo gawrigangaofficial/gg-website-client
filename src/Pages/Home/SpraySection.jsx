@@ -5,32 +5,16 @@ import AmratDhara from "../../assets/Sprayelem/AmratDhara.png";
 import ChakraBalance from "../../assets/Sprayelem/ChakraBalance.png";
 import Maitri from "../../assets/Sprayelem/Maitri.png";
 import Shuddhi from "../../assets/Sprayelem/Shuddhi.png";
-import MobileAmratDhara from "../../assets/Sprayelem/MobileSprayBg/AmratMobileBg.png";
-import MobileChakraBalance from "../../assets/Sprayelem/MobileSprayBg/ChakraMobileBg.png";
-import MobileMaitri from "../../assets/Sprayelem/MobileSprayBg/MaitriMobileBg.png";
-import MobileShuddhi from "../../assets/Sprayelem/MobileSprayBg/ShuddhiMobileBg.png";
-
-const MOBILE_BREAKPOINT = 768;
 
 const SpraySection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [inSprayZone, setInSprayZone] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
   const isScrollingRef = useRef(false);
   const lastWheelRef = useRef(0);
   const WHEEL_COOLDOWN_MS = 1000;
 
   useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) return;
     const el = sectionRef.current;
     if (!el) return;
 
@@ -54,11 +38,11 @@ const SpraySection = () => {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [inSprayZone, isMobile]);
+  }, [inSprayZone]);
 
   const handleWheel = useCallback(
     (e) => {
-      if (isMobile || !inSprayZone) return;
+      if (!inSprayZone) return;
 
       e.preventDefault();
 
@@ -98,7 +82,7 @@ const SpraySection = () => {
         }
       }
     },
-    [inSprayZone, activeSlide, isMobile],
+    [inSprayZone, activeSlide],
   );
 
   useEffect(() => {
@@ -110,75 +94,8 @@ const SpraySection = () => {
     <section className="relative w-full" ref={sectionRef}>
       <img src={Heading} alt="" className="w-full" />
 
-      {/* Mobile: all 4 images stacked, no animation */}
-      {isMobile && (
-        <div className="w-full">
-          <div
-            className="w-full min-h-screen bg-cover bg-center bg-no-repeat flex items-center px-4 py-8"
-            style={{
-              backgroundImage: `url(${MobileAmratDhara})`,
-              backgroundPosition: "left center",
-            }}
-          >
-            <div className="w-full max-w-7xl mx-auto">
-              <div className="max-w-xl mx-auto text-center">
-                <h2 className="font-dm-serif text-2xl sm:text-3xl font-bold text-[#2283c7]">Amrat Dhara</h2>
-                <p className="mt-3 text-[#333333] text-sm sm:text-base leading-relaxed">
-                  Amrat Dhara Lavender Aura Spray surrounds your space with a soft, calming floral fragrance that eases stress and restores balance. Perfect for relaxation, meditation, or winding down after a long day, it refreshes the air and creates a peaceful, soothing atmosphere instantly.
-                </p>
-                <button type="button" className="mt-4 min-h-[44px] px-6 py-3 rounded-2xl font-semibold text-base uppercase text-white bg-[#1a6ba0] hover:bg-[#155a8a] active:scale-[0.98]">Buy Now</button>
-              </div>
-            </div>
-          </div>
-          <div
-            className="w-full min-h-screen bg-cover bg-center bg-no-repeat flex items-center px-4 py-8"
-            style={{ backgroundImage: `url(${MobileChakraBalance})`, backgroundPosition: "right center" }}
-          >
-            <div className="w-full max-w-7xl mx-auto">
-              <div className="max-w-xl mx-auto text-center">
-                <h2 className="font-dm-serif text-2xl sm:text-3xl font-bold text-[#582683]">Chakra Balance</h2>
-                <p className="mt-3 text-[#333333] text-sm sm:text-base leading-relaxed">
-                  ChakraBalance Gurhal Aura Spray carries the vibrant, uplifting essence of hibiscus to energize your surroundings. Its refreshing floral notes inspire positivity, emotional harmony, and inner strength, making it ideal for yoga, spiritual rituals, and mindful living.
-                </p>
-                <button type="button" className="mt-4 min-h-[44px] px-6 py-3 rounded-2xl font-semibold text-base uppercase text-white bg-[#582683] hover:bg-[#47206b] active:scale-[0.98]">Buy Now</button>
-              </div>
-            </div>
-          </div>
-          <div
-            className="w-full min-h-screen bg-cover bg-center bg-no-repeat flex items-center px-4 py-8"
-            style={{ backgroundImage: `url(${MobileMaitri})`, backgroundPosition: "left center" }}
-          >
-            <div className="w-full max-w-7xl mx-auto">
-              <div className="max-w-xl mx-auto text-center">
-                <h2 className="font-dm-serif text-2xl sm:text-3xl font-bold text-[#E27BB1]">Maitri</h2>
-                <p className="mt-3 text-[#333333] text-sm sm:text-base leading-relaxed">
-                  Maitri Lavender Aura Spray spreads gentle warmth and serenity with its comforting floral aroma. Crafted to promote calmness and emotional connection, it refreshes your environment while creating a welcoming, tranquil vibe for your home or workspace.
-                </p>
-                <button type="button" className="mt-4 min-h-[44px] px-6 py-3 rounded-2xl font-semibold text-base uppercase text-white bg-[#E27BB1] hover:bg-[#c9689a] active:scale-[0.98]">Buy Now</button>
-              </div>
-            </div>
-          </div>
-          <div
-            className="w-full min-h-screen bg-cover bg-center bg-no-repeat flex items-center px-4 py-8"
-            style={{ backgroundImage: `url(${MobileShuddhi})`, backgroundPosition: "right center" }}
-          >
-            <div className="w-full max-w-7xl mx-auto">
-              <div className="max-w-xl mx-auto text-center">
-                <h2 className="font-dm-serif text-2xl sm:text-3xl font-bold text-[#597B2C]">Shuddhi</h2>
-                <p className="mt-3 text-[#333333] text-sm sm:text-base leading-relaxed">
-                  Shuddhi Aura Spray blends the rich sweetness of mogra with the fresh elegance of kewda to purify and elevate your space. Its divine fragrance refreshes the air, enhances spiritual focus, and leaves a lasting sense of clarity and positivity.
-                </p>
-                <button type="button" className="mt-4 min-h-[44px] px-6 py-3 rounded-2xl font-semibold text-base uppercase text-white bg-[#597B2C] hover:bg-[#486323] active:scale-[0.98]">Buy Now</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Desktop: single viewport, wheel/touch to change slide, animations */}
-      {!isMobile && (
       <div className="relative w-full h-screen">
-        {/* Slide 0 – Amrat Dhara */}
+        {/* Slide 0 – Amrat Dhara (image from right) */}
         {activeSlide === 0 && (
           <div
             className="spray-panel-fade absolute inset-0 bg-cover bg-no-repeat flex items-center"
@@ -187,8 +104,8 @@ const SpraySection = () => {
               backgroundPosition: "left center",
             }}
           >
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-end">
-              <div className="max-w-2xl spray-slide-content text-right md:ml-12 lg:ml-16">
+            <div className="relative z-10 w-full max-w-8xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-end">
+              <div className="max-w-2xl spray-slide-content text-right md:ml-12 lg:ml-16 mr-42">
                 <h2 className="font-dm-serif text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#2283c7]">
                   Amrat Dhara
                 </h2>
@@ -221,8 +138,8 @@ const SpraySection = () => {
               backgroundPosition: "right center",
             }}
           >
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-start">
-              <div className="max-w-2xl spray-slide-content text-left mr-8 md:mr-12 lg:mr-16">
+            <div className="relative z-10 w-full max-w-8xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-start">
+              <div className="max-w-2xl spray-slide-content text-left mr-8 md:mr-12 lg:mr-16 ml-42">
                 <h2 className="font-dm-serif text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#582683]">
                   Chakra Balance
                 </h2>
@@ -255,8 +172,8 @@ const SpraySection = () => {
               backgroundPosition: "left center",
             }}
           >
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-end">
-              <div className="max-w-2xl spray-slide-content text-right md:ml-12 lg:ml-16">
+            <div className="relative z-10 w-full max-w-8xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-end">
+              <div className="max-w-2xl spray-slide-content text-right md:ml-12 lg:ml-16 mr-42">
                 <h2 className="font-dm-serif text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#E27BB1]">
                   Maitri
                 </h2>
@@ -289,8 +206,8 @@ const SpraySection = () => {
               backgroundPosition: "right center",
             }}
           >
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-start">
-              <div className="max-w-2xl spray-slide-content text-left mr-8 md:mr-12 lg:mr-16">
+            <div className="relative z-10 w-full max-w-8xl mx-auto px-4 md:px-8 py-10 md:py-14 flex justify-start">
+              <div className="max-w-2xl spray-slide-content text-left mr-8 md:mr-12 lg:mr-16 ml-42">
                 <h2 className="font-dm-serif text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#597B2C]">
                   Shuddhi
                 </h2>
@@ -357,7 +274,6 @@ const SpraySection = () => {
           />
         </div>
       </div>
-      )}
     </section>
   );
 };

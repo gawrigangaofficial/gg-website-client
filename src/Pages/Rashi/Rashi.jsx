@@ -5,6 +5,18 @@ import ProductCard from '../../components/ProductCard';
 import Loader from '../../components/Loader';
 import RashiSection from '../Home/RashiSection';
 
+// Zodiac dropdown images from local assets (Client/src/assets/Zodiac)
+// Filenames can be lowercase (e.g. aries.jpg) or capitalized (Aries.png); keys are normalized to match rashi values.
+const zodiacImageModules = import.meta.glob('../../assets/Zodiac/*.{png,jpg,jpeg,gif,webp,svg}', { eager: true });
+const rashiImagesFromAssets = {};
+const nameToRashi = { vigro: 'Virgo' }; // filename typo → rashi value
+for (const [path, mod] of Object.entries(zodiacImageModules)) {
+  const baseName = path.replace(/^.*[/\\]/, '').replace(/\.[^.]+$/, '');
+  const normalized = baseName.charAt(0).toUpperCase() + baseName.slice(1).toLowerCase();
+  const key = nameToRashi[normalized.toLowerCase()] || normalized;
+  if (mod?.default) rashiImagesFromAssets[key] = mod.default;
+}
+
 const Rashi = () => {
   const [selectedRashi, setSelectedRashi] = useState('');
   const [rashiInfo, setRashiInfo] = useState(null);
@@ -12,7 +24,6 @@ const Rashi = () => {
   const [modalMukhi, setModalMukhi] = useState(null);
   const [loading, setLoading] = useState(false);
   const [allRudraksha, setAllRudraksha] = useState([]);
-  const [rashiImages, setRashiImages] = useState({});
   const [mukhiImages, setMukhiImages] = useState({});
   const [imageLoading, setImageLoading] = useState(false);
   const [mukhiImagesLoaded, setMukhiImagesLoaded] = useState(() => new Set());
@@ -303,25 +314,6 @@ const Rashi = () => {
       : null;
 
   useEffect(() => {
-    const fetchZodiacImages = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/static-images?folder=Zodiac`);
-        if (!res.ok) return;
-        const data = await res.json();
-        const byKey = (data || []).reduce((acc, item) => {
-          const url = item.url || buildImageUrl(item.folder, item.file_name);
-          if (url) acc[item.key] = url;
-          return acc;
-        }, {});
-        setRashiImages(byKey);
-      } catch (err) {
-        console.error('Error fetching zodiac images:', err);
-      }
-    };
-    fetchZodiacImages();
-  }, [API_URL]);
-
-  useEffect(() => {
     const fetchRudrakshaImages = async () => {
       try {
         const res = await fetch(`${API_URL}/api/static-images?folder=Rudrakshas`);
@@ -461,7 +453,7 @@ const Rashi = () => {
                   <>
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0 bg-gray-100">
                       <img
-                        src={rashiImages[selectedRashi] || `https://via.placeholder.com/40?text=${selectedRashi.slice(0, 2)}`}
+                        src={rashiImagesFromAssets[selectedRashi] || `https://via.placeholder.com/40?text=${selectedRashi.slice(0, 2)}`}
                         alt=""
                         className="w-full h-full object-cover"
                       />
@@ -490,7 +482,7 @@ const Rashi = () => {
                     >
                       <div className="w-9 h-9 rounded-full overflow-hidden border border-primary/20 shrink-0 bg-gray-100">
                         <img
-                          src={rashiImages[rashi.value] || `https://via.placeholder.com/36?text=${rashi.value.slice(0, 2)}`}
+                          src={rashiImagesFromAssets[rashi.value] || `https://via.placeholder.com/36?text=${rashi.value.slice(0, 2)}`}
                           alt=""
                           className="w-full h-full object-cover"
                         />
@@ -520,7 +512,7 @@ const Rashi = () => {
                   )}
                   <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent z-10 pointer-events-none" />
                   <img
-                    src={rashiImages[selectedRashi] || `https://via.placeholder.com/400x300?text=${selectedRashi || 'Rashi'}`}
+                    src={rashiImagesFromAssets[selectedRashi] || `https://via.placeholder.com/400x300?text=${selectedRashi || 'Rashi'}`}
                     alt={rashiInfo.name}
                     className={`w-full h-full object-cover min-h-[260px] sm:min-h-[320px] transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                     onLoad={() => setImageLoading(false)}
