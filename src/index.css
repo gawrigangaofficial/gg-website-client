@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=DM+Serif+Display:ital@0;1&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 @theme {
   --color-primary: #ff914d;
@@ -22,6 +23,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .font-dm-serif {
   font-family: 'DM Serif Display', serif;
+}
+
+/* About page: Playfair Display (headings), Lora (body) */
+.about-heading {
+  font-family: 'Playfair Display', serif;
+}
+.about-body {
+  font-family: 'Lora', serif;
 }
 
 /* Moving zodiac row – infinite scroll (row is duplicated, so -50% loops) */

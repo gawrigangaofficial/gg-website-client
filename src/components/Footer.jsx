@@ -17,13 +17,12 @@ const Footer = () => {
 
   const quickLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Sprays', href: '/sprays' },
-    { name: 'Rudraksha', href: '/rudraksha' },
-    { name: 'Accessories', href: '/accessories' },
     { name: 'Rashi', href: '/rashi' },
-    { name: 'Cart', href: '/cart' },
-    { name: 'Wishlist', href: '/wishlist' },
     { name: 'FAQs', href: '/#faqs' },
+    { name: 'Contact Us', href: '/contact' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Terms of Service', href: '/terms-of-service' },
   ]
 
   const policies = [
@@ -60,7 +59,7 @@ const Footer = () => {
               <p>Gawri Ganga</p>
               <p className="text-white font-medium">GST: [To be added]</p>
               <p>CIN: [To be added]</p>
-              <p>Head Office — [Address to be added]</p>
+              <p>Head Office — A-59, Sector-27, Noida-201301, New Delhi, India</p>
               <p>Grievance Officer — [Name to be added]</p>
               <p>Mon–Sat, 10 AM–6 PM</p>
               <a
@@ -151,7 +150,7 @@ const Footer = () => {
                 <FaPinterest className="text-sm" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/gawriganga.in?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                 aria-label="Instagram"
                 className="w-9 h-9 rounded-full border-2 border-white/60 text-white flex items-center justify-center hover:bg-white hover:text-primary transition-colors"
               >

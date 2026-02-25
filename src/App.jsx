@@ -1,6 +1,7 @@
 import React from 'react'
 import Home from './Pages/Home/Home'
 import Navbar from './components/Navbar'
+import ScrollToTop from './components/ScrollToTop'
 import Footer from './components/Footer'
 import Spray from './Pages/Spray/Spray'
 import Rudraksh from './Pages/Rudraksh/Rudraksh'
@@ -12,6 +13,8 @@ import Wishlist from './Pages/Wishlist/Wishlist'
 import Auth from './Pages/Auth/Auth'
 import AuthCallback from './Pages/Auth/AuthCallback'
 import Profile from './Pages/Profile/Profile'
+import About from './Pages/About/About'
+import Contact from './Pages/Contact/Contact'
 import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
@@ -26,6 +29,7 @@ const App = () => {
         <CartProvider>
           <WishlistProvider>
             <div className="min-h-screen flex flex-col">
+              <ScrollToTop />
               <Navbar />
               <main className="flex-1">
                 <Routes>
@@ -38,6 +42,8 @@ const App = () => {
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/wishlist" element={<Wishlist />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                 </Routes>
