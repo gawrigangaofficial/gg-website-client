@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=DM+Serif+Display:ital@0;1&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 @import "tailwindcss";
 @theme {
   --color-primary: #ff914d;
@@ -83,4 +84,34 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Spray section: text block — bg set per slide to match heading color (no glass/blur) */
+.spray-text-panel {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+.spray-hero {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.spray-tag {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: bolder!important;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+.spray-body {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+  text-align: justify;
+}
+.spray-accent {
+  width: 3px;
+  min-height: 48px;
+  border-radius: 2px;
 }
