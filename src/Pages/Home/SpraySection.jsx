@@ -94,11 +94,19 @@ const SpraySection = () => {
     <section className="relative w-full" ref={sectionRef}>
       <img src={Heading} alt="" className="w-full" />
 
-      <div className="relative w-full h-screen">
-        {/* Slide 0 – Amrat Dhara */}
-        {activeSlide === 0 && (
+      <div className="relative w-full h-screen overflow-hidden">
+        {/* Horizontal scroll track: 4 slides in a row, translateX on wheel */}
+        <div
+          className="spray-horizontal-track flex h-full"
+          style={{
+            width: "400%",
+            transform: `translateX(-${activeSlide * 25}%)`,
+            transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          }}
+        >
+          {/* Slide 0 – Amrat Dhara */}
           <div
-            className="spray-panel-fade absolute inset-0 bg-cover bg-no-repeat"
+            className="relative shrink-0 w-1/4 h-full bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url(${AmratDhara})`,
               backgroundPosition: "left center",
@@ -106,7 +114,7 @@ const SpraySection = () => {
           >
             <div className="absolute inset-0 flex items-center justify-end px-4 md:px-8">
               <div
-                className="spray-slide-content spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-right rounded-2xl mr-[250px]"
+                className="spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-right rounded-2xl mr-[250px]"
               >
                 <div className="flex items-center justify-end gap-4 mb-4">
                   <span className="spray-tag text-[#1a6ba0]/80">Aura Spray</span>
@@ -129,20 +137,18 @@ const SpraySection = () => {
               </div>
             </div>
           </div>
-        )}
 
-        {/* Slide 1 – Chakra Balance */}
-        {activeSlide === 1 && (
+          {/* Slide 1 – Chakra Balance */}
           <div
-            className="spray-panel-fade absolute inset-0 bg-cover bg-no-repeat"
+            className="relative shrink-0 w-1/4 h-full bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url(${ChakraBalance})`,
               backgroundPosition: "right center",
             }}
-            >
+          >
             <div className="absolute inset-0 flex items-center justify-start px-4 md:px-8">
               <div
-                className="spray-slide-content spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-left rounded-2xl ml-[250px]"
+                className="spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-left rounded-2xl ml-[250px]"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="spray-accent bg-[#582683]" />
@@ -165,12 +171,10 @@ const SpraySection = () => {
               </div>
             </div>
           </div>
-        )}
 
-        {/* Slide 2 – Maitri */}
-        {activeSlide === 2 && (
+          {/* Slide 2 – Maitri */}
           <div
-            className="spray-panel-fade absolute inset-0 bg-cover bg-no-repeat"
+            className="relative shrink-0 w-1/4 h-full bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url(${Maitri})`,
               backgroundPosition: "left center",
@@ -178,7 +182,7 @@ const SpraySection = () => {
           >
             <div className="absolute inset-0 flex items-center justify-end px-4 md:px-8">
               <div
-                className="spray-slide-content spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-right rounded-2xl mr-[250px]"
+                className="spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-right rounded-2xl mr-[250px]"
               >
                 <div className="flex items-center justify-end gap-4 mb-4">
                   <span className="spray-tag text-[#c9689a]/90">Aura Spray</span>
@@ -201,12 +205,10 @@ const SpraySection = () => {
               </div>
             </div>
           </div>
-        )}
 
-        {/* Slide 3 – Shuddhi */}
-        {activeSlide === 3 && (
+          {/* Slide 3 – Shuddhi */}
           <div
-            className="spray-panel-fade absolute inset-0 bg-cover bg-no-repeat"
+            className="relative shrink-0 w-1/4 h-full bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url(${Shuddhi})`,
               backgroundPosition: "right center",
@@ -214,7 +216,7 @@ const SpraySection = () => {
           >
             <div className="absolute inset-0 flex items-center justify-start px-4 md:px-8">
               <div
-                className="spray-slide-content spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-left rounded-2xl  ml-[250px]"
+                className="spray-text-panel max-w-lg px-8 md:px-10 lg:px-12 py-10 md:py-12 text-left rounded-2xl ml-[250px]"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="spray-accent bg-[#597B2C]" />
@@ -237,7 +239,7 @@ const SpraySection = () => {
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Dot indicators */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
