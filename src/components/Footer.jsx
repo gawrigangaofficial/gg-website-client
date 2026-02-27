@@ -26,10 +26,10 @@ const Footer = () => {
   ]
 
   const policies = [
-    { name: 'Refund & Cancellations', href: '#' },
-    { name: 'Terms & Conditions', href: '#' },
-    { name: 'Shipping Policy', href: '#' },
-    { name: 'Privacy Policy', href: '#' },
+    { name: 'Refund & Cancellation', href: '/refund-cancellation' },
+    { name: 'Terms & Conditions', href: '/terms-and-conditions' },
+    { name: 'Shipping Policy', href: '/shipping-policy' },
+    { name: 'Privacy Policy', href: '/privacy-policy' },
   ]
 
   const handleNewsletterSubmit = (e) => {
@@ -187,11 +187,11 @@ const Footer = () => {
             © {new Date().getFullYear()} Gawri Ganga. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <Link to="#" className="text-white/95 hover:text-white transition-colors">
+            <Link to="/privacy-policy" className="text-white/95 hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link to="#" className="text-white/95 hover:text-white transition-colors">
-              Terms of Use
+            <Link to="/terms-of-service" className="text-white/95 hover:text-white transition-colors">
+              Terms of Service
             </Link>
           </div>
         </div>

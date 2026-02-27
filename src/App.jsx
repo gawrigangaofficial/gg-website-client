@@ -15,6 +15,11 @@ import AuthCallback from './Pages/Auth/AuthCallback'
 import Profile from './Pages/Profile/Profile'
 import About from './Pages/About/About'
 import Contact from './Pages/Contact/Contact'
+import TermsOfService from './Pages/Policies/TermsOfService'
+import RefundCancellation from './Pages/Policies/RefundCancellation'
+import TermsAndConditions from './Pages/Policies/TermsAndConditions'
+import ShippingPolicy from './Pages/Policies/ShippingPolicy'
+import PrivacyPolicy from './Pages/Policies/PrivacyPolicy'
 import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
@@ -44,6 +49,11 @@ const App = () => {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
+                  <Route path="/refund-cancellation" element={<RefundCancellation />} />
+                  <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                  <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                 </Routes>
