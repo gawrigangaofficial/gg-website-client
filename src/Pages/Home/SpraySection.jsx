@@ -104,7 +104,7 @@ const SpraySection = () => {
       accentColor: "#2283c7",
       textColor: "#1a6ba0",
       description:
-        "Soft, calming lavender fragrance that eases stress and restores balance. Perfect for relaxation, meditation, and winding down at day's end. Refreshes the air and creates a peaceful atmosphere.",
+        "Soft, calming lavender that eases stress and restores balance. Perfect for relaxation and meditation.",
       btnBg: "#1a6ba0",
       btnHover: "#155a8a",
     },
@@ -115,7 +115,7 @@ const SpraySection = () => {
       accentColor: "#582683",
       textColor: "#582683",
       description:
-        "Vibrant GURHAL essence to energize your space and lift your mood. Its floral notes inspire positivity, harmony, and inner strength for mindful living. Ideal for spiritual rituals, meditation, and emotional balance",
+        "Vibrant hibiscus essence to energize your space. Inspires positivity and inner strength for mindful living.",
       btnBg: "#582683",
       btnHover: "#47206b",
     },
@@ -126,7 +126,7 @@ const SpraySection = () => {
       accentColor: "#E27BB1",
       textColor: "#c9689a",
       description:
-        "Gentle warmth and serenity with comforting floral aroma. Promotes calmness and emotional connection for your home or workspace. Creates a welcoming, tranquil vibe there instantly.",
+        "Gentle warmth and serenity with comforting floral aroma. Promotes calmness for home or workspace.",
       btnBg: "#E27BB1",
       btnHover: "#c9689a",
     },
@@ -137,7 +137,7 @@ const SpraySection = () => {
       accentColor: "#597B2C",
       textColor: "#486323",
       description:
-        "Mogra and kewda blend to purify and elevate your space with a rich, sweet fragrance. Divine scent refreshes the air and brings clarity and positivity. Enhances spiritual focus, uplifts the mind, and leaves a lasting sense of calm and wellbeing.",
+        "Mogra and kewda blend to purify and elevate your space. Divine fragrance brings clarity and positivity.",
       btnBg: "#597B2C",
       btnHover: "#486323",
     },
