@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaRegHeart, FaBars, FaTimes } from "react-icons/fa";
 import { CgShoppingBag } from "react-icons/cg";
-import logo from '../assets/gglogo.png';
+import logo from '../assets/gglogo.svg';
 import { LuCircleUserRound } from "react-icons/lu";
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';

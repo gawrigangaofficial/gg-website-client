@@ -30,26 +30,6 @@ const faqData = [
     Icon: FaPalette,
   },
   {
-    id: 18,
-    question: 'Can I wear multiple Rudraksha at the same time?',
-    answer:
-      'Yes, you can wear multiple types together if they are spiritually compatible. If unsure, consult our guidance before purchase.',
-    Icon: FaLayerGroup,
-  },
-  {
-    id: 19,
-    question: 'Do Rudraksha beads expire?',
-    answer: 'No. Rudraksha does not expire. With proper care, it can last for many years.',
-    Icon: FaInfinity,
-  },
-  {
-    id: 20,
-    question: 'Are your Aura Sprays alcohol-free?',
-    answer:
-      'Our Aura Sprays are formulated with high-quality ingredients. Please check individual product descriptions for detailed ingredient information.',
-    Icon: FaFlask,
-  },
-  {
     id: 21,
     question: 'Can Aura Spray be used in temples or meditation rooms?',
     answer:
@@ -69,13 +49,6 @@ const faqData = [
     answer:
       'Certain Rudraksha types are associated with specific planetary influences. You may consult an astrologer or contact us for suggestions.',
     Icon: FaStar,
-  },
-  {
-    id: 24,
-    question: 'Do you provide gift packaging?',
-    answer:
-      'Yes, we offer special packaging options suitable for gifting on spiritual occasions and festivals.',
-    Icon: FaGift,
   },
   {
     id: 25,

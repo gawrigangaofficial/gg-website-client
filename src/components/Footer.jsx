@@ -10,7 +10,7 @@ import {
   FaLinkedinIn,
   FaArrowRight,
 } from 'react-icons/fa'
-import logo from '../assets/gglogo.png'
+import logo from '../assets/gglogo.svg'
 
 const Footer = () => {
   const [email, setEmail] = useState('')
@@ -18,7 +18,6 @@ const Footer = () => {
   const quickLinks = [
     { name: 'Home', href: '/' },
     { name: 'Rashi', href: '/rashi' },
-    { name: 'FAQs', href: '/#faqs' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'About Us', href: '/about' },
     { name: 'Blog', href: '/blog' },
@@ -46,7 +45,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           {/* Column 1: Company info */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link to="/" className="inline-block bg-white rounded-lg p-2 shadow-md">
+            <Link to="/" className="inline-block bg-[#FFEEE5] rounded-lg p-2 shadow-md">
               <img src={logo} alt="Gawri Ganga" className="w-14 h-14 md:w-16 md:h-16" />
             </Link>
             <p className="mt-3 font-heading font-semibold text-white text-sm">
