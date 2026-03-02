@@ -5,6 +5,11 @@ import AmratDhara from "../../assets/Sprayelem/AmratDhara.png";
 import ChakraBalance from "../../assets/Sprayelem/ChakraBalance.png";
 import Maitri from "../../assets/Sprayelem/Maitri.png";
 import Shuddhi from "../../assets/Sprayelem/Shuddhi.png";
+// Mobile backgrounds (same text content, blank space for copy + CTA)
+import AmratMobileBg from "../../assets/Sprayelem/MobileSprayBg/AmratMobileBg.png";
+import ChakraMobileBg from "../../assets/Sprayelem/MobileSprayBg/ChakraMobileBg.png";
+import MaitriMobileBg from "../../assets/Sprayelem/MobileSprayBg/MaitriMobileBg.png";
+import ShuddhiMobileBg from "../../assets/Sprayelem/MobileSprayBg/ShuddhiMobileBg.png";
 
 const SpraySection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -43,6 +48,7 @@ const SpraySection = () => {
   const handleWheel = useCallback(
     (e) => {
       if (!inSprayZone) return;
+      if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
       e.preventDefault();
 
@@ -90,11 +96,59 @@ const SpraySection = () => {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
+  const mobileCards = [
+    {
+      bg: AmratMobileBg,
+      tag: "Aura Spray",
+      title: "Amrat Dhara",
+      accentColor: "#2283c7",
+      textColor: "#1a6ba0",
+      description:
+        "Soft, calming lavender fragrance that eases stress and restores balance. Perfect for relaxation, meditation, and winding down at day's end. Refreshes the air and creates a peaceful atmosphere.",
+      btnBg: "#1a6ba0",
+      btnHover: "#155a8a",
+    },
+    {
+      bg: ChakraMobileBg,
+      tag: "Aura Spray",
+      title: "Chakra Balance",
+      accentColor: "#582683",
+      textColor: "#582683",
+      description:
+        "Vibrant GURHAL essence to energize your space and lift your mood. Its floral notes inspire positivity, harmony, and inner strength for mindful living. Ideal for spiritual rituals, meditation, and emotional balance",
+      btnBg: "#582683",
+      btnHover: "#47206b",
+    },
+    {
+      bg: MaitriMobileBg,
+      tag: "Aura Spray",
+      title: "Maitri",
+      accentColor: "#E27BB1",
+      textColor: "#c9689a",
+      description:
+        "Gentle warmth and serenity with comforting floral aroma. Promotes calmness and emotional connection for your home or workspace. Creates a welcoming, tranquil vibe there instantly.",
+      btnBg: "#E27BB1",
+      btnHover: "#c9689a",
+    },
+    {
+      bg: ShuddhiMobileBg,
+      tag: "Aura Spray",
+      title: "Shuddhi",
+      accentColor: "#597B2C",
+      textColor: "#486323",
+      description:
+        "Mogra and kewda blend to purify and elevate your space with a rich, sweet fragrance. Divine scent refreshes the air and brings clarity and positivity. Enhances spiritual focus, uplifts the mind, and leaves a lasting sense of calm and wellbeing.",
+      btnBg: "#597B2C",
+      btnHover: "#486323",
+    },
+  ];
+
   return (
     <section className="relative w-full" ref={sectionRef}>
       <img src={Heading} alt="" className="w-full" />
 
-      <div className="relative w-full h-screen overflow-hidden">
+      {/* Desktop: keep current bg and styling exactly as is */}
+      <div className="relative w-full h-screen overflow-hidden max-md:hidden">
         {/* Horizontal scroll track: 4 slides in a row, translateX on wheel */}
         <div
           className="spray-horizontal-track flex h-full"
@@ -257,6 +311,43 @@ const SpraySection = () => {
             />
           ))}
         </div>
+      </div>
+
+      {/* Mobile: images as-is, vertical stack (2 cards in view), text + Buy Now in blank space */}
+      <div className="md:hidden w-full flex flex-col gap-6 px-3 py-4">
+        {mobileCards.map((card, i) => (
+          <div key={i} className="relative w-full">
+            <img
+              src={card.bg}
+              alt={card.title}
+              className="w-full h-auto block"
+            />
+            <div className="absolute bottom-0 left-0 right-0 px-5 pt-6 pb-5 mx-3">
+              <div className="px-2 py-3 text-center max-w-[85%] mx-auto">
+                <h2
+                  className="spray-hero text-xl font-bold uppercase tracking-wider text-center"
+                  style={{ color: card.textColor }}
+                >
+                  {card.title}
+                </h2>
+                <p className="spray-body mt-2 text-[#333] text-sm leading-snug text-center">
+                  {card.description}
+                </p>
+                <div className="mt-3 flex justify-center">
+                  <button
+                    type="button"
+                    className="px-5 py-1.5 rounded-full font-medium text-[10px] uppercase tracking-widest text-white transition-all duration-300"
+                    style={{
+                      backgroundColor: card.btnBg,
+                    }}
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
