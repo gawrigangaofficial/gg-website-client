@@ -513,7 +513,7 @@ const ProductPage = () => {
             <div className="flex flex-col md:flex-row gap-3 sm:gap-4 min-w-0">
               {/* Thumbnail Images - Left Side on Desktop, horizontal scroll on Mobile */}
               {hasMultipleImages && (
-                <div className="flex flex-row md:flex-col gap-2 sm:gap-3 shrink-0 justify-start md:justify-start order-2 md:order-1 overflow-x-auto md:overflow-x-visible pb-1 md:pb-0 scrollbar-thin min-w-0">
+                <div className="flex flex-row md:flex-col gap-2 sm:gap-3 shrink-0 justify-start md:justify-start order-1 overflow-x-auto md:overflow-x-visible pb-1 md:pb-0 scrollbar-thin min-w-0">
                   {product.images.map((image, index) => (
                     <button
                       key={index}
@@ -539,7 +539,7 @@ const ProductPage = () => {
               )}
 
               {/* Main image + Element & Benefits – same width (flex-1), same box style */}
-              <div className="flex-1 flex flex-col gap-4 sm:gap-6 min-w-0">
+              <div className="flex-1 flex flex-col gap-4 sm:gap-6 min-w-0 order-2">
                 {/* Main Image */}
                 <div className="relative aspect-[4/3] max-h-[280px] sm:max-h-[400px] md:max-h-[550px] lg:max-h-[700px] w-full min-w-0 bg-gray-100 rounded-xl overflow-hidden border-2 border-primary/20 group">
                   {product.images && product.images.length > 0 ? (
