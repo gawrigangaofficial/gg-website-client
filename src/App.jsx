@@ -5,8 +5,7 @@ import CookieConsent from './components/CookieConsent'
 import LoginScrollPrompt from './components/LoginScrollPrompt'
 import RouteSeo from './components/RouteSeo'
 import Footer from './components/Footer'
-// TEMP: WhatsApp hidden — re-enable when ready
-// import WhatsAppFloatingButton from './components/WhatsAppFloatingButton'
+import ProductGuidanceWidget from './components/ProductGuidanceWidget'
 import Loader from './components/Loader'
 import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
@@ -109,8 +108,7 @@ const App = () => {
                 </Routes>
                 </Suspense>
               </main>
-              {/* TEMP: WhatsApp floating badge hidden — re-enable when ready */}
-              {/* <WhatsAppFloatingButton /> */}
+              <ProductGuidanceWidget />
               <Footer />
             </div>
           </WishlistProvider>
