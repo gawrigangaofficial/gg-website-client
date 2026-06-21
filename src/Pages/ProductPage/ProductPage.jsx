@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
@@ -20,6 +20,14 @@ import {
   FaTrashAlt,
   FaTimes,
   FaShareAlt,
+  FaPlay,
+  FaGem,
+  FaEye,
+  FaRulerHorizontal,
+  FaAward,
+  FaBoxOpen,
+  FaGift,
+  FaUserFriends,
 } from "react-icons/fa";
 import Loader from "../../components/Loader";
 import { useToast } from "../../components/Toaster";
@@ -32,13 +40,15 @@ import ProductCard from "../../components/ProductCard";
 import { apiFetch } from "../../config/api.js";
 import idrImage from "../../assets/ProductPage/idr.webp";
 import rdcImage from "../../assets/ProductPage/rdc.webp";
-import payOptionsLogo from "../../assets/ProductPage/payop.png";
 import { pricingFromProduct } from "../../utils/productPricing";
 import { isProductPreorder, productCanBePurchased, getMaxOrderQuantity } from "../../utils/productPreorder";
 import { submitPreorderRequest } from "../../utils/preorderRequest";
 import { trackBeginCheckout, trackViewContent } from "../../utils/analytics.js";
 import { getCardReviewCount } from "../../utils/reviewDisplayCount.js";
 import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../utils/productJsonLd.js";
+import { normalizeProductMedia } from "../../utils/productMedia.js";
+import { getGalleryViewLabel, getProductStoryContext } from "../../utils/productPageCopy.js";
+import PaymentTrustBadges from "../../components/PaymentTrustBadges.jsx";
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -53,6 +63,294 @@ function getStockLabel(status, { compact = false } = {}) {
   if (status.kind === "out") return compact ? "No Stock" : "Out of Stock";
   if (status.kind === "low") return `Only ${status.stock} left`;
   return compact ? "Stock" : "In Stock";
+}
+
+const VIDEO_SIDE_HIGHLIGHTS = [
+  {
+    Icon: FaEye,
+    title: "Texture & finish",
+    desc: "See the bead surface, polish, and craft, not just a catalog photo.",
+  },
+  {
+    Icon: FaRulerHorizontal,
+    title: "Size & drape",
+    desc: "Understand true length and how it sits before you order.",
+  },
+  {
+    Icon: FaGem,
+    title: "Colour & detail",
+    desc: "Natural tone, spacing, and workmanship in real light.",
+  },
+];
+
+const VIDEO_SIDE_STANDARDS = [
+  {
+    Icon: FaCertificate,
+    title: "Lab-verified",
+    desc: "Quality checked",
+  },
+  {
+    Icon: FaAward,
+    title: "Authentic",
+    desc: "Genuine sourcing",
+  },
+  {
+    Icon: FaBoxOpen,
+    title: "Safe packing",
+    desc: "Careful dispatch",
+  },
+  {
+    Icon: FaTruck,
+    title: "Fast delivery",
+    desc: "Across India",
+  },
+];
+
+function ProductVideoSidePanel() {
+  return (
+    <div className="hidden h-full min-w-0 flex-col gap-3 lg:flex xl:gap-4">
+      <div className="rounded-2xl border border-amber-300/70 bg-linear-to-br from-[#FFFAEB] via-white to-orange-50/80 p-4 shadow-sm xl:p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/85 xl:text-[11px]">
+          In the video
+        </p>
+        <h3 className="mt-1.5 font-heading text-lg font-bold leading-tight text-stone-900 xl:text-xl">
+          What you&apos;ll notice
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-stone-600">
+          Shot to help you decide with confidence, with the same care we put into every piece we send.
+        </p>
+        <ul className="mt-4 space-y-3">
+          {VIDEO_SIDE_HIGHLIGHTS.map(({ Icon, title, desc }) => (
+            <li key={title} className="flex gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary ring-1 ring-primary/15">
+                <Icon className="text-sm" aria-hidden />
+              </span>
+              <span className="min-w-0 pt-0.5">
+                <span className="block text-sm font-semibold text-stone-900">{title}</span>
+                <span className="mt-0.5 block text-xs leading-relaxed text-stone-600">{desc}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="flex-1 rounded-2xl border border-primary/15 bg-white p-4 shadow-sm xl:p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/85 xl:text-[11px]">
+          Our standard
+        </p>
+        <h3 className="mt-1.5 font-heading text-lg font-bold leading-tight text-stone-900 xl:text-xl">
+          The Gawri Ganga promise
+        </h3>
+        <div className="mt-4 grid grid-cols-2 gap-2.5 xl:gap-3">
+          {VIDEO_SIDE_STANDARDS.map(({ Icon, title, desc }) => (
+            <div
+              key={title}
+              className="rounded-xl border border-stone-200/90 bg-[#FFFAEB]/50 p-3 transition-colors hover:border-primary/25 hover:bg-primary/5"
+            >
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Icon className="text-sm" aria-hidden />
+              </span>
+              <p className="mt-2 text-xs font-bold text-stone-900 xl:text-sm">{title}</p>
+              <p className="mt-0.5 text-[11px] leading-snug text-stone-500 xl:text-xs">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductLabCertificateBlock() {
+  return (
+    <div className="rounded-2xl border-2 border-primary/30 bg-linear-to-br from-[#FFFAEB] via-white to-amber-50/90 p-3 shadow-md sm:p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="mx-auto w-full max-w-[140px] shrink-0 sm:mx-0 sm:max-w-[120px] md:max-w-[140px]">
+          <img
+            src={rdcImage}
+            alt="Lab-tested authenticity certificate, Gawri Ganga"
+            loading="eager"
+            decoding="async"
+            className="w-full rounded-lg border border-primary/25 object-contain shadow-sm"
+          />
+        </div>
+        <div className="min-w-0 flex-1 text-center sm:text-left">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:text-[11px]">
+            Lab-tested authenticity
+          </p>
+          <h2 className="mt-1 font-heading text-base font-bold leading-snug text-stone-900 sm:text-lg">
+            Certificate-backed. Not just claimed.
+          </h2>
+          <p className="mt-1.5 text-xs leading-relaxed text-stone-600 sm:text-sm">
+            Every piece goes through verified quality checks. You receive genuine spiritual goods with
+            documentation you can trust, not marketplace guesswork.
+          </p>
+          <ul className="mt-2.5 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] font-semibold text-stone-700 sm:justify-start sm:text-xs">
+            <li className="inline-flex items-center gap-1.5">
+              <FaCertificate className="text-primary" aria-hidden />
+              Lab verification
+            </li>
+            <li className="inline-flex items-center gap-1.5">
+              <FaCheckCircle className="text-emerald-600" aria-hidden />
+              Sourced authentically
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductStoryBlock({ product, stockStatus }) {
+  const { whoFor, occasions, openingLine, urgency } = getProductStoryContext(product, stockStatus);
+
+  return (
+    <div className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary/80 sm:text-[11px]">
+          Why devotees choose this
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-stone-700 sm:text-base">{openingLine}</p>
+      </div>
+      {urgency ? (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900 sm:text-sm">
+          {urgency}
+        </p>
+      ) : null}
+      <div>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-stone-900 sm:text-base">
+          <FaUserFriends className="text-primary" aria-hidden />
+          Who this is for
+        </h3>
+        <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{whoFor}</p>
+      </div>
+      <div>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-stone-900 sm:text-base">
+          <FaGift className="text-primary" aria-hidden />
+          Perfect for
+        </h3>
+        <ul className="mt-2 space-y-1.5">
+          {occasions.map((item) => (
+            <li key={item} className="flex items-start gap-2 text-sm text-stone-600">
+              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" aria-hidden />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function ProductBelowGalleryMedia({ videoUrl, posterUrl, productName, className = "" }) {
+  const rdcFrameClass =
+    "block w-full rounded-xl border-2 border-primary/20 object-contain";
+
+  if (videoUrl) {
+    return (
+      <div className={`w-full max-w-[min(100%,700px)] mx-auto min-w-0 ${className}`}>
+        <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-5 xl:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+          <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:max-w-none">
+            <div className="relative overflow-hidden rounded-2xl bg-stone-950 shadow-[0_16px_44px_-14px_rgba(62,47,28,0.45)] ring-1 ring-stone-900/10">
+              {posterUrl ? (
+                <img
+                  src={posterUrl}
+                  alt=""
+                  aria-hidden
+                  className="absolute inset-0 h-full w-full scale-105 object-cover opacity-35 blur-md"
+                />
+              ) : null}
+              <div
+                className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/50"
+                aria-hidden
+              />
+              <div className="absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-full border border-white/10 bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-md sm:text-[11px]">
+                <FaPlay className="text-[9px] sm:text-[10px]" aria-hidden />
+                Product video
+              </div>
+              <video
+                src={videoUrl}
+                controls
+                playsInline
+                preload="metadata"
+                poster={posterUrl || undefined}
+                className="relative z-10 block w-full aspect-9/16 object-cover rounded-2xl"
+                aria-label={`${productName} product video`}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          <ProductVideoSidePanel />
+        </div>
+        <p className="mt-2.5 text-center text-xs leading-relaxed text-stone-500 lg:hidden">
+          Tap play for a closer look at size, finish, and detail.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`w-full max-w-[min(100%,700px)] mx-auto min-w-0 ${className}`}>
+      <img
+        src={rdcImage}
+        alt="Additional product information"
+        loading="lazy"
+        decoding="async"
+        className={rdcFrameClass}
+      />
+    </div>
+  );
+}
+
+function ProductStickyCtaBar({
+  visible,
+  productName,
+  price,
+  canPurchase,
+  isPreorder,
+  onBuyNow,
+  onAddToCart,
+}) {
+  if (!visible) return null;
+
+  const priceLabel = `₹${Number(price || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-130 pointer-events-none px-3 pb-3 sm:px-4 sm:pb-4 lg:px-6 lg:pb-5">
+      <div className="pointer-events-auto mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-stone-200/90 bg-white/95 shadow-[0_16px_48px_-12px_rgba(62,47,28,0.28)] backdrop-blur-md ring-1 ring-black/[0.04] sm:rounded-3xl">
+        <div className="flex w-full flex-col gap-2 px-3 py-2.5 sm:px-5 sm:py-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-6 lg:py-3.5">
+          <p className="text-center text-xs font-semibold text-emerald-700 lg:hidden">
+            ✓ Cash on Delivery Available Across India
+          </p>
+          <div className="hidden min-w-0 flex-1 lg:block">
+            <p className="truncate text-sm font-semibold text-stone-800">{productName}</p>
+            <p className="text-xl font-bold text-primary">{priceLabel}</p>
+          </div>
+          <div className="flex w-full flex-col gap-2 lg:w-auto lg:min-w-[340px] lg:flex-row lg:gap-3">
+            <button
+              type="button"
+              onClick={onBuyNow}
+              disabled={!canPurchase}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-gray-300 lg:min-h-[48px] lg:min-w-[160px] lg:px-8 lg:text-base"
+            >
+              <span>{isPreorder ? "Preorder Now" : "Buy Now"}</span>
+              {!isPreorder ? <FaChevronRight className="text-sm opacity-90" aria-hidden /> : null}
+            </button>
+            <button
+              type="button"
+              onClick={onAddToCart}
+              disabled={!canPurchase}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-white px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 lg:min-h-[48px] lg:px-6"
+            >
+              <FaShoppingCart className="text-base shrink-0" aria-hidden />
+              {canPurchase ? "Add to Cart" : "Out of Stock"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const ProductPage = () => {
@@ -96,7 +394,8 @@ const ProductPage = () => {
   const [reviewImageFile, setReviewImageFile] = useState(null);
   const [reviewImagePreview, setReviewImagePreview] = useState("");
   const [reviewDeletingId, setReviewDeletingId] = useState(null);
-  const [showStickyMobileCta, setShowStickyMobileCta] = useState(false);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+  const ctaAnchorRef = useRef(null);
   const isRudrakshaProduct =
     product?.category === "Rudraksha" || product?.category === "Rudrakshas";
   const isComboProduct = product?.category === "Combos";
@@ -270,7 +569,7 @@ const ProductPage = () => {
 
       const result = await response.json();
       if (result.success) {
-        const data = result.data || {};
+        const data = normalizeProductMedia(result.data || {});
         setProduct({
           ...data,
           elements: String(data.elements ?? data.Elements ?? "").trim(),
@@ -593,23 +892,21 @@ const ProductPage = () => {
   }, [imagePreviewOpen]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const handleScroll = () => {
-      if (!mediaQuery.matches) {
-        setShowStickyMobileCta(false);
-        return;
-      }
-      setShowStickyMobileCta(window.scrollY > 420);
-    };
+    if (!product?.id) {
+      setShowStickyCta(false);
+      return undefined;
+    }
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    mediaQuery.addEventListener("change", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      mediaQuery.removeEventListener("change", handleScroll);
-    };
-  }, []);
+    const el = ctaAnchorRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyCta(!entry.isIntersecting),
+      { threshold: 0, rootMargin: "0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [product?.id]);
 
   if (loading) {
     return (
@@ -681,7 +978,11 @@ const ProductPage = () => {
   const recommendedRashis = getRashisForThisProduct();
 
   return (
-    <div className="min-h-screen py-4 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white overflow-x-hidden pb-24 sm:pb-6 lg:pb-8">
+    <div
+      className={`min-h-screen py-4 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white overflow-x-hidden ${
+        showStickyCta ? "pb-32 sm:pb-36 lg:pb-32" : "pb-24 sm:pb-6 lg:pb-8"
+      }`}
+    >
       <Helmet>
         {productJsonLd ? (
           <script type="application/ld+json">{JSON.stringify(productJsonLd)}</script>
@@ -732,7 +1033,8 @@ const ProductPage = () => {
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg overflow-hidden border-2 transition-all shrink-0 touch-manipulation ${
+                      title={getGalleryViewLabel(index, product.images.length)}
+                      className={`relative w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg overflow-hidden border-2 transition-all shrink-0 touch-manipulation ${
                         selectedImageIndex === index
                           ? "border-primary ring-2 ring-primary/50"
                           : "border-gray-200 hover:border-primary/50"
@@ -740,7 +1042,7 @@ const ProductPage = () => {
                     >
                       <img
                         src={image}
-                        alt={`${product.name} ${index + 1}`}
+                        alt={`${product.name}, ${getGalleryViewLabel(index, product.images.length)}`}
                         loading="lazy"
                         decoding="async"
                         className="w-full h-full object-cover"
@@ -749,6 +1051,11 @@ const ProductPage = () => {
                             "https://via.placeholder.com/150x150?text=No+Image";
                         }}
                       />
+                      {hasMultipleImages && product.images.length > 1 ? (
+                        <span className="absolute inset-x-0 bottom-0 bg-black/65 px-0.5 py-0.5 text-[8px] font-semibold leading-tight text-white sm:text-[9px]">
+                          {index + 1}
+                        </span>
+                      ) : null}
                     </button>
                   ))}
                 </div>
@@ -762,7 +1069,7 @@ const ProductPage = () => {
                     <>
                       <img
                         src={product.images[selectedImageIndex]}
-                        alt={product.name}
+                        alt={`${product.name}, ${getGalleryViewLabel(selectedImageIndex, product.images.length)}`}
                         loading="eager"
                         decoding="async"
                         className="pointer-events-none relative z-0 block h-full w-full object-contain object-center"
@@ -811,16 +1118,17 @@ const ProductPage = () => {
                     </div>
                   )}
                 </div>
-                {/* rdc: desktop only in gallery column; mobile/tablet copy sits before accordion */}
-                <div className="hidden lg:block w-full max-w-[min(100%,700px)] mx-auto min-w-0">
-                  <img
-                    src={rdcImage}
-                    alt="Additional product information"
-                    loading="lazy"
-                    decoding="async"
-                    className="block w-full rounded-xl border-2 border-primary/20 object-contain"
-                  />
-                </div>
+                {hasMultipleImages ? (
+                  <p className="text-center text-[11px] leading-relaxed text-stone-500 lg:text-left sm:text-xs">
+                    Browse photos for close-ups, bead texture, and size reference before you buy.
+                  </p>
+                ) : null}
+                <ProductBelowGalleryMedia
+                  videoUrl={product.video_url}
+                  posterUrl={product.images?.[0]}
+                  productName={product.name}
+                  className="hidden lg:block"
+                />
               </div>
             </div>
           </div>
@@ -907,16 +1215,6 @@ const ProductPage = () => {
                   )}
                 </p>
               )}
-              <div className="flex flex-wrap gap-2 pt-1">
-                <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
-                  <FaCheckCircle className="shrink-0" aria-hidden />
-                  100% Authentic
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-primary/5 px-2.5 py-1 text-xs font-semibold text-primary">
-                  <FaCertificate className="shrink-0" aria-hidden />
-                  Lab-Verified Quality
-                </span>
-              </div>
             </div>
 
             {/* Badges */}
@@ -987,12 +1285,14 @@ const ProductPage = () => {
 
             {/* Short Description */}
             {product.short_description && (
-              <div className="pb-4 border-b border-gray-200">
-                <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
+              <div className="pb-2">
+                <p className="text-base sm:text-lg text-gray-700 leading-relaxed font-medium">
                   {product.short_description}
                 </p>
               </div>
             )}
+
+            <ProductStoryBlock product={product} stockStatus={stockStatus} />
 
             {/* Quantity Selector + Stock – responsive: wrap on mobile */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
@@ -1026,8 +1326,8 @@ const ProductPage = () => {
                   <span className="inline-flex items-center text-sm sm:text-base font-semibold text-amber-800">
                     <span className="w-2 h-2 bg-amber-500 rounded-full mr-2 shrink-0"></span>
                     {product.stock > 0
-                      ? `Pre-order — ${product.stock} available now`
-                      : 'Pre-order — ships when ready'}
+                      ? `Pre-order: ${product.stock} available now`
+                      : 'Pre-order: ships when ready'}
                   </span>
                 ) : stockStatus.kind !== 'out' ? (
                   <span className={`inline-flex items-center text-sm sm:text-base font-semibold ${
@@ -1071,141 +1371,51 @@ const ProductPage = () => {
               </div>
             )}
 
-            {/* Buy Now and Add to Cart Buttons – full width on mobile, touch-friendly */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
-                onClick={handleAddToCart}
-                disabled={!canPurchase}
-                className="w-full sm:flex-1 px-6 py-4 min-h-[48px] sm:min-h-0 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all font-semibold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl touch-manipulation"
-              >
-                <FaShoppingCart className="text-xl shrink-0" />
-                <span>{canPurchase ? "Add to Cart" : "Out of Stock"}</span>
-              </button>
+            {/* Buy Now (primary) + Add to Cart (secondary) */}
+            <div className="flex flex-col gap-2.5 pt-2 sm:gap-3">
               <button
                 onClick={handleBuyNow}
                 disabled={!canPurchase}
-                className="w-full sm:flex-1 px-6 py-4 min-h-[48px] sm:min-h-0 bg-black text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all font-semibold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 shadow-lg hover:shadow-xl touch-manipulation"
+                className="w-full px-6 py-4 min-h-[52px] bg-primary text-white rounded-xl hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all font-bold text-lg sm:text-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl touch-manipulation ring-2 ring-primary/20"
               >
-                {isPreorder ? "Preorder" : "Buy Now"}
-                {!isPreorder && (
-                  <img
-                    src={payOptionsLogo}
-                    alt="UPI payment options"
-                    className="h-8 w-auto"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
+                <span>{isPreorder ? "Preorder Now" : "Buy Now"}</span>
+                {!isPreorder ? <FaChevronRight className="text-base opacity-90 sm:text-lg" aria-hidden /> : null}
               </button>
+              <button
+                onClick={handleAddToCart}
+                disabled={!canPurchase}
+                className="w-full px-6 py-3 min-h-[44px] border-2 border-primary/40 bg-white text-primary rounded-xl hover:bg-primary/5 disabled:border-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all font-semibold text-base flex items-center justify-center gap-2 touch-manipulation"
+              >
+                <FaShoppingCart className="text-lg shrink-0" />
+                <span>{canPurchase ? "Add to Cart" : "Out of Stock"}</span>
+              </button>
+              {!isPreorder ? <PaymentTrustBadges compact className="pt-0.5" /> : null}
             </div>
 
-            {/* Trust / Delivery info – 2 per line on mobile, 4 cols on sm+ */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4 py-3 sm:py-4 border-y border-gray-200">
-              <div className="flex items-center gap-2 sm:gap-3 text-gray-700 min-w-0 overflow-hidden">
-                <div className="p-1.5 sm:p-2 rounded-full bg-primary/10 text-primary shrink-0">
-                  <FaTruck className="text-xs sm:text-lg" />
-                </div>
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <p className="font-semibold text-[11px] sm:text-sm truncate">Fast Dispatch</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500 truncate">3–7 business days</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3 text-gray-700 min-w-0 overflow-hidden">
-                <div className="p-1.5 sm:p-2 rounded-full bg-primary/10 text-primary shrink-0">
-                  <FaShieldAlt className="text-xs sm:text-lg" />
-                </div>
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <p className="font-semibold text-[11px] sm:text-sm truncate">Secure Payment</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500 truncate">100% secure</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3 text-gray-700 min-w-0 overflow-hidden">
-                <div className="p-1.5 sm:p-2 rounded-full bg-primary/10 text-primary shrink-0">
-                  <FaCheckCircle className="text-xs sm:text-lg" />
-                </div>
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <p className="font-semibold text-[11px] sm:text-sm truncate">100% Authentic</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500 truncate">Genuine products</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3 text-gray-700 min-w-0 overflow-hidden">
-                <div className="p-1.5 sm:p-2 rounded-full bg-primary/10 text-primary shrink-0">
-                  <FaCertificate className="text-xs sm:text-lg" />
-                </div>
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <p className="font-semibold text-[11px] sm:text-sm truncate">Certified</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500 truncate">Authentic</p>
-                </div>
-              </div>
-            </div>
+            <div ref={ctaAnchorRef} className="h-px w-full" aria-hidden />
 
-            {/* Authenticity narrative strip */}
-            <div className="rounded-xl border border-amber-300/70 bg-linear-to-r from-amber-50 via-orange-50 to-amber-100 p-3 sm:p-5 shadow-sm">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="p-2.5 sm:p-3 rounded-full bg-white text-primary border border-primary/20 shrink-0 shadow-sm">
-                  <FaCertificate className="text-xl sm:text-2xl" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] sm:text-xs font-semibold tracking-wide uppercase text-primary">
-                    Authenticity Assurance
-                  </p>
-                  <h3 className="text-sm sm:text-lg font-bold text-gray-900 leading-snug mt-0.5">
-                    Every spiritual product is quality checked and authenticity-verified.
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-700 mt-1.5 leading-relaxed">
-                    We source with care and follow a strict validation process through trusted
-                    testing standards so you can buy with confidence.
-                  </p>
-
-                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700">
-                    <div className="inline-flex items-center gap-2">
-                      <FaCheckCircle className="text-primary shrink-0" />
-                      <span>Sourced from verified channels</span>
-                    </div>
-                    <div className="inline-flex items-center gap-2">
-                      <FaCheckCircle className="text-primary shrink-0" />
-                      <span>Authenticity-first quality checks</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Check your Rashi – CTA: stacked on mobile, row on sm+ */}
-            <Link
-              to="/rashi"
-              className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-3 sm:p-5 rounded-xl border-2 border-primary/30 bg-linear-to-r from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 hover:border-primary/50 transition-all group min-w-0 active:opacity-90"
-            >
-              <div className="flex items-center gap-3 sm:contents min-w-0">
-                <div className="p-2.5 sm:p-3 rounded-full bg-primary/20 text-primary shrink-0 group-hover:scale-105 transition-transform">
-                  <FaCompass className="text-xl sm:text-3xl" />
-                </div>
-                <div className="flex-1 min-w-0 overflow-hidden">
-                  <h3 className="font-bold text-gray-900 text-sm sm:text-lg mb-0.5 break-words">
-                    Find your Rashi & choose the right Rudraksha
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 hidden sm:block break-words">
-                    Not sure which Rudraksha suits you? Check your Rashi (zodiac sign) and get personalized recommendations to buy the best Rudraksha for you.
-                  </p>
-                </div>
-              </div>
-              <span className="text-primary font-semibold text-sm sm:text-base shrink-0 group-hover:underline self-start sm:self-auto">
-                Check Rashi →
+            <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-xs text-stone-500 sm:justify-start">
+              <span className="inline-flex items-center gap-1">
+                <FaTruck className="text-primary" aria-hidden />
+                Dispatch in 3–7 days
               </span>
-            </Link>
+              <span className="hidden sm:inline text-stone-300" aria-hidden>|</span>
+              <span className="inline-flex items-center gap-1">
+                <FaShieldAlt className="text-primary" aria-hidden />
+                Secure checkout
+              </span>
+            </p>
+            <ProductLabCertificateBlock />
 
-            {/* Certification graphic: before accordion on smaller screens; lg+ stays in gallery column */}
-            <div className="lg:hidden mt-4 min-w-0">
-              <img
-                src={rdcImage}
-                alt="Additional product information"
-                loading="lazy"
-                decoding="async"
-                className="block w-full rounded-xl border-2 border-primary/20 object-contain"
-              />
-            </div>
 
-            {/* Accordion – under Check Rashi */}
+            <ProductBelowGalleryMedia
+              videoUrl={product.video_url}
+              posterUrl={product.images?.[0]}
+              productName={product.name}
+              className="lg:hidden"
+            />
+
+            {/* Accordion */}
             <div className="pt-2">
               <section>
                   {[
@@ -1285,6 +1495,26 @@ const ProductPage = () => {
                   ))}
                 </section>
             </div>
+
+            {isRudrakshaProduct ? (
+              <Link
+                to="/rashi"
+                className="mt-3 flex items-center gap-3 rounded-2xl border border-primary/30 bg-linear-to-r from-primary/8 to-primary/5 px-4 py-3.5 shadow-sm transition-all hover:border-primary/45 hover:from-primary/12 hover:to-primary/8 hover:shadow-md active:scale-[0.99]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary ring-1 ring-primary/20">
+                  <FaCompass className="text-lg" aria-hidden />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold text-stone-900 sm:text-base">
+                    Find your Rashi
+                  </span>
+                  <span className="mt-0.5 block text-xs leading-snug text-stone-600 sm:text-sm">
+                    Not sure which mukhi? Match your sign and choose with confidence.
+                  </span>
+                </span>
+                <FaChevronRight className="shrink-0 text-primary text-sm sm:text-base" aria-hidden />
+              </Link>
+            ) : null}
 
           </div>
         </div>
@@ -1689,38 +1919,15 @@ const ProductPage = () => {
         </div>
       )}
 
-      {showStickyMobileCta && (
-        <div className="fixed inset-x-0 bottom-0 z-130 border-t border-primary/20 bg-white/95 px-3 py-2 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] backdrop-blur-sm sm:hidden">
-          <p className="mb-2 text-center text-xs font-semibold text-emerald-700">
-            ✓ Cash on Delivery Available Across India
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={handleAddToCart}
-              disabled={!canPurchase}
-              className="rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-gray-300"
-            >
-              Add to Cart
-            </button>
-            <button
-              onClick={handleBuyNow}
-              disabled={!canPurchase}
-              className="rounded-lg bg-black px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 flex items-center justify-center gap-1.5"
-            >
-              {isPreorder ? "Preorder" : "Buy Now"}
-              {!isPreorder && (
-                <img
-                  src={payOptionsLogo}
-                  alt="UPI payment options"
-                  className="h-6 w-auto"
-                  loading="lazy"
-                  decoding="async"
-                />
-              )}
-            </button>
-          </div>
-        </div>
-      )}
+      <ProductStickyCtaBar
+        visible={showStickyCta}
+        productName={product.name}
+        price={pricing.currentPrice}
+        canPurchase={canPurchase}
+        isPreorder={isPreorder}
+        onBuyNow={handleBuyNow}
+        onAddToCart={handleAddToCart}
+      />
     </div>
   );
 };
