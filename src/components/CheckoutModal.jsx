@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FaTimes, FaMapMarkerAlt, FaCreditCard, FaCheckCircle, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import AddressForm from './AddressForm';
 import PaymentOptions from './PaymentOptions';
 import OrderConfirmation from './OrderConfirmation';
 import { apiFetch } from '../config/api.js';
+import { trackBeginCheckout } from '../utils/analytics.js';
+
+const PREPAID_SHIPPING_CHARGES = 70;
+const COD_SHIPPING_CHARGES = 120;
 
 const CheckoutModal = ({
   isOpen,
@@ -25,6 +29,35 @@ const CheckoutModal = ({
   const [addresses, setAddresses] = useState([]);
   const [orderData, setOrderData] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
+  const initiateCheckoutTrackedRef = useRef(false);
+
+  const checkoutTrackingValue = useMemo(() => {
+    const baseAmount =
+      Math.max(0, Number(totalAmount || 0) - Number(couponDiscount || 0)) +
+      Number(blessingCharge || 0);
+    const payableAmount = baseAmount + PREPAID_SHIPPING_CHARGES;
+    const walletApplicableAmount = useWallet
+      ? Math.min(Number(walletAmountToUse) || 0, Number(walletBalance) || 0, payableAmount)
+      : 0;
+    return Math.max(0, payableAmount - walletApplicableAmount);
+  }, [totalAmount, couponDiscount, blessingCharge, useWallet, walletAmountToUse, walletBalance]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      initiateCheckoutTrackedRef.current = false;
+      return;
+    }
+    if (initiateCheckoutTrackedRef.current || !cartItems?.length) return;
+
+    initiateCheckoutTrackedRef.current = true;
+    const orderItems = cartItems.map((item) => ({
+      product_id: item.id,
+      product_name: item.name,
+      product_price: item.price,
+      quantity: item.quantity,
+    }));
+    trackBeginCheckout(checkoutTrackingValue, orderItems);
+  }, [isOpen, cartItems, checkoutTrackingValue]);
 
   // Fetch user addresses
   useEffect(() => {
@@ -104,8 +137,6 @@ const CheckoutModal = ({
     return false;
   };
 
-  const PREPAID_SHIPPING_CHARGES = 70;
-  const COD_SHIPPING_CHARGES = 120;
   const shippingCharges =
     String(paymentMethod || '').toLowerCase() === 'cod'
       ? COD_SHIPPING_CHARGES

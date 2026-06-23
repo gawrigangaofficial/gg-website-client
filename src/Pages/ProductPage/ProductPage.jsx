@@ -43,7 +43,7 @@ import rdcImage from "../../assets/ProductPage/rdc.webp";
 import { pricingFromProduct } from "../../utils/productPricing";
 import { isProductPreorder, productCanBePurchased, getMaxOrderQuantity } from "../../utils/productPreorder";
 import { submitPreorderRequest } from "../../utils/preorderRequest";
-import { trackBeginCheckout, trackViewContent } from "../../utils/analytics.js";
+import { trackViewContent } from "../../utils/analytics.js";
 import { getCardReviewCount } from "../../utils/reviewDisplayCount.js";
 import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../utils/productJsonLd.js";
 import { normalizeProductMedia } from "../../utils/productMedia.js";
@@ -610,22 +610,6 @@ const ProductPage = () => {
       return;
     }
     const existingItem = cartItems.find(item => item.id === product.id);
-    const checkoutItems = existingItem
-      ? cartItems
-      : [
-          ...cartItems,
-          {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            quantity,
-          },
-        ];
-    const checkoutValue = checkoutItems.reduce(
-      (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
-      0
-    );
-    trackBeginCheckout(checkoutValue, checkoutItems);
     if (!existingItem) {
       addToCart(product, quantity);
     }

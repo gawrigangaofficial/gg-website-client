@@ -11,14 +11,14 @@ const PAYMENT_METHODS = [
 const PaymentTrustBadges = ({ compact = false, className = '' }) => {
   if (compact) {
     return (
-      <div className={`w-full ${className}`}>
-        <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+      <div className={`flex w-full flex-col ${className}`}>
+        <div className="grid w-full grid-cols-4 gap-1.5 sm:gap-2">
           {PAYMENT_METHODS.map(({ Icon, label, shortLabel }) => (
             <div
               key={label}
-              className="flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-stone-200/90 bg-white px-1 py-2.5 text-center shadow-sm sm:px-2 sm:py-3"
+              className="flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl border border-stone-200/90 bg-stone-50/50 px-1 py-2.5 text-center sm:px-2 sm:py-3"
             >
-              <Icon className="text-base text-primary sm:text-lg" aria-hidden />
+              <Icon className="h-4 w-4 shrink-0 text-primary sm:h-[18px] sm:w-[18px]" aria-hidden />
               <span className="text-[10px] font-semibold leading-tight text-stone-700 sm:text-[11px]">
                 <span className="sm:hidden">{shortLabel || label}</span>
                 <span className="hidden sm:inline">{label}</span>

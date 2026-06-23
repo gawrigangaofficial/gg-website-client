@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaCheckCircle, FaSpinner, FaMapMarkerAlt, FaShoppingBag } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { apiFetch } from '../config/api.js';
-import { trackBeginCheckout, trackPurchase } from '../utils/analytics.js';
+import { trackPurchase } from '../utils/analytics.js';
 import { paymentGatewayEmail } from '../utils/checkoutContact.js';
 
 const ONLINE_PAYMENT_IDS = ['card', 'upi', 'netbanking'];
@@ -78,7 +78,6 @@ const OrderConfirmation = ({
           setLoading(false);
           return;
         }
-        trackBeginCheckout(finalAmount, orderItems);
         const initRes = await apiFetch('/api/payment/initiate', {
           method: 'POST',
           body: JSON.stringify({

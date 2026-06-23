@@ -10,7 +10,6 @@ import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct, cartDiscountTotals } from '../../utils/productPricing';
 import { getMaxOrderQuantity } from '../../utils/productPreorder';
-import { trackBeginCheckout } from '../../utils/analytics.js';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import PaymentTrustBadges from '../../components/PaymentTrustBadges';
 
@@ -328,7 +327,6 @@ const Cart = () => {
       navigate('/login', { state: { from: { pathname: '/cart' } } });
       return;
     }
-    trackBeginCheckout(payableAfterWallet, cartItems);
     setShowCheckout(true);
   };
 
@@ -795,7 +793,7 @@ const Cart = () => {
                   Proceed to Checkout
                 </button>
 
-                <PaymentTrustBadges compact className="hidden lg:flex" />
+                <PaymentTrustBadges compact className="hidden w-full lg:block" />
                 <p className="hidden text-center text-xs text-gray-500 lg:block">
                   Delivery in 3–7 business days across India
                 </p>
