@@ -23,6 +23,7 @@ const OrderConfirmation = ({
   couponDiscount = 0,
   blessingCharge = 0,
   shippingCharges = 70,
+  shippingReason = null,
   walletBalance = 0,
   useWallet = false,
   walletAmountToUse = 0,
@@ -281,6 +282,9 @@ const OrderConfirmation = ({
             <span>Shipping:</span>
             <span>{`₹${shippingCharges.toLocaleString('en-IN')}`}</span>
           </div>
+          {shippingReason ? (
+            <p className="text-xs text-amber-800">{shippingReason}</p>
+          ) : null}
           {Number(blessingCharge) > 0 && (
             <div className="flex justify-between text-gray-700">
               <span>Special Blessing Service:</span>

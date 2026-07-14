@@ -5,9 +5,12 @@ import PaymentOptions from './PaymentOptions';
 import OrderConfirmation from './OrderConfirmation';
 import { apiFetch } from '../config/api.js';
 import { trackBeginCheckout } from '../utils/analytics.js';
-
-const PREPAID_SHIPPING_CHARGES = 70;
-const COD_SHIPPING_CHARGES = 120;
+import {
+  DEFAULT_DELIVERY_CHARGES,
+  fetchDeliveryCharges,
+  resolveShippingAmount,
+  shippingForPaymentMethod,
+} from '../utils/deliveryCharges.js';
 
 const CheckoutModal = ({
   isOpen,
@@ -29,18 +32,31 @@ const CheckoutModal = ({
   const [addresses, setAddresses] = useState([]);
   const [orderData, setOrderData] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [deliveryCharges, setDeliveryCharges] = useState(DEFAULT_DELIVERY_CHARGES);
   const initiateCheckoutTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    let cancelled = false;
+    fetchDeliveryCharges().then((settings) => {
+      if (!cancelled) setDeliveryCharges(settings);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
 
   const checkoutTrackingValue = useMemo(() => {
     const baseAmount =
       Math.max(0, Number(totalAmount || 0) - Number(couponDiscount || 0)) +
       Number(blessingCharge || 0);
-    const payableAmount = baseAmount + PREPAID_SHIPPING_CHARGES;
+    const prepaidShipping = resolveShippingAmount(deliveryCharges, 'upi', 70);
+    const payableAmount = baseAmount + prepaidShipping;
     const walletApplicableAmount = useWallet
       ? Math.min(Number(walletAmountToUse) || 0, Number(walletBalance) || 0, payableAmount)
       : 0;
     return Math.max(0, payableAmount - walletApplicableAmount);
-  }, [totalAmount, couponDiscount, blessingCharge, useWallet, walletAmountToUse, walletBalance]);
+  }, [totalAmount, couponDiscount, blessingCharge, useWallet, walletAmountToUse, walletBalance, deliveryCharges]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -137,10 +153,10 @@ const CheckoutModal = ({
     return false;
   };
 
-  const shippingCharges =
-    String(paymentMethod || '').toLowerCase() === 'cod'
-      ? COD_SHIPPING_CHARGES
-      : PREPAID_SHIPPING_CHARGES;
+  const activeShipping = shippingForPaymentMethod(deliveryCharges, paymentMethod || 'upi');
+  const shippingCharges = resolveShippingAmount(deliveryCharges, paymentMethod || 'upi', 70);
+  const shippingReason =
+    activeShipping && !activeShipping.is_standard ? activeShipping.reason_message : null;
   const baseAmount =
     Math.max(0, Number(totalAmount || 0) - Number(couponDiscount || 0)) +
     Number(blessingCharge || 0);
@@ -229,6 +245,7 @@ const CheckoutModal = ({
             <PaymentOptions
               baseAmount={baseAmount}
               cartItems={cartItems}
+              deliveryCharges={deliveryCharges}
               onPaymentSelect={(method) => {
                 setPaymentMethod(method);
               }}
@@ -247,6 +264,7 @@ const CheckoutModal = ({
               useWallet={useWallet}
               walletAmountToUse={walletApplicableAmount}
               shippingCharges={shippingCharges}
+              shippingReason={shippingReason}
               userId={userId}
               userPhone={userPhone}
               userName={userName}
@@ -278,10 +296,10 @@ const CheckoutModal = ({
               className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors ${
                 canProceed()
                   ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              {currentStep === 1 ? (payableAfterWallet <= 0 ? 'Review Order' : 'Continue to Payment') : 'Review Order'}
+              Continue
               <FaChevronRight />
             </button>
           </div>
@@ -292,4 +310,3 @@ const CheckoutModal = ({
 };
 
 export default CheckoutModal;
-

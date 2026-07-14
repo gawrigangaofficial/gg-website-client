@@ -12,6 +12,7 @@ import { pricingFromProduct, cartDiscountTotals } from '../../utils/productPrici
 import { getMaxOrderQuantity } from '../../utils/productPreorder';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import PaymentTrustBadges from '../../components/PaymentTrustBadges';
+import { DEFAULT_DELIVERY_CHARGES, fetchDeliveryCharges, resolveShippingAmount } from '../../utils/deliveryCharges.js';
 
 function shuffleInPlace(arr) {
   for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -121,8 +122,19 @@ const Cart = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [showCouponCelebration, setShowCouponCelebration] = useState(false);
   const [couponsExpanded, setCouponsExpanded] = useState(false);
+  const [deliveryCharges, setDeliveryCharges] = useState(DEFAULT_DELIVERY_CHARGES);
 
   const getReviewCount = useCallback((productId) => getCardReviewCount(productId), []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchDeliveryCharges().then((settings) => {
+      if (!cancelled) setDeliveryCharges(settings);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleRemoveItem = (productId, productName) => {
     removeFromCart(productId);
@@ -156,7 +168,10 @@ const Cart = () => {
   const couponDiscount = Number(appliedCoupon?.discount_amount || 0);
   const subtotalAfterCoupon = Math.max(0, totalPrice - couponDiscount);
   const totalWithBlessing = subtotalAfterCoupon + (hasRudrakshaInCart ? blessingCharge : 0);
-  const shippingCharges = 70;
+  const prepaidDelivery = deliveryCharges.prepaid;
+  const shippingCharges = resolveShippingAmount(deliveryCharges, 'upi', 70);
+  const shippingReason =
+    prepaidDelivery && !prepaidDelivery.is_standard ? prepaidDelivery.reason_message : null;
   const walletAppliedAmount = useWallet
     ? Math.min(walletToUse || walletBalance, walletBalance, totalWithBlessing + shippingCharges)
     : 0;
@@ -570,6 +585,9 @@ const Cart = () => {
                       ₹{shippingCharges.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </span>
                   </div>
+                  {shippingReason ? (
+                    <p className="text-xs text-amber-800">{shippingReason}</p>
+                  ) : null}
                   {appliedCoupon && (
                     <div className="flex justify-between gap-4">
                       <span>Coupon ({appliedCoupon.code})</span>

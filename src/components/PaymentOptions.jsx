@@ -2,11 +2,22 @@ import React, { useState } from 'react';
 import { FaCreditCard, FaUniversity, FaMobileAlt, FaMoneyBillWave } from 'react-icons/fa';
 import { trackAddPaymentInfo } from '../utils/analytics.js';
 import PaymentTrustBadges from './PaymentTrustBadges';
+import { DEFAULT_DELIVERY_CHARGES, resolveShippingAmount, shippingForPaymentMethod } from '../utils/deliveryCharges.js';
 
-const PaymentOptions = ({ baseAmount, cartItems = [], onPaymentSelect }) => {
+const PaymentOptions = ({
+  baseAmount,
+  cartItems = [],
+  deliveryCharges = DEFAULT_DELIVERY_CHARGES,
+  onPaymentSelect,
+}) => {
   const [selectedMethod, setSelectedMethod] = useState('');
-  const shippingFor = (methodId) => (methodId === 'cod' ? 120 : 70);
+  const shippingFor = (methodId) => resolveShippingAmount(deliveryCharges, methodId, methodId === 'cod' ? 120 : 70);
+  const reasonFor = (methodId) => {
+    const row = shippingForPaymentMethod(deliveryCharges, methodId);
+    return row && !row.is_standard ? row.reason_message : null;
+  };
   const totalFor = (methodId) => Number(baseAmount || 0) + shippingFor(methodId);
+  const codShipping = shippingFor('cod');
 
   const paymentMethods = [
     {
@@ -31,7 +42,7 @@ const PaymentOptions = ({ baseAmount, cartItems = [], onPaymentSelect }) => {
       id: 'cod',
       name: 'Cash on Delivery',
       icon: FaMoneyBillWave,
-      description: 'Pay when your order is delivered (Shipping ₹120)'
+      description: `Pay when your order is delivered (Shipping ₹${codShipping.toLocaleString('en-IN')})`
     }
   ];
 
@@ -64,6 +75,7 @@ const PaymentOptions = ({ baseAmount, cartItems = [], onPaymentSelect }) => {
         {paymentMethods.map((method) => {
           const Icon = method.icon;
           const isSelected = selectedMethod === method.id;
+          const reason = reasonFor(method.id);
 
           return (
             <div
@@ -85,8 +97,11 @@ const PaymentOptions = ({ baseAmount, cartItems = [], onPaymentSelect }) => {
                   <h4 className="font-semibold text-gray-900">{method.name}</h4>
                   <p className="text-sm text-gray-600">{method.description}</p>
                   <p className="mt-1 text-xs text-gray-500">
-                    Shipping: ₹{shippingFor(method.id)} | Total: ₹{totalFor(method.id).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                    Shipping: ₹{shippingFor(method.id).toLocaleString('en-IN')} | Total: ₹{totalFor(method.id).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                   </p>
+                  {reason ? (
+                    <p className="mt-1 text-xs font-medium text-amber-800">{reason}</p>
+                  ) : null}
                 </div>
                 {isSelected && (
                   <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
@@ -106,4 +121,3 @@ const PaymentOptions = ({ baseAmount, cartItems = [], onPaymentSelect }) => {
 };
 
 export default PaymentOptions;
-
