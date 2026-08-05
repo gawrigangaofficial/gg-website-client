@@ -24,7 +24,7 @@ function dismissPrompt() {
 }
 
 function isAuthRoute(pathname) {
-  return pathname === '/login' || pathname === '/signup' || pathname.startsWith('/auth');
+  return pathname === '/login' || pathname.startsWith('/auth');
 }
 
 function getScrollPercent() {

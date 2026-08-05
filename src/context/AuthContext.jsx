@@ -71,7 +71,6 @@ export const AuthProvider = ({ children }) => {
           ...(Object.prototype.hasOwnProperty.call(metadata, 'full_name')
             ? { full_name: metadata.full_name }
             : {}),
-          ...(metadata.is_signup === true ? { is_signup: true } : {}),
         }),
       });
       const data = await res.json();
@@ -95,7 +94,6 @@ export const AuthProvider = ({ children }) => {
           ...(metadata?.full_name != null && metadata.full_name !== ''
             ? { full_name: metadata.full_name }
             : {}),
-          ...(metadata?.is_signup === true ? { is_signup: true } : {}),
         }),
       });
       const data = await res.json();
