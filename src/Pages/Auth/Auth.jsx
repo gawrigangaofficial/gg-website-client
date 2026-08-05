@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { FaArrowLeft, FaGem, FaShippingFast, FaHeart } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../components/Toaster';
-import { trackLogin, trackSignUp } from '../../utils/analytics.js';
+import { trackLogin } from '../../utils/analytics.js';
 import OtpInput from '../../components/OtpInput.jsx';
 import ggLogo from '../../assets/gglogo.svg';
 
@@ -25,8 +25,7 @@ const TRUST_POINTS = [
   },
 ];
 
-const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
-  const [fullName, setFullName] = useState('');
+const Auth = ({ embedded = false, onSuccess }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [otpRequested, setOtpRequested] = useState(false);
@@ -37,27 +36,12 @@ const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isSignup = useMemo(
-    () => !embedded && location.pathname.startsWith('/signup'),
-    [location.pathname, embedded],
-  );
   const from = embedded
     ? location.pathname + location.search
     : location.state?.from?.pathname || '/';
-  const linkState = embedded
-    ? { from: { pathname: location.pathname, search: location.search } }
-    : { from: location.state?.from };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
-    if (isSignup) {
-      const trimmed = fullName.trim();
-      const parts = trimmed.split(/\s+/).filter(Boolean);
-      if (parts.length < 2) {
-        toast.error('Please enter your first and last name.');
-        return;
-      }
-    }
     const digits = phoneNumber.replace(/\D/g, '');
     if (digits.length !== 10) {
       toast.error('Enter a valid 10-digit mobile number.');
@@ -65,9 +49,7 @@ const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
     }
     setLoading(true);
     try {
-      const { data, error } = await sendPhoneOtp(digits, {
-        ...(isSignup ? { full_name: fullName.trim(), is_signup: true } : {}),
-      });
+      const { data, error } = await sendPhoneOtp(digits);
       if (error) {
         toast.error(error.message || 'Failed to send OTP');
       } else {
@@ -92,29 +74,15 @@ const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
       toast.error(`Enter the ${otpLength}-digit OTP`);
       return;
     }
-    if (isSignup) {
-      const parts = fullName.trim().split(/\s+/).filter(Boolean);
-      if (parts.length < 2) {
-        toast.error('Please enter your first and last name.');
-        return;
-      }
-    }
     const digits = phoneNumber.replace(/\D/g, '');
     setLoading(true);
     try {
-      const { error } = await verifyPhoneOtp(digits, code, {
-        ...(isSignup ? { full_name: fullName.trim(), is_signup: true } : {}),
-      });
+      const { error } = await verifyPhoneOtp(digits, code);
       if (error) {
         toast.error(error.message || 'Failed to verify OTP');
       } else {
-        if (isSignup) {
-          trackSignUp('otp');
-          toast.success('Your account is ready');
-        } else {
-          trackLogin('otp');
-          toast.success('Welcome back');
-        }
+        trackLogin('otp');
+        toast.success('You are signed in');
         if (onSuccess) {
           onSuccess();
         } else {
@@ -164,7 +132,7 @@ const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
                 Purity · Power · Protection
               </p>
               <h1 className="mt-3 font-heading text-xl font-bold leading-snug text-white sm:text-3xl">
-                {isSignup ? 'Join Gawri Ganga' : 'Welcome back'}
+                Welcome to Gawri Ganga
               </h1>
               <p className="mt-2 max-w-sm text-xs leading-relaxed text-[#fdeeda]/95 sm:text-base">
                 Authentic Rudraksha, malas, aura sprays & spiritual accessories sanctified with care for devotees
@@ -193,35 +161,17 @@ const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
             <div className="mx-auto w-full max-w-md">
               <div className="mb-6 sm:mb-8">
                 <h2 className="font-heading text-xl font-bold text-primary sm:text-3xl">
-                  {otpRequested ? 'Verify your number' : isSignup ? 'Create your account' : 'Sign in to continue'}
+                  {otpRequested ? 'Verify your number' : 'Sign in with OTP'}
                 </h2>
                 <p className="mt-2 text-xs text-stone-600 sm:text-base">
                   {otpRequested
                     ? 'Enter the OTP we sent to your mobile.'
-                    : isSignup
-                      ? 'Use your mobile number — we’ll send a one-time code.'
-                      : 'Enter the mobile number linked to your account.'}
+                    : 'Enter any valid mobile number - we will send a one-time code.'}
                 </p>
               </div>
 
               {!otpRequested ? (
                 <form onSubmit={handleSendOtp} className="space-y-5 sm:space-y-6">
-                  {isSignup && (
-                    <div>
-                      <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-stone-500">
-                        Full name <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="w-full rounded-xl border border-orange-100 bg-white px-4 py-3.5 text-base text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                        placeholder="First and last name"
-                        required
-                        autoComplete="name"
-                      />
-                    </div>
-                  )}
                   <div>
                     <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-stone-500">
                       Mobile number
@@ -298,33 +248,10 @@ const Auth = ({ embedded = false, onSuccess, onDismiss }) => {
                     disabled={loading || otp.replace(/\D/g, '').length !== otpLength}
                     className="w-full rounded-xl bg-primary py-3.5 text-base font-semibold text-white shadow-lg shadow-primary/35 transition hover:bg-[#ff8533] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
                   >
-                    {loading ? 'Verifying…' : isSignup ? 'Create account' : 'Sign in'}
+                    {loading ? 'Verifying…' : 'Sign in'}
                   </button>
                 </form>
               )}
-
-              <p className="mt-6 border-t border-orange-100/90 pt-6 text-center text-sm text-stone-600 sm:mt-8 sm:pt-8">
-                {isSignup ? (
-                  <>
-                    Already have an account?{' '}
-                    <Link to="/login" state={linkState} className="font-semibold text-primary hover:underline">
-                      Sign in
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    New to Gawri Ganga?{' '}
-                    <Link
-                      to="/signup"
-                      state={linkState}
-                      className="font-semibold text-primary hover:underline"
-                      onClick={onDismiss}
-                    >
-                      Create an account
-                    </Link>
-                  </>
-                )}
-              </p>
             </div>
           </div>
     </div>

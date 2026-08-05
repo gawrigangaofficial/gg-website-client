@@ -102,7 +102,7 @@ const App = () => {
                   <Route path="/shipping-policy" element={<ShippingPolicy />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/login" element={<Auth />} />
-                  <Route path="/signup" element={<Auth />} />
+                  <Route path="/signup" element={<Navigate to="/login" replace />} />
                   <Route path="/auth" element={<Navigate to="/login" replace />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                 </Routes>

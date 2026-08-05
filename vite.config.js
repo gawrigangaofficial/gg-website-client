@@ -76,7 +76,6 @@ export default defineConfig(({ mode }) => {
         exclude: [
           '/auth',
           '/login',
-          '/signup',
           '/auth/callback',
           '/cart',
           '/wishlist',

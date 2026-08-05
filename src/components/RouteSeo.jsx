@@ -225,11 +225,6 @@ const ROUTE_META = [
   { path: '/shipping-policy', title: 'Shipping Policy | Gawri Ganga', description: 'Delivery timelines and charges.' },
   { path: '/refund-cancellation', title: 'Refund & Cancellation | Gawri Ganga', description: 'Returns and refunds policy.' },
   { path: '/login', title: 'Sign In | Gawri Ganga', description: 'Sign in with your mobile number and OTP.' },
-  {
-    path: '/signup',
-    title: 'Create account | Gawri Ganga',
-    description: 'Create your Gawri Ganga account with your mobile number and OTP.',
-  },
   { path: '/order-success', title: 'Order Confirmed | Gawri Ganga', description: 'Thank you for your order.' },
   { path: '/order-failed', title: 'Payment Issue | Gawri Ganga', description: 'We could not complete payment.' },
 ];
