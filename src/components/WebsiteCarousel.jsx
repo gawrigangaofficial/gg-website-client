@@ -119,7 +119,7 @@ const WebsiteCarousel = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-[500px] flex items-center justify-center bg-gray-100">
+      <div className="flex aspect-[4/3] w-full items-center justify-center bg-gray-100 sm:aspect-[16/7] lg:aspect-[21/8]">
         <Loader size="xl"/>
       </div>
     )
@@ -127,33 +127,34 @@ const WebsiteCarousel = () => {
 
   if (images.length === 0) {
     return (
-      <div className="w-full h-[500px] flex items-center justify-center bg-gray-100">
+      <div className="flex aspect-[4/3] w-full items-center justify-center bg-gray-100 sm:aspect-[16/7] lg:aspect-[21/8]">
         <p className="text-gray-600">No carousel images available</p>
       </div>
     )
   }
 
   return (
-    <div className="relative w-full h-[500px] overflow-hidden bg-gray-100">
+    <div className="relative w-full overflow-hidden bg-gray-100">
       {/* Slide container with smooth horizontal transition */}
-      <div className="h-full w-full overflow-hidden">
+      <div className="w-full overflow-hidden">
         <div
-          className="flex h-full w-full transition-transform duration-700 ease-in-out"
+          className="flex w-full items-start transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {images.map((image, index) => (
-            <img
-              key={image.id || index}
-              src={image.image_url}
-              alt={`Carousel ${index + 1}`}
-              className="w-full h-full object-cover flex-shrink-0"
-              loading={index === currentIndex ? 'eager' : 'lazy'}
-              decoding="async"
-              onError={(e) => {
-                e.target.src =
-                  'https://via.placeholder.com/1200x500?text=Image+Not+Found'
-              }}
-            />
+            <div key={image.id || index} className="w-full shrink-0">
+              <img
+                src={image.image_url}
+                alt={`Carousel ${index + 1}`}
+                className="block h-auto w-full object-contain object-top"
+                loading={index === currentIndex ? 'eager' : 'lazy'}
+                decoding="async"
+                onError={(e) => {
+                  e.target.src =
+                    'https://via.placeholder.com/1200x500?text=Image+Not+Found'
+                }}
+              />
+            </div>
           ))}
         </div>
       </div>
