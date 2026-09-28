@@ -5,7 +5,6 @@ import ProductCard from '../../components/ProductCard';
 import Loader from '../../components/Loader';
 import ExploreSectionsBlock from '../../components/ExploreSectionsBlock';
 import rudrakshBanner from '../../assets/RudraksPageImg/rd1.webp';
-import CategoryIntro from '../../components/CategoryIntro';
 import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
@@ -183,7 +182,6 @@ const Rudraksh = () => {
   return (
     <div className="min-h-screen py-4 sm:py-6 lg:py-8">
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-        <CategoryIntro id="rudraksha" />
         {/* Header with Banner */}
         <div className="mb-6 sm:mb-8 text-center">
           <div className="w-full rounded-lg overflow-hidden shadow-md">

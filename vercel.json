@@ -1,15 +1,4 @@
 {
-    "redirects": [
-      { "source": "/karungli", "destination": "/product/karungli-mala", "permanent": true },
-      { "source": "/karungli-mala", "destination": "/product/karungli-mala", "permanent": true },
-      { "source": "/karungali", "destination": "/product/karungli-mala", "permanent": true },
-      { "source": "/karungali-mala", "destination": "/product/karungli-mala", "permanent": true },
-      { "source": "/rudaksha", "destination": "/rudraksha", "permanent": true },
-      { "source": "/rudraksh", "destination": "/rudraksha", "permanent": true },
-      { "source": "/sprays/amrat-dhara", "destination": "/sprays/amrat-bindu", "permanent": true },
-      { "source": "/signup", "destination": "/login", "permanent": true },
-      { "source": "/auth", "destination": "/login", "permanent": true }
-    ],
     "rewrites": [
       {
         "source": "/(.*)",

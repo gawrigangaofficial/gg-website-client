@@ -32,7 +32,6 @@ import {
   FaMoneyBillWave,
 } from "react-icons/fa";
 import Loader from "../../components/Loader";
-import NotFound from "../NotFound/NotFound";
 import { useToast } from "../../components/Toaster";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
@@ -940,7 +939,21 @@ const ProductPage = () => {
   }
 
   if (error || !product) {
-    return <NotFound />;
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            {error || "Product not found"}
+          </h2>
+          <button
+            onClick={() => navigate(-1)}
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-semibold"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const pricing = pricingFromProduct(product);
@@ -994,26 +1007,6 @@ const ProductPage = () => {
       }`}
     >
       <Helmet>
-        <title>
-          {(product.meta_title && String(product.meta_title).trim()) ||
-            `${product.name} | Buy Online India | Gawri Ganga`}
-        </title>
-        <meta
-          name="description"
-          content={
-            (product.meta_description && String(product.meta_description).trim()) ||
-            (product.short_description && String(product.short_description).trim()) ||
-            `Shop ${product.name} at Gawri Ganga—authentic spiritual products with India delivery.`
-          }
-        />
-        {product.images?.[0] ? (
-          <meta property="og:image" content={product.images[0]} />
-        ) : null}
-        {product.images?.[0] ? (
-          <meta name="twitter:image" content={product.images[0]} />
-        ) : null}
-        <meta property="og:title" content={product.name} />
-        <meta property="og:type" content="product" />
         {productJsonLd ? (
           <script type="application/ld+json">{JSON.stringify(productJsonLd)}</script>
         ) : null}
@@ -1032,29 +1025,23 @@ const ProductPage = () => {
         </button>
 
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="mb-4 sm:mb-6 text-xs sm:text-sm text-gray-600 min-w-0">
-          <ol className="flex items-center gap-2 flex-wrap list-none p-0 m-0">
-            <li className="shrink-0">
-              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            </li>
-            {product.category && categoryToPath[product.category] ? (
-              <li className="flex items-center gap-2 shrink-0 min-w-0">
-                <span className="text-gray-400" aria-hidden="true">/</span>
-                <Link
-                  to={categoryToPath[product.category]}
-                  className="hover:text-primary transition-colors capitalize"
-                >
-                  {product.category}
-                </Link>
-              </li>
-            ) : null}
-            <li className="flex items-center gap-2 min-w-0 max-w-[55vw] sm:max-w-none">
-              <span className="text-gray-400 shrink-0" aria-hidden="true">/</span>
-              <span className="text-gray-900 font-medium truncate" title={product.name}>
-                {product.name}
-              </span>
-            </li>
-          </ol>
+        <nav className="mb-4 sm:mb-6 flex items-center gap-2 text-xs sm:text-sm text-gray-600 flex-wrap min-w-0">
+          <Link to="/" className="hover:text-primary transition-colors shrink-0">Home</Link>
+          <span className="text-gray-400 shrink-0">/</span>
+          {product.category && categoryToPath[product.category] ? (
+            <>
+              <Link
+                to={categoryToPath[product.category]}
+                className="hover:text-primary transition-colors capitalize shrink-0"
+              >
+                {product.category}
+              </Link>
+              <span className="text-gray-400 shrink-0">/</span>
+            </>
+          ) : null}
+          <span className="text-gray-900 font-medium truncate min-w-0 max-w-[55vw] sm:max-w-none" title={product.name}>
+            {product.name}
+          </span>
         </nav>
 
         {/* Product Details */}

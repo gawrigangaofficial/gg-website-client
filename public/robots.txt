@@ -2,4 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.gawriganga.com/sitemap.xml
-# https://www.gawriganga.com/llms.txt

@@ -6,6 +6,8 @@ import {
   FaWater,
   FaPalette,
   FaLayerGroup,
+  FaInfinity,
+  FaFlask,
   FaOm,
   FaHeart,
   FaStar,
@@ -14,30 +16,94 @@ import {
   FaCheckCircle,
   FaMoneyBillWave,
 } from 'react-icons/fa'
-import { FAQ_ITEMS } from '../../seo/faqData.js'
-import { buildFaqPageJsonLd } from '../../seo/jsonLd.js'
 
-const ICON_BY_ID = {
-  11: FaCheckCircle,
-  12: FaMoneyBillWave,
-  13: FaLayerGroup,
-  16: FaWater,
-  17: FaPalette,
-  21: FaOm,
-  22: FaHeart,
-  23: FaStar,
-  24: FaGift,
-  25: FaHeadset,
-}
-
-const faqData = FAQ_ITEMS.map((item) => ({
-  ...item,
-  Icon: ICON_BY_ID[item.id] || FaCheckCircle,
-}))
+const faqData = [
+  {
+    id: 11,
+    question: 'Is this original?',
+    answer:
+      'Yes. We focus on authenticity-first sourcing and quality checks for every product before dispatch.',
+    Icon: FaCheckCircle,
+  },
+  {
+    id: 12,
+    question: 'Is COD available?',
+    answer:
+      'Yes, Cash on Delivery is available for most serviceable pin codes in India.',
+    Icon: FaMoneyBillWave,
+  },
+  {
+    id: 13,
+    question: 'How to wear Rudraksha?',
+    answer:
+      'Wear it with clean intent, preferably after a simple prayer or mantra, and keep it dry and clean for long life.',
+    Icon: FaLayerGroup,
+  },
+  {
+    id: 16,
+    question: 'How do I energize or cleanse my Rudraksha?',
+    answer:
+      'You can cleanse your Rudraksha by rinsing it with clean water and placing it in sunlight for a short time. Many people also chant mantras or set positive intentions while wearing it.',
+    Icon: FaWater,
+  },
+  {
+    id: 17,
+    question: 'What if my Rudraksha changes color over time?',
+    answer:
+      'Natural Rudraksha may darken slightly due to body oils and usage. This is completely normal and does not affect its spiritual properties.',
+    Icon: FaPalette,
+  },
+  {
+    id: 21,
+    question: 'Can Aura Spray be used in temples or meditation rooms?',
+    answer:
+      'Yes. It is perfect for spiritual spaces, meditation rooms, yoga areas, or anywhere you want to create a calm environment.',
+    Icon: FaOm,
+  },
+  {
+    id: 22,
+    question: 'Will I feel immediate results from Rudraksha or Aura Spray?',
+    answer:
+      'Experiences vary from person to person. Some feel instant calm and clarity, while for others, the effects may be gradual.',
+    Icon: FaHeart,
+  },
+  {
+    id: 23,
+    question: 'Are these products astrologically recommended?',
+    answer:
+      'Certain Rudraksha types are associated with specific planetary influences. You may consult an astrologer or contact us for suggestions.',
+    Icon: FaStar,
+  },
+  {
+    id: 24,
+    question: 'What is your return policy?',
+    answer:
+      'If there is a verified issue with the delivered item, our support team helps you with return/replacement as per policy.',
+    Icon: FaGift,
+  },
+  {
+    id: 25,
+    question: 'What should I do if my Rudraksha bead cracks?',
+    answer:
+      'Natural cracks can occur due to dryness. If the bead is severely damaged, contact us for guidance or replacement options (as per policy).',
+    Icon: FaHeadset,
+  },
+]
 
 const FAQAccordion = () => {
   const [openId, setOpenId] = useState(null)
-  const faqSchema = buildFaqPageJsonLd(FAQ_ITEMS)
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqData.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
 
   const toggle = (id) => {
     setOpenId((prev) => (prev === id ? null : id))

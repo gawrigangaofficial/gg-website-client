@@ -1,8 +1,10 @@
 import React, { lazy, Suspense } from 'react'
 import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
+import CookieConsent from './components/CookieConsent'
 import RouteSeo from './components/RouteSeo'
 import Footer from './components/Footer'
+import ProductGuidanceWidget from './components/ProductGuidanceWidget'
 import Loader from './components/Loader'
 import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
@@ -42,11 +44,6 @@ const ShippingPolicy = lazy(() => import('./Pages/Policies/ShippingPolicy'))
 const PrivacyPolicy = lazy(() => import('./Pages/Policies/PrivacyPolicy'))
 const PurposeProducts = lazy(() => import('./Pages/PurposeProducts/PurposeProducts'))
 const Combos = lazy(() => import('./Pages/Combos/Combos'))
-const AllProducts = lazy(() => import('./Pages/AllProducts/AllProducts'))
-const SeoLanding = lazy(() => import('./Pages/SeoLanding/SeoLanding'))
-const NotFound = lazy(() => import('./Pages/NotFound/NotFound'))
-const CookieConsent = lazy(() => import('./components/CookieConsent'))
-const ProductGuidanceWidget = lazy(() => import('./components/ProductGuidanceWidget'))
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -64,9 +61,7 @@ const App = () => {
             <div className="min-h-screen flex flex-col">
               <RouteSeo />
               <ScrollToTop />
-              <Suspense fallback={null}>
-                <CookieConsent />
-              </Suspense>
+              <CookieConsent />
               <Navbar />
               <main className="flex-1">
                 <Suspense fallback={<PageLoader />}>
@@ -79,16 +74,11 @@ const App = () => {
                   <Route path="/sprays/chakra-balance" element={<ChakraBalanceProductPage />} />
                   <Route path="/sprays/shuddhi" element={<ShuddhiProductPage />} />
                   <Route path="/rudraksha" element={<Rudraksh />} />
-                  <Route path="/mukhi/:slug" element={<SeoLanding />} />
                   <Route path="/tulsimala" element={<TulsiMala />} />
                   <Route path="/rashi" element={<Rashi />} />
-                  <Route path="/rashi/:slug" element={<SeoLanding />} />
                   <Route path="/accessories" element={<Accessories />} />
                   <Route path="/purpose-products" element={<PurposeProducts />} />
-                  <Route path="/purpose/:slug" element={<SeoLanding />} />
-                  <Route path="/guides/:slug" element={<SeoLanding />} />
                   <Route path="/combos" element={<Combos />} />
-                  <Route path="/products" element={<AllProducts />} />
                   <Route path="/product/:slug" element={<ProductPage />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/wishlist" element={<Wishlist />} />
@@ -113,13 +103,10 @@ const App = () => {
                   <Route path="/signup" element={<Navigate to="/login" replace />} />
                   <Route path="/auth" element={<Navigate to="/login" replace />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
-                  <Route path="*" element={<NotFound />} />
                 </Routes>
                 </Suspense>
               </main>
-              <Suspense fallback={null}>
-                <ProductGuidanceWidget />
-              </Suspense>
+              <ProductGuidanceWidget />
               <Footer />
             </div>
           </WishlistProvider>

@@ -30,15 +30,7 @@ const Footer = () => {
 
   const quickLinks = [
     { name: 'Home', href: '/' },
-    { name: 'All Products', href: '/products' },
-    { name: '5 Mukhi Rudraksha', href: '/mukhi/5-mukhi-rudraksha' },
-    { name: 'Identify real Rudraksha', href: '/guides/how-to-identify-real-rudraksha' },
-    { name: 'Rudraksha', href: '/rudraksha' },
-    { name: 'Tulsi Mala', href: '/tulsimala' },
-    { name: 'Aura Sprays', href: '/sprays' },
     { name: 'Rashi', href: '/rashi' },
-    { name: 'Accessories', href: '/accessories' },
-    { name: 'Combos', href: '/combos' },
     { name: 'Corporate / Bulk', href: '/corporate-bulk-orders' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'About Us', href: '/about' },

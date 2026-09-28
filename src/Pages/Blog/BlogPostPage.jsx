@@ -1,14 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { FaArrowLeft } from 'react-icons/fa';
 import Loader from '../../components/Loader';
-import NotFound from '../NotFound/NotFound';
 import { apiFetch } from '../../config/api';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
-import { blogMetaFromPost } from '../../seo/routeMeta.js';
 
-const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').replace(/\/$/, '');
 const DEFAULT_HERO_IMAGE = 'https://via.placeholder.com/1200x630?text=Gawri+Ganga+Blog';
 
 function formatDate(value) {
@@ -124,26 +120,19 @@ const BlogPostPage = () => {
   }
 
   if (error || !post) {
-    return <NotFound />;
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80">
+          <FaArrowLeft aria-hidden />
+          Back to blogs
+        </Link>
+        <p className="mt-8 text-center text-base text-red-600">{error || 'Blog post not found.'}</p>
+      </div>
+    );
   }
-
-  const meta = blogMetaFromPost(post);
-  const pageUrl = `${SITE}/blog/${post.slug}`;
 
   return (
     <div className="bg-[#FFFAEB]">
-      <Helmet>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <link rel="canonical" href={pageUrl} />
-        <meta property="og:title" content={meta.title} />
-        <meta property="og:description" content={meta.description} />
-        <meta property="og:url" content={pageUrl} />
-        {meta.image ? <meta property="og:image" content={meta.image} /> : null}
-        <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
-        {meta.image ? <meta name="twitter:image" content={meta.image} /> : null}
-      </Helmet>
       <article className="w-full bg-[#FFFAEB]">
         <div className="border-b border-stone-200 bg-[#FFFAEB] py-6 sm:py-8">
           <img
