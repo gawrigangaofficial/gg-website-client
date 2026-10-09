@@ -21,7 +21,6 @@ import YouTubePodcastSection from './YouTubePodcastSection'
 import LatestPostsSection from './LatestPostsSection'
 import HomeReviewsSection from './HomeReviewsSection'
 import TestimonialsSection from './TestimonialsSection'
-import GoogleReviewSection from './GoogleReviewSection'
 import TrustStrip from './TrustStrip'
 import Combos from './Combos'
 
@@ -69,8 +68,6 @@ const Home = () => {
       <HomeReviewsSection />
       <SectionDivider />
       <TestimonialsSection />
-      <SectionDivider />
-      <GoogleReviewSection />
       <SectionDivider />
       <AuthenticCertifiedSection />
       <section className="w-full bg-[#FFFAEB]">

@@ -363,7 +363,7 @@ function ProductStickyCtaBar({
   const priceLabel = `₹${Number(price || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-130 pointer-events-none px-3 pb-3 sm:px-4 sm:pb-4 lg:px-6 lg:pb-5">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-130 px-3 pb-3 sm:px-4 sm:pb-4 md:bottom-0 lg:px-6 lg:pb-5">
       <div className="pointer-events-auto mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-stone-200/90 bg-white/95 shadow-[0_16px_48px_-12px_rgba(62,47,28,0.28)] backdrop-blur-md ring-1 ring-black/[0.04] sm:rounded-3xl">
         <div className="flex w-full flex-col gap-2 px-3 py-2.5 sm:px-5 sm:py-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-6 lg:py-3.5">
           <p className="text-center text-xs font-semibold text-emerald-700 lg:hidden">
@@ -1003,7 +1003,9 @@ const ProductPage = () => {
   return (
     <div
       className={`min-h-screen py-4 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white overflow-x-hidden ${
-        showStickyCta ? "pb-32 sm:pb-36 lg:pb-32" : "pb-24 sm:pb-6 lg:pb-8"
+        showStickyCta
+          ? "pb-[calc(16rem+env(safe-area-inset-bottom))] md:pb-36 lg:pb-32"
+          : "pb-8 sm:pb-6 lg:pb-8"
       }`}
     >
       <Helmet>

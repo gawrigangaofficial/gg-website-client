@@ -259,7 +259,7 @@ const ProductGuidanceWidget = () => {
           type="button"
           onClick={handleBadgeClick}
           aria-label={copy.badgeAria}
-          className="fixed bottom-5 right-4 z-120 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-lg transition-all duration-300 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
+          className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-4 z-120 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-lg transition-all duration-300 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 md:bottom-5"
         >
           <FaWhatsapp className="text-2xl" aria-hidden />
           <span className="hidden text-sm font-semibold sm:inline">{copy.badge}</span>
@@ -311,7 +311,7 @@ const ProductGuidanceWidget = () => {
       ) : null}
 
       {panelOpen ? (
-        <div className="fixed bottom-5 right-4 z-130 w-[min(100vw-2rem,22rem)]">
+        <div className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-4 z-130 w-[min(100vw-2rem,22rem)] md:bottom-5">
           <div
             className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-2xl ring-1 ring-black/5"
             role="dialog"
