@@ -20,7 +20,7 @@ function getStockStatus(product) {
 function getStockLabel(status, { compact = false } = {}) {
   if (status.kind === 'out') return compact ? 'No Stock' : 'Out of Stock';
   if (status.kind === 'low') return `Only ${status.stock} left`;
-  return compact ? 'Stock' : 'In Stock';
+  return '';
 }
 
 const ProductCard = ({
@@ -254,23 +254,14 @@ const ProductCard = ({
                   <span className="hidden sm:inline">Pre-order</span>
                   <span className="sm:hidden">Pre</span>
                 </span>
-              ) : stockStatus.kind !== 'out' ? (
-                <span className={`inline-flex items-center font-semibold ${
-                  stockStatus.kind === 'low' ? 'text-amber-700' : 'text-primary'
-                } ${large ? 'text-xs sm:text-sm' : 'text-[9px] sm:text-[10px] lg:text-xs'}`}
+              ) : stockStatus.kind === 'low' ? (
+                <span className={`inline-flex items-center font-semibold text-amber-700 ${large ? 'text-xs sm:text-sm' : 'text-[9px] sm:text-[10px] lg:text-xs'}`}
                 >
-                  <span className={`rounded-full ${
-                    stockStatus.kind === 'low' ? 'bg-amber-500' : 'bg-primary'
-                  } ${large ? 'w-1.5 h-1.5 mr-1 sm:mr-1.5' : 'w-1 h-1 lg:w-1.5 lg:h-1.5 mr-0.5 sm:mr-1 lg:mr-1.5'}`}
+                  <span className={`bg-amber-500 rounded-full ${large ? 'w-1.5 h-1.5 mr-1 sm:mr-1.5' : 'w-1 h-1 lg:w-1.5 lg:h-1.5 mr-0.5 sm:mr-1 lg:mr-1.5'}`}
                   />
-                  <span className="hidden sm:inline">
-                    {stockStatus.kind === 'low' ? getStockLabel(stockStatus) : 'In Stock'}
-                  </span>
-                  <span className="sm:hidden">
-                    {getStockLabel(stockStatus, { compact: true })}
-                  </span>
+                  <span>{getStockLabel(stockStatus)}</span>
                 </span>
-              ) : (
+              ) : stockStatus.kind === 'out' ? (
                 <span className={`inline-flex items-center font-semibold text-red-600 ${large ? 'text-xs sm:text-sm' : 'text-[9px] sm:text-[10px] lg:text-xs'}`}
                 >
                   <span className={`bg-red-500 rounded-full ${large ? 'w-1.5 h-1.5 mr-1 sm:mr-1.5' : 'w-1 h-1 lg:w-1.5 lg:h-1.5 mr-0.5 sm:mr-1 lg:mr-1.5'}`}
@@ -278,7 +269,7 @@ const ProductCard = ({
                   <span className="hidden sm:inline">Out of Stock</span>
                   <span className="sm:hidden">No Stock</span>
                 </span>
-              )}
+              ) : null}
             </div>
 
             {/* Heart and Cart Buttons */}

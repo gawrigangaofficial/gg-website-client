@@ -71,7 +71,7 @@ const useToast = () => {
 // Toast Container Component
 const ToastContainer = ({ toasts, removeToast }) => {
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col-reverse gap-3 max-w-md w-full sm:w-auto pointer-events-none px-4 sm:px-0">
+    <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-50 flex w-full max-w-md flex-col-reverse gap-3 px-4 sm:w-auto sm:px-0 md:bottom-4">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onRemove={removeToast} />
       ))}

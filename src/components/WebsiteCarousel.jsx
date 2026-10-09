@@ -159,33 +159,32 @@ const WebsiteCarousel = () => {
         </div>
       </div>
 
-      {/* Navigation Buttons - Only show if more than one image */}
+      {/* Overlay arrows and dots — sized for desktop so they don't cover mobile artwork */}
       {images.length > 1 && (
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 z-10"
+            className="absolute left-4 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white/80 p-3 text-gray-800 shadow-lg transition-all duration-200 hover:bg-white sm:block"
             aria-label="Previous image"
           >
             <FaChevronLeft className="text-xl" />
           </button>
           <button
             onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 z-10"
+            className="absolute right-4 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white/80 p-3 text-gray-800 shadow-lg transition-all duration-200 hover:bg-white sm:block"
             aria-label="Next image"
           >
             <FaChevronRight className="text-xl" />
           </button>
 
-          {/* Dots Indicator */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          <div className="absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 gap-2 sm:flex">
             {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                className={`h-3 w-3 rounded-full transition-all duration-200 ${
                   index === currentIndex
-                    ? 'bg-white w-8'
+                    ? 'w-8 bg-white'
                     : 'bg-white/50 hover:bg-white/75'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
@@ -193,6 +192,41 @@ const WebsiteCarousel = () => {
             ))}
           </div>
         </>
+      )}
+
+      {/* Phone nav: previous, dots, and next sit under the banner */}
+      {images.length > 1 && (
+        <div className="flex items-center justify-between gap-3 border-t border-gray-200 bg-white px-3 py-2 sm:hidden">
+          <button
+            type="button"
+            onClick={goToPrevious}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-sm active:scale-95"
+            aria-label="Previous image"
+          >
+            <FaChevronLeft className="text-sm" />
+          </button>
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => goToSlide(index)}
+                className={`h-2 rounded-full transition-all duration-200 ${
+                  index === currentIndex ? 'w-6 bg-primary' : 'w-2 bg-gray-300'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={goToNext}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-sm active:scale-95"
+            aria-label="Next image"
+          >
+            <FaChevronRight className="text-sm" />
+          </button>
+        </div>
       )}
     </div>
   )

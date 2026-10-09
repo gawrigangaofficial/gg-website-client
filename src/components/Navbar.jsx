@@ -2,8 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaRegHeart, FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { CgShoppingBag } from "react-icons/cg";
+import { GiPrayerBeads } from "react-icons/gi";
 import logo from "../assets/gglogo.svg";
-import { LuCircleUserRound } from "react-icons/lu";
+import mobileLogo from "../assets/m-logo.png";
+import mobileIcon from "../assets/icon-m.png";
+import {
+  LuCircleUserRound,
+  LuGem,
+  LuHouse,
+  LuLeaf,
+  LuSearch,
+  LuSparkles,
+} from "react-icons/lu";
+import { apiFetch } from "../config/api";
 // TEMP: WhatsApp hidden — re-enable when ready
 // import { FaWhatsapp } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
@@ -81,8 +92,130 @@ const megaListLink =
 const megaGridLink =
   "flex min-h-[2.75rem] items-center justify-center rounded-xl border border-gray-100 bg-gray-50/95 px-2 text-sm font-semibold text-gray-800 shadow-sm transition-all hover:border-primary/40 hover:bg-primary/10 hover:text-primary hover:shadow-md";
 
+const BOTTOM_NAV_ITEMS = [
+  { name: "Home", href: "/", icon: LuHouse },
+  { name: "Sprays", href: "/sprays", icon: LuSparkles },
+  { name: "Rudraksha", href: "/rudraksha", icon: GiPrayerBeads },
+  { name: "Tulsi", href: "/tulsimala", icon: LuLeaf },
+  { name: "Accessories", href: "/accessories", icon: LuGem },
+];
+
+const mobileIconBtn =
+  "relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 active:bg-primary/15";
+
+function MobileSearchPanel({ onNavigate }) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) {
+      setResults([]);
+      setLoading(false);
+      return undefined;
+    }
+
+    const ctrl = new AbortController();
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await apiFetch(
+          `/api/products?search=${encodeURIComponent(q)}&limit=8`,
+          { signal: ctrl.signal },
+        );
+        const json = await res.json();
+        if (!ctrl.signal.aborted) setResults(Array.isArray(json?.data) ? json.data : []);
+      } catch (error) {
+        if (error?.name !== "AbortError" && !ctrl.signal.aborted) setResults([]);
+      } finally {
+        if (!ctrl.signal.aborted) setLoading(false);
+      }
+    }, 280);
+
+    return () => {
+      clearTimeout(timer);
+      ctrl.abort();
+    };
+  }, [query]);
+
+  return (
+    <div className="mobile-search-panel border-t border-[#E9DFC4] bg-white md:hidden">
+      <form
+        className="sticky top-0 z-10 border-b border-[#E9DFC4] bg-white px-3 py-3"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <label className="relative block">
+          <span className="sr-only">Search products</span>
+          <LuSearch
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-primary"
+            aria-hidden
+          />
+          <input
+            ref={inputRef}
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search rudraksha, malas, sprays..."
+            className="h-11 w-full rounded-full border border-[#E9DFC4] bg-[#FFFAEB] pl-10 pr-4 text-sm text-stone-800 outline-none ring-primary/30 placeholder:text-stone-400 focus:ring-2"
+          />
+        </label>
+      </form>
+      <div className="px-3 py-2">
+        {query.trim().length < 2 ? (
+          <p className="px-1 py-6 text-center text-sm text-stone-500">
+            Type at least 2 letters to search the store.
+          </p>
+        ) : loading ? (
+          <p className="px-1 py-6 text-center text-sm text-stone-500">Searching...</p>
+        ) : results.length === 0 ? (
+          <p className="px-1 py-6 text-center text-sm text-stone-500">
+            No products found for “{query.trim()}”.
+          </p>
+        ) : (
+          <ul className="flex flex-col">
+            {results.map((product) => {
+              const image = product.images?.[0];
+              return (
+                <li key={product.id}>
+                  <Link
+                    to={`/product/${product.slug || product.id}`}
+                    onClick={onNavigate}
+                    className="flex items-center gap-3 rounded-xl px-1 py-2.5 active:bg-primary/10"
+                  >
+                    <span className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-stone-100">
+                      {image ? (
+                        <img src={image} alt="" className="h-full w-full object-cover" />
+                      ) : null}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold text-stone-800">
+                        {product.name}
+                      </span>
+                      <span className="text-sm font-bold text-primary">
+                        ₹{Number(product.price || 0).toLocaleString("en-IN")}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const headerRef = useRef(null);
   const [mobileAccessoriesOpen, setMobileAccessoriesOpen] = useState(false);
   const [mobileTulsiOpen, setMobileTulsiOpen] = useState(false);
   const [mobileRudrakshaOpen, setMobileRudrakshaOpen] = useState(false);
@@ -135,11 +268,21 @@ const Navbar = () => {
   ];
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setSearchOpen(false);
+    setIsMenuOpen((open) => !open);
+  };
+
+  const toggleSearch = () => {
+    setIsMenuOpen(false);
+    setMobileAccessoriesOpen(false);
+    setMobileTulsiOpen(false);
+    setMobileRudrakshaOpen(false);
+    setSearchOpen((open) => !open);
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setSearchOpen(false);
     setMobileAccessoriesOpen(false);
     setMobileTulsiOpen(false);
     setMobileRudrakshaOpen(false);
@@ -179,7 +322,34 @@ const Navbar = () => {
     setDesktopAccessoriesOpen(false);
     setDesktopTulsiOpen(false);
     setDesktopRudrakshaOpen(false);
+    setIsMenuOpen(false);
+    setSearchOpen(false);
+    setMobileAccessoriesOpen(false);
+    setMobileTulsiOpen(false);
+    setMobileRudrakshaOpen(false);
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return undefined;
+    const update = () => {
+      el.style.setProperty("--mobile-header-h", `${el.offsetHeight}px`);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    if (!mq.matches || (!isMenuOpen && !searchOpen)) return undefined;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [isMenuOpen, searchOpen]);
 
   const isActive = (href) => {
     if (href === "/") {
@@ -228,8 +398,31 @@ const Navbar = () => {
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
           }
+          @media (max-width: 767px) {
+            .mobile-nav-backdrop {
+              position: fixed;
+              inset: 0;
+              z-index: 30;
+              background: rgba(15, 23, 42, 0.4);
+            }
+            .mobile-nav-drawer,
+            .mobile-search-panel {
+              position: fixed;
+              top: var(--mobile-header-h, 5.5rem);
+              right: 0;
+              bottom: 0;
+              left: 0;
+              z-index: 40;
+              overflow-y: auto;
+              overscroll-behavior: contain;
+              padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+            }
+          }
         `}</style>
-      <header className="bg-[#FFFAEB] shadow-md border-b border-[#E9DFC4]">
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-50 border-b border-[#E9DFC4] bg-[#FFFAEB] pt-[env(safe-area-inset-top)] shadow-md md:static md:z-auto md:pt-0"
+      >
         {/* Top Banner */}
         <div className="hidden md:flex h-10 items-center justify-between gap-4 bg-primary px-6 text-sm text-white">
           <p className="shrink-0">Authentic · Lab-Tested · Fast Delivery</p>
@@ -250,7 +443,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Top Banner - Simplified */}
-        <div className="grid h-10 grid-cols-2 items-center gap-2 bg-primary px-2 text-[10px] text-white sm:px-3 sm:text-xs md:hidden">
+        <div className="grid h-8 grid-cols-2 items-center gap-2 bg-primary px-3 text-[10px] text-white sm:text-xs md:hidden">
           <p className="truncate">Authentic · Lab-Tested</p>
           <p className="truncate text-right font-medium">
             ₹1,000 cashback — first 100 users
@@ -269,8 +462,76 @@ const Navbar = () => {
           */}
         </div>
 
+        {/* Mobile bar: menu, centered logo, search / cart / profile */}
+        <nav
+          className="relative grid h-16 grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center px-1.5 md:hidden"
+          aria-label="Mobile"
+        >
+          <button
+            type="button"
+            onClick={toggleMenu}
+            className={mobileIconBtn}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
+          </button>
+
+          <Link
+            to="/"
+            onClick={closeMenu}
+            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1"
+            aria-label="Home"
+          >
+            <img src={mobileIcon} alt="" className="h-9 w-9 shrink-0 object-contain" />
+            <span
+              className="relative block w-[3.5rem] shrink-0 overflow-hidden"
+              style={{ aspectRatio: "400 / 296" }}
+            >
+              <img
+                src={mobileLogo}
+                alt=""
+                className="absolute left-1/2 max-w-none -translate-x-1/2"
+                style={{ width: "118%", top: "-23%" }}
+              />
+            </span>
+          </Link>
+
+          <div className="col-start-3 flex items-center">
+            <button
+              type="button"
+              onClick={toggleSearch}
+              className={`${mobileIconBtn} ${searchOpen ? "bg-primary/15" : ""}`}
+              aria-label={searchOpen ? "Close search" : "Search"}
+              aria-expanded={searchOpen}
+            >
+              {searchOpen ? <FaTimes className="text-xl" /> : <LuSearch className="text-xl" />}
+            </button>
+            <Link to="/cart" onClick={closeMenu} className={mobileIconBtn} aria-label="Cart">
+              <CgShoppingBag className="text-xl" />
+              {cartCount > 0 && (
+                <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-white">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
+            <Link
+              to={isAuthenticated ? "/profile" : "/login"}
+              state={isAuthenticated ? undefined : { from: location }}
+              onClick={closeMenu}
+              className={mobileIconBtn}
+              title={isAuthenticated ? "Account" : "Sign in"}
+              aria-label={isAuthenticated ? "Account" : "Sign in or sign up"}
+            >
+              <LuCircleUserRound className="text-xl" />
+            </Link>
+          </div>
+        </nav>
+
+        {searchOpen && <MobileSearchPanel onNavigate={closeMenu} />}
+
         {/* Main Navigation */}
-        <nav className="flex justify-between items-center h-20 md:h-28 lg:h-32 w-full px-4 md:px-8 lg:px-10">
+        <nav className="hidden h-20 w-full items-center justify-between px-4 md:flex md:h-28 md:px-8 lg:h-32 lg:px-10">
           {/* Logo */}
           <Link to="/" className="shrink-0">
             <img
@@ -562,41 +823,31 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Mobile Icons - Only Cart and User */}
-            <div className="md:hidden flex items-center gap-3">
-              <Link to="/cart" className="relative">
-                <CgShoppingBag className="text-primary text-2xl cursor-pointer" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </span>
-                )}
-              </Link>
-              <Link
-                to={isAuthenticated ? "/profile" : "/login"}
-                state={isAuthenticated ? undefined : { from: location }}
-                className="rounded-lg p-1 text-primary hover:bg-primary/10"
-                title={isAuthenticated ? "Account" : "Sign in"}
-                aria-label={isAuthenticated ? "Account" : "Sign in or sign up"}
-              >
-                <LuCircleUserRound className="text-2xl" />
-              </Link>
-            </div>
-
-            {/* Mobile Hamburger Menu Button */}
+            {/* Tablet menu button. Phones use the bar above. */}
             <button
+              type="button"
               onClick={toggleMenu}
-              className="lg:hidden text-primary text-3xl cursor-pointer focus:outline-none"
-              aria-label="Toggle menu"
+              className={`${mobileIconBtn} lg:hidden`}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
             >
-              {isMenuOpen ? <FaTimes /> : <FaBars />}
+              {isMenuOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
             </button>
           </div>
         </nav>
 
+        {isMenuOpen && (
+          <button
+            type="button"
+            className="mobile-nav-backdrop md:hidden"
+            aria-label="Close menu"
+            onClick={closeMenu}
+          />
+        )}
+
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+          <div className="mobile-nav-drawer border-t border-gray-200 bg-white shadow-lg lg:hidden">
             <div className="flex flex-col py-4">
               {navItems.map((item) => {
                 const active = isActive(item.href);
@@ -833,6 +1084,45 @@ const Navbar = () => {
           </div>
         )}
       </header>
+
+      <nav
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-[#E9DFC4] bg-[#FFFAEB]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_28px_-16px_rgba(62,47,28,0.45)] backdrop-blur-md md:hidden"
+        aria-label="Primary"
+      >
+        <ul className="grid h-16 grid-cols-5">
+          {BOTTOM_NAV_ITEMS.map((item) => {
+            const active = isActive(item.href);
+            const Icon = item.icon;
+            return (
+              <li key={item.name}>
+                <Link
+                  to={item.href}
+                  onClick={closeMenu}
+                  className={`flex h-full flex-col items-center justify-center gap-0.5 ${
+                    active ? "text-primary" : "text-stone-500"
+                  }`}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <span
+                    className={`flex h-7 w-8 items-center justify-center rounded-full ${
+                      active ? "bg-primary/15 text-primary" : "text-stone-600"
+                    }`}
+                  >
+                    <Icon className="text-[1.15rem]" aria-hidden />
+                  </span>
+                  <span
+                    className={`max-w-full truncate px-0.5 text-[10px] font-semibold leading-none ${
+                      active ? "text-primary" : "text-stone-600"
+                    }`}
+                  >
+                    {item.name}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </>
   );
 };

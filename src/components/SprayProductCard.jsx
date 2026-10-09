@@ -274,12 +274,7 @@ const SprayProductCard = ({
                     </span>
                   )}
                 </div>
-                {product.stock > 0 ? (
-                  <span className="inline-flex items-center text-xs font-semibold sm:text-sm" style={{ color: theme.heading }}>
-                    <span className="mr-1.5 h-1.5 w-1.5 rounded-full" style={{ backgroundColor: theme.heading }} />
-                    In Stock
-                  </span>
-                ) : (
+                {!(Number(product.stock) > 0) && (
                   <span className="inline-flex items-center text-xs font-semibold text-red-600 sm:text-sm">
                     <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-red-500" />
                     Out of Stock

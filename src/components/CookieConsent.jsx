@@ -45,7 +45,7 @@ const CookieConsent = () => {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-100 p-4 md:p-6 bg-gray-900/95 text-white shadow-2xl border-t border-white/10"
+      className="fixed bottom-[calc(4.25rem+env(safe-area-inset-bottom))] left-0 right-0 z-100 border-t border-white/10 bg-gray-900/95 p-4 text-white shadow-2xl md:bottom-0 md:p-6"
       role="dialog"
       aria-labelledby="cookie-notice-title"
     >
