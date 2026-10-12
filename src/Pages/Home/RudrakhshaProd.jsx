@@ -55,7 +55,7 @@ const RudrakhshaProd = () => {
 
   if (loading) {
     return (
-      <section className="py-10 md:py-14 bg-[#FFFAEB]">
+      <section className="py-5 md:py-12 bg-[#FFFAEB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
           <Loader />
         </div>
@@ -69,11 +69,11 @@ const RudrakhshaProd = () => {
 
   return (
     <section
-      className="relative py-10 md:py-14 overflow-x-clip overflow-y-visible bg-[#FFFAEB]"
+      className="relative py-5 md:py-12 overflow-x-clip overflow-y-visible bg-[#FFFAEB]"
       aria-labelledby="rudrakhsha-featured-heading"
     >
       <div className="relative max-w-400 mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
-        <div className="text-center max-w-3xl mx-auto mb-8 md:mb-10">
+        <div className="text-center max-w-3xl mx-auto mb-4 md:mb-8">
           <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-primary mb-3">
             <FaGem className="text-primary text-sm" aria-hidden />
             Handpicked for you
@@ -92,15 +92,7 @@ const RudrakhshaProd = () => {
           aria-label="Featured Rudraksha products"
         >
           {products.map((product) => (
-            <div
-              key={product.id}
-              role="listitem"
-              className="relative flex h-full w-full flex-col rounded-lg sm:rounded-2xl p-px sm:p-[3px] bg-linear-to-br from-amber-400/90 via-primary/50 to-amber-600/80 shadow-md sm:shadow-lg shadow-amber-900/10"
-            >
-              <span className="absolute -top-0.5 sm:-top-1 left-1/2 -translate-x-1/2 z-20 max-w-[calc(100%-6px)] truncate rounded-full bg-primary px-1.5 py-px sm:px-3 sm:py-1 text-[8px] sm:text-[11px] sm:leading-normal md:text-sm font-bold uppercase tracking-wide text-white shadow-md text-center">
-                Highlighted
-              </span>
-              <div className="flex h-full min-h-0 w-full flex-1 flex-col rounded-[10px] sm:rounded-[13px] bg-amber-50/30 overflow-hidden pt-3 sm:pt-3.5">
+            <div key={product.id} role="listitem" className="min-w-0">
                 <ProductCard
                   product={product}
                   variant="rudraksh"
@@ -108,7 +100,6 @@ const RudrakhshaProd = () => {
                   calculatePricing={pricingFromProduct}
                   getReviewCount={getCardReviewCount}
                 />
-              </div>
             </div>
           ))}
         </div>

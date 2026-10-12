@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="560" viewBox="0 0 180 560">
+  <g fill="#FFF6E4">
+    <g transform="translate(90 108)">
+      <path d="M0-48C18-30 16-10 0-2C-16-10-18-30 0-48Z"/>
+      <path d="M0-48C18-30 16-10 0-2C-16-10-18-30 0-48Z" transform="rotate(90)"/>
+      <path d="M0-48C18-30 16-10 0-2C-16-10-18-30 0-48Z" transform="rotate(180)"/>
+      <path d="M0-48C18-30 16-10 0-2C-16-10-18-30 0-48Z" transform="rotate(270)"/>
+      <path d="M0-5.5 5.5 0 0 5.5-5.5 0Z" transform="translate(34 -34)"/>
+      <path d="M0-5.5 5.5 0 0 5.5-5.5 0Z" transform="translate(34 34)"/>
+      <path d="M0-5.5 5.5 0 0 5.5-5.5 0Z" transform="translate(-34 34)"/>
+      <path d="M0-5.5 5.5 0 0 5.5-5.5 0Z" transform="translate(-34 -34)"/>
+    </g>
+    <g transform="translate(90 286)">
+      <path fill-rule="evenodd" d="M0-62 24-24 62 0 24 24 0 62-24 24-62 0-24-24Z M0-26 4.2-10 18.4-18.4 10-4.2 26 0 10 4.2 18.4 18.4 4.2 10 0 26-4.2 10-18.4 18.4-10 4.2-26 0-10-4.2-18.4-18.4-4.2-10 0-26Z"/>
+      <path d="M0-12 1.8-4.6 8.5-8.5 4.6-1.8 12 0 4.6 1.8 8.5 8.5 1.8 4.6 0 12-1.8 4.6-8.5 8.5-4.6 1.8-12 0-4.6-1.8-8.5-8.5-1.8-4.6 0-12Z"/>
+    </g>
+    <g transform="translate(90 468)">
+      <ellipse cx="0" cy="-30" rx="15" ry="27" transform="rotate(45)"/>
+      <ellipse cx="0" cy="-30" rx="15" ry="27" transform="rotate(135)"/>
+      <ellipse cx="0" cy="-30" rx="15" ry="27" transform="rotate(225)"/>
+      <ellipse cx="0" cy="-30" rx="15" ry="27" transform="rotate(315)"/>
+      <path d="M0-5 4.2 0 0 5-4.2 0Z" transform="translate(0 -56)"/>
+      <path d="M0-5 4.2 0 0 5-4.2 0Z" transform="translate(56 0)"/>
+      <path d="M0-5 4.2 0 0 5-4.2 0Z" transform="translate(0 56)"/>
+      <path d="M0-5 4.2 0 0 5-4.2 0Z" transform="translate(-56 0)"/>
+    </g>
+  </g>
+</svg>

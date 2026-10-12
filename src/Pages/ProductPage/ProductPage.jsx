@@ -358,38 +358,40 @@ function ProductStickyCtaBar({
   onBuyNow,
   onAddToCart,
 }) {
-  if (!visible) return null;
-
   const priceLabel = `₹${Number(price || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-130 px-3 pb-3 sm:px-4 sm:pb-4 md:bottom-0 lg:px-6 lg:pb-5">
-      <div className="pointer-events-auto mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-stone-200/90 bg-white/95 shadow-[0_16px_48px_-12px_rgba(62,47,28,0.28)] backdrop-blur-md ring-1 ring-black/[0.04] sm:rounded-3xl">
-        <div className="flex w-full flex-col gap-2 px-3 py-2.5 sm:px-5 sm:py-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-6 lg:py-3.5">
-          <p className="text-center text-xs font-semibold text-emerald-700 lg:hidden">
-            ✓ Cash on Delivery Available Across India
+    <div
+      className={`pointer-events-none fixed inset-x-0 bottom-[var(--gg-tabbar-offset)] z-130 px-3 pb-1.5 md:bottom-0 md:px-4 md:pb-4 lg:px-6 ${
+        visible ? "flex" : "max-md:flex md:hidden"
+      }`}
+    >
+      <div className="pointer-events-auto mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-orange-100 bg-white/95 px-2 py-1.5 shadow-lg backdrop-blur-md md:px-5 md:py-3">
+        <div className="flex w-full flex-col gap-1 md:flex-row md:items-center md:justify-between md:gap-4">
+          <p className="text-center text-[10px] font-semibold leading-none text-emerald-700 md:hidden">
+            Cash on Delivery across India
           </p>
-          <div className="hidden min-w-0 flex-1 lg:block">
+          <div className="hidden min-w-0 flex-1 md:block">
             <p className="truncate text-sm font-semibold text-stone-800">{productName}</p>
-            <p className="text-xl font-bold text-primary">{priceLabel}</p>
+            <p className="text-lg font-bold text-primary">{priceLabel}</p>
           </div>
-          <div className="flex w-full flex-col gap-2 lg:w-auto lg:min-w-[340px] lg:flex-row lg:gap-3">
+          <div className="flex w-full gap-2 md:w-auto md:min-w-[320px]">
             <button
               type="button"
               onClick={onBuyNow}
               disabled={!canPurchase}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-gray-300 lg:min-h-[48px] lg:min-w-[160px] lg:px-8 lg:text-base"
+              className="flex h-9 flex-1 items-center justify-center gap-1 rounded-full bg-primary px-3 text-xs font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-300 md:h-11 md:rounded-xl md:text-sm"
             >
               <span>{isPreorder ? "Preorder Now" : "Buy Now"}</span>
-              {!isPreorder ? <FaChevronRight className="text-sm opacity-90" aria-hidden /> : null}
+              {!isPreorder ? <FaChevronRight className="text-[10px] opacity-90" aria-hidden /> : null}
             </button>
             <button
               type="button"
               onClick={onAddToCart}
               disabled={!canPurchase}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-white px-5 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 lg:min-h-[48px] lg:px-6"
+              className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-primary bg-white px-3 text-xs font-semibold text-primary disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 md:h-11 md:rounded-xl md:text-sm"
             >
-              <FaShoppingCart className="text-base shrink-0" aria-hidden />
+              <FaShoppingCart className="shrink-0 text-xs" aria-hidden />
               {canPurchase ? "Add to Cart" : "Out of Stock"}
             </button>
           </div>
@@ -1002,10 +1004,8 @@ const ProductPage = () => {
 
   return (
     <div
-      className={`min-h-screen py-4 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white overflow-x-hidden ${
-        showStickyCta
-          ? "pb-[calc(16rem+env(safe-area-inset-bottom))] md:pb-36 lg:pb-32"
-          : "pb-8 sm:pb-6 lg:pb-8"
+      className={`min-h-screen py-3 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white overflow-x-hidden pb-[calc(4.25rem+var(--gg-tabbar-offset))] ${
+        showStickyCta ? "md:pb-28 lg:pb-24" : "md:pb-8"
       }`}
     >
       <Helmet>
@@ -1154,7 +1154,7 @@ const ProductPage = () => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-4 sm:space-y-6 min-w-0">
+          <div className="space-y-3 sm:space-y-5 min-w-0">
             {/* Product Name with Share & Like (wishlist) */}
             <div className="flex items-start justify-between gap-3 sm:gap-4 min-w-0">
               <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-gray-900 flex-1 min-w-0 break-words pr-1">
@@ -1394,7 +1394,7 @@ const ProductPage = () => {
             )}
 
             {/* Buy Now (primary) + Add to Cart (secondary) */}
-            <div className="flex flex-col gap-2.5 pt-2 sm:gap-3">
+            <div className="hidden flex-col gap-2.5 pt-2 sm:gap-3 md:flex">
               <button
                 onClick={handleBuyNow}
                 disabled={!canPurchase}

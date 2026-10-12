@@ -57,7 +57,7 @@ const LatestPostsSection = () => {
     () =>
       posts.map((post) => {
         const rawExcerpt = post.excerpt || stripHtmlForExcerpt(post.html_content);
-        const excerpt = rawExcerpt.length > 160 ? `${rawExcerpt.slice(0, 160)}...` : rawExcerpt;
+        const excerpt = rawExcerpt.length > 90 ? `${rawExcerpt.slice(0, 90)}...` : rawExcerpt;
         return {
           ...post,
           excerpt,
@@ -74,78 +74,68 @@ const LatestPostsSection = () => {
 
   return (
     <section
-      className="w-full overflow-x-hidden bg-[#FFFAEB] py-10 sm:py-14 md:py-16 lg:py-20"
+      className="w-full overflow-x-hidden bg-[#FFFAEB] py-4 md:py-8"
       aria-labelledby="latest-posts-heading"
     >
       <div className="mx-auto w-full min-w-0 max-w-[1400px] px-3 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-          <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
             <span
-              className="mx-auto flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-stone-900 text-[#FFFAEB] shadow-md sm:mx-0 sm:h-16 sm:w-16"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-[#FFFAEB]"
               aria-hidden
             >
-              <FaBookOpen className="text-2xl sm:text-3xl" />
+              <FaBookOpen className="text-sm" />
             </span>
-            <div className="min-w-0 flex-1 text-center sm:text-left">
-              <h2
-                id="latest-posts-heading"
-                className="font-heading text-[clamp(1.375rem,4.5vw,2rem)] font-bold leading-tight tracking-tight text-stone-900 sm:text-3xl md:text-[2rem]"
-              >
-                Latest posts
-              </h2>
-              <p className="mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-stone-600 sm:text-base">
-                Rituals, care guides, and stories from the Gawri Ganga journal—read the newest articles
-                on Rudraksha, japa, and everyday sadhana.
-              </p>
-            </div>
+            <h2
+              id="latest-posts-heading"
+              className="font-heading text-lg font-bold leading-tight text-stone-900 md:text-2xl"
+            >
+              Latest posts
+            </h2>
           </div>
           <Link
             to="/blog"
-            className="inline-flex w-full min-h-[48px] shrink-0 items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-stone-800 sm:w-auto sm:px-7 sm:py-3.5"
+            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary"
           >
-            View all posts
-            <FaArrowRight className="text-sm" aria-hidden />
+            View all
+            <FaArrowRight className="text-xs" aria-hidden />
           </Link>
         </div>
 
         {loading ? (
-          <div className="mt-10 flex justify-center py-8">
+          <div className="mt-3 flex justify-center py-3">
             <Loader />
           </div>
         ) : error ? (
-          <p className="mt-10 text-center text-sm font-medium text-red-600">{error}</p>
+          <p className="mt-3 text-center text-sm font-medium text-red-600">{error}</p>
         ) : (
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
+          <div className="mt-3 flex flex-col gap-2 md:grid md:grid-cols-3 md:gap-4">
             {cards.map((post) => (
               <article key={post.id} className={`${cardClass} min-w-0`}>
-                <Link to={`/blog/${post.slug}`} className="block min-w-0 shrink-0">
+                <Link
+                  to={`/blog/${post.slug}`}
+                  className="flex min-w-0 items-center gap-3 p-2 md:flex-col md:items-stretch md:p-0"
+                >
                   <img
                     src={post.heroUrl}
-                    alt={post.title}
-                    className="h-44 w-full max-w-full object-cover sm:h-52"
+                    alt=""
+                    className="h-14 w-14 shrink-0 rounded-xl object-cover md:h-32 md:w-full md:rounded-none"
                     loading="lazy"
                   />
+                  <span className="min-w-0 flex-1 md:p-3">
+                    {post.displayDate ? (
+                      <span className="block text-[10px] font-medium uppercase tracking-wide text-stone-500">
+                        {post.displayDate}
+                      </span>
+                    ) : null}
+                    <span className="mt-0.5 line-clamp-2 block font-heading text-sm font-bold leading-snug text-stone-900 md:text-base">
+                      {post.title}
+                    </span>
+                    <span className="mt-1 hidden line-clamp-2 text-xs leading-snug text-stone-600 md:block">
+                      {post.excerpt || 'Read the full article.'}
+                    </span>
+                  </span>
                 </Link>
-                <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-                  {post.displayDate ? (
-                    <p className="text-xs font-medium uppercase tracking-wide text-stone-500">
-                      {post.displayDate}
-                    </p>
-                  ) : null}
-                  <h3 className="mt-2 line-clamp-2 font-heading text-lg font-bold text-stone-900 sm:text-xl">
-                    {post.title}
-                  </h3>
-                  <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-stone-600">
-                    {post.excerpt || 'Read the full article for more details.'}
-                  </p>
-                  <Link
-                    to={`/blog/${post.slug}`}
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80"
-                  >
-                    Read more
-                    <FaArrowRight className="text-xs" aria-hidden />
-                  </Link>
-                </div>
               </article>
             ))}
           </div>

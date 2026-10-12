@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { FaTimes, FaChevronDown, FaArrowRight } from 'react-icons/fa';
 import ProductCard from '../../components/ProductCard';
 import Loader from '../../components/Loader';
@@ -21,6 +21,7 @@ for (const [path, mod] of Object.entries(zodiacImageModules)) {
 }
 
 const Rashi = () => {
+  const [searchParams] = useSearchParams();
   const [selectedRashi, setSelectedRashi] = useState('');
   const [rashiInfo, setRashiInfo] = useState(null);
   const [suggestedRudraksha, setSuggestedRudraksha] = useState([]);
@@ -33,6 +34,14 @@ const Rashi = () => {
   const [modalImageLoading, setModalImageLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const sign = searchParams.get('sign');
+    if (!sign) return;
+    const match = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
+      .find((name) => name.toLowerCase() === sign.toLowerCase());
+    if (match) setSelectedRashi(match);
+  }, [searchParams]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {

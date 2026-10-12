@@ -28,7 +28,7 @@ const OurCollection = () => {
             id="our-collections-heading"
             className="font-heading text-2xl font-bold tracking-tight text-stone-800 sm:text-3xl md:text-4xl"
           >
-            Gawri Ganag Collections
+            Gawri Ganga Collections
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-stone-600 sm:text-base">
             Explore handpicked spiritual essentials curated for your daily practice.

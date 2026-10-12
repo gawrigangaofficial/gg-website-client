@@ -19,7 +19,7 @@ const ACCESSORIES_SUBCATEGORIES = [
   { id: 6, name: 'Other' },
 ];
 const Accessories = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const prevSearchQsRef = useRef(null);
   const fetchSeqRef = useRef(0);
   const subcategoryFromQuery = (() => {
@@ -135,9 +135,24 @@ const Accessories = () => {
       ...prev,
       [filterType]: value
     }));
+    if (filterType === 'subcategory') {
+      if (!value || value === 'all') setSearchParams({});
+      else setSearchParams({ subcategory: value });
+    }
   };
 
+  const typeChips = [
+    { name: 'all', label: 'All' },
+    { name: 'Bracelet', label: 'Bracelets' },
+    { name: 'Mala', label: 'Malas' },
+    { name: 'Necklace', label: 'Necklaces' },
+    { name: 'Earring', label: 'Earrings' },
+    { name: 'Ring', label: 'Rings' },
+    { name: 'Other', label: 'Other' },
+  ];
+
   const clearFilters = () => {
+    setSearchParams({});
     setFilters({
       subcategory: 'all',
       deity: 'all',
@@ -168,14 +183,33 @@ const Accessories = () => {
           </div>
         </div>
 
+        <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+          {typeChips.map((chip) => {
+            const active = filters.subcategory === chip.name;
+            return (
+              <button
+                key={chip.name}
+                type="button"
+                onClick={() => handleFilterChange('subcategory', chip.name)}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                  active ? 'bg-primary text-white' : 'bg-white text-stone-700 ring-1 ring-orange-200'
+                }`}
+              >
+                {chip.label}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Filter Toggle for Mobile */}
         <div className="mb-4 sm:mb-6 lg:hidden flex items-center gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="p-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
             aria-label="Toggle filters"
           >
-            <FiFilter className="text-xl" />
+            <FiFilter className="text-base" />
+            Filters
           </button>
         </div>
 

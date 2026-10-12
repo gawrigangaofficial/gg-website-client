@@ -107,10 +107,83 @@ const ProductCard = ({
     }
   };
 
+  const categoryLabel = product.subcategory || product.category || 'Sacred';
+  const outOfStock = !isPreorder && stockStatus.kind === 'out';
+
   return (
+    <>
+    <Link
+      to={`/product/${product.slug || product.id}`}
+      className="flex h-full flex-col"
+    >
+      <div className="relative">
+        <div className="relative aspect-square overflow-hidden rounded-[1.15rem] bg-[#f6efe6]">
+          {product.images?.[0] ? (
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-xs text-stone-400">No image</div>
+          )}
+          {pricing.discount > 0 && (
+            <span className="absolute left-2 top-2 rounded-md bg-[#ff914d] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+              Sale
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handleWishlistClick}
+            className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[#e07830]"
+            aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          >
+            {inWishlist ? <FaHeart className="text-xs" /> : <FaRegHeart className="text-xs" />}
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={handleCartClick}
+          disabled={outOfStock}
+          className="absolute -bottom-3.5 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-2xl leading-none text-[#e07830] shadow-md ring-1 ring-orange-100 disabled:opacity-40"
+          aria-label="Add to cart"
+        >
+          +
+        </button>
+      </div>
+      <div className="flex flex-1 flex-col px-0.5 pb-1 pt-5">
+        <p className="text-[11px] font-medium text-stone-600">{categoryLabel}</p>
+        <div className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+          <span className="text-base font-bold text-stone-900">
+            ₹{pricing.currentPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </span>
+          {pricing.discount > 0 && (
+            <>
+              <span className="text-xs text-stone-400 line-through">
+                ₹{pricing.originalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+              </span>
+              <span className="text-xs font-bold text-[#e07830]">{pricing.discount}% OFF</span>
+            </>
+          )}
+        </div>
+        <p className="mt-1 line-clamp-2 text-[13px] font-medium leading-snug text-stone-800">
+          {product.name}
+        </p>
+        <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
+          <FaStar className="text-[10px] text-emerald-600" aria-hidden />
+          <span className="font-semibold text-stone-700">4.9</span>
+          <span>({reviewCount})</span>
+        </p>
+        {outOfStock ? (
+          <p className="mt-1 text-[11px] font-semibold text-red-600">Out of stock</p>
+        ) : null}
+      </div>
+    </Link>
     <Link 
       to={`/product/${product.slug || product.id}`}
-      className={`bg-white shadow-sm border border-primary overflow-hidden hover:shadow-lg hover:border-primary/80 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full ${large ? 'rounded-2xl' : 'rounded-xl'}`}
+      className="hidden"
     >
       {/* Product Image */}
       <div className={`from-gray-50 to-gray-100 overflow-hidden relative group shrink-0 ${large ? 'aspect-3/3' : 'aspect-4/3'}`}
@@ -304,6 +377,7 @@ const ProductCard = ({
         </div>
       </div>
     </Link>
+    </>
   );
 };
 

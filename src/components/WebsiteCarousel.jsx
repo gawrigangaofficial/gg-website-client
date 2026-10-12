@@ -3,11 +3,11 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import Loader from './Loader'
 import { apiFetch } from '../config/api.js'
 
-const WebsiteCarousel = () => {
+const WebsiteCarousel = ({ forcedDevice = null }) => {
   const [images, setImages] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [deviceType, setDeviceType] = useState(null)
+  const [deviceType, setDeviceType] = useState(forcedDevice)
   const intervalRef = useRef(null)
 
   // Detect device type based on window width
@@ -18,6 +18,11 @@ const WebsiteCarousel = () => {
 
   // Update device type on mount and window resize
   useEffect(() => {
+    if (forcedDevice) {
+      setDeviceType(forcedDevice)
+      return undefined
+    }
+
     const updateDeviceType = () => {
       const newDeviceType = detectDeviceType()
       setDeviceType(newDeviceType)
@@ -32,7 +37,7 @@ const WebsiteCarousel = () => {
     return () => {
       window.removeEventListener('resize', updateDeviceType)
     }
-  }, [])
+  }, [forcedDevice])
 
   // Fetch carousel images when device type is determined
   useEffect(() => {

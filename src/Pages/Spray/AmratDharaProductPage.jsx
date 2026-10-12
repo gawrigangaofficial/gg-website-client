@@ -241,7 +241,7 @@ const AmratDharaProductPage = () => {
   const maxOrderQty = getMaxOrderQuantity(product);
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative pb-[calc(4.5rem+var(--gg-tabbar-offset))] md:overflow-hidden md:pb-0">
       <img src={amratDharaBg} alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
       <div className="pointer-events-none absolute inset-0 bg-white/35" />
       <div className="pointer-events-none absolute inset-0 z-0">
@@ -324,7 +324,7 @@ const AmratDharaProductPage = () => {
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center gap-2 sm:gap-3">
+              <div className="mt-5 flex items-center gap-2 max-md:fixed max-md:inset-x-3 max-md:bottom-[var(--gg-tabbar-offset)] max-md:z-130 max-md:mt-0 max-md:rounded-2xl max-md:border max-md:border-stone-200 max-md:bg-white/95 max-md:p-1.5 max-md:shadow-lg max-md:backdrop-blur sm:gap-3">
                 <button type="button" onClick={handleWishlist} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#1a6ba0]/35 text-[#1a6ba0]">
                   {inWishlist ? <FaHeart className="text-xl" /> : <FaRegHeart className="text-xl" />}
                 </button>
@@ -332,7 +332,7 @@ const AmratDharaProductPage = () => {
                   type="button"
                   onClick={handleAddToCart}
                   disabled={!canPurchase}
-                  className="inline-flex min-w-[120px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#1a6ba0] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-w-[120px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#1a6ba0] px-4 py-2 text-xs font-semibold text-white max-md:h-9 max-md:rounded-full md:px-5 md:py-3 md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <FaShoppingCart />
                   {isPreorder ? 'Preorder' : canPurchase ? 'Add to Cart' : 'Out of Stock'}

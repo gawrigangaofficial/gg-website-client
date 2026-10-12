@@ -213,6 +213,18 @@ const ROUTE_META = [
   },
   { path: '/contact', title: 'Contact | Gawri Ganga', description: 'Get in touch with Gawri Ganga support.' },
   {
+    path: '/combos',
+    title: 'Spiritual Combos & Practice Sets | Gawri Ganga',
+    description:
+      'Shop curated combos of Rudraksha, Tulsi malas, and aura sprays for daily practice. Gawri Ganga, delivery across India.',
+    keywords: 'rudraksha combo, spiritual gift set, tulsi mala combo, aura spray set, Gawri Ganga combos',
+  },
+  {
+    path: '/return-policy',
+    title: 'Return Policy | Gawri Ganga',
+    description: 'How returns work for Rudraksha, malas, and spiritual products ordered from Gawri Ganga.',
+  },
+  {
     path: '/corporate-bulk-orders',
     title: 'Corporate & Bulk Orders | Wholesale Rudraksha & Malas | Gawri Ganga',
     description:
@@ -279,14 +291,52 @@ function matchRouteMeta(pathname, searchParams) {
   return ROUTE_META.find((r) => matchPath({ path: r.path, end: false }, pathname)) || ROUTE_META[0];
 }
 
-function organizationJsonLd(siteUrl, description) {
+function canonicalPathname(pathname) {
+  if (pathname === '/blogs' || pathname.startsWith('/blogs/')) {
+    return pathname.replace(/^\/blogs/, '/blog');
+  }
+  return pathname;
+}
+
+function isPrivateRoute(pathname) {
+  if (pathname.startsWith('/orders/')) return true;
+  return [
+    '/cart',
+    '/wishlist',
+    '/profile',
+    '/login',
+    '/signup',
+    '/auth',
+    '/auth/callback',
+    '/order-success',
+    '/order-failed',
+  ].includes(pathname);
+}
+
+function homeJsonLd(siteUrl, description) {
+  const logo = `${siteUrl}${OG_IMAGE_PATH}`;
   return {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Gawri Ganga',
-    url: siteUrl,
-    logo: `${siteUrl}${OG_IMAGE_PATH}`,
-    description,
+    '@graph': [
+      {
+        '@type': 'Organization',
+        name: 'Gawri Ganga',
+        url: siteUrl,
+        logo,
+        description,
+      },
+      {
+        '@type': 'WebSite',
+        name: 'Gawri Ganga',
+        url: siteUrl,
+        description,
+        publisher: {
+          '@type': 'Organization',
+          name: 'Gawri Ganga',
+          logo,
+        },
+      },
+    ],
   };
 }
 
@@ -294,19 +344,22 @@ const RouteSeo = () => {
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const meta = matchRouteMeta(pathname, searchParams);
-  const url = `${SITE}${pathname}`;
+  const url = `${SITE}${canonicalPathname(pathname)}`;
+  const robots = isPrivateRoute(pathname) ? 'noindex, nofollow' : 'index, follow';
   const ogImage =
     import.meta.env.VITE_OG_IMAGE_URL?.trim() ||
     (OG_IMAGE_PATH.startsWith('http')
       ? OG_IMAGE_PATH
       : `${SITE}${OG_IMAGE_PATH.startsWith('/') ? '' : '/'}${OG_IMAGE_PATH}`);
   const isHome = pathname === '/';
-  const orgLd = isHome ? organizationJsonLd(SITE, HOME_DESCRIPTION) : null;
+  const orgLd = isHome ? homeJsonLd(SITE, HOME_DESCRIPTION) : null;
 
   return (
     <Helmet>
       <title>{meta.title}</title>
       <meta name="description" content={meta.description} />
+      <meta name="robots" content={robots} />
+      <meta name="theme-color" content="#ff914d" />
       {meta.keywords ? <meta name="keywords" content={meta.keywords} /> : null}
       <link rel="canonical" href={url} />
       <meta property="og:type" content="website" />

@@ -65,7 +65,7 @@ const App = () => {
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
-            <div className="flex min-h-screen flex-col pb-[calc(4.25rem+env(safe-area-inset-bottom))] md:pb-0">
+            <div className="flex min-h-screen flex-col pb-[var(--gg-tabbar-offset)] md:pb-0">
               <RouteSeo />
               <ScrollToTop />
               <CookieConsent />

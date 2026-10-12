@@ -1,5 +1,4 @@
 import React from 'react'
-import WebsiteCarousel from '../../components/WebsiteCarousel'
 import RashiSection from '../Home/RashiSection'
 import FAQAccordion from '../Home/FAQAccordion'
 import SpraySection from '../Home/SpraySection'
@@ -23,6 +22,8 @@ import HomeReviewsSection from './HomeReviewsSection'
 import TestimonialsSection from './TestimonialsSection'
 import TrustStrip from './TrustStrip'
 import Combos from './Combos'
+import MobileAppHome from './MobileAppHome'
+import DesktopHomeShowcase from './DesktopHomeShowcase'
 
 
 const SectionDivider = () => (
@@ -34,7 +35,8 @@ const SectionDivider = () => (
 const Home = () => {
   return (
     <div className="bg-[#FFFAEB]">
-      <WebsiteCarousel />
+      <MobileAppHome />
+      <DesktopHomeShowcase />
       <TrustStrip />
       {/* <GawriGangaIntroSection /> */}
       <SectionDivider />
@@ -53,7 +55,9 @@ const Home = () => {
       <SectionDivider />
       <RudrakshaSection />
       <SectionDivider />
-      <RashiSection />
+      <div className="hidden md:block">
+        <RashiSection />
+      </div>
       <SectionDivider />
       <WhyTrustGawriGangaSection />
       <SectionDivider />
