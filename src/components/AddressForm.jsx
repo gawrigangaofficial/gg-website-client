@@ -3,7 +3,7 @@ import { FaMapMarkerAlt, FaPlus, FaCheck } from 'react-icons/fa';
 import { apiFetch } from '../config/api.js';
 import { useAuth } from '../context/AuthContext';
 
-const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCreated, userId }) => {
+const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCreated, userId, checkoutPhone = '' }) => {
   const { isAuthenticated, startGuestCheckout } = useAuth();
   const [showForm, setShowForm] = useState(() => !addresses?.length);
   const [formData, setFormData] = useState({
@@ -20,7 +20,18 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
     is_default: false
   });
   const [loading, setLoading] = useState(false);
-  const [locationLoading, setLocationLoading] = useState(false);
+  const [houseNo, setHouseNo] = useState('');
+  const [flatNo, setFlatNo] = useState('');
+  const [area, setArea] = useState('');
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [pinStatus, setPinStatus] = useState('');
+
+  useEffect(() => {
+    if (!checkoutPhone) return;
+    setFormData((prev) => (
+      prev.receiver_phone ? prev : { ...prev, receiver_phone: checkoutPhone }
+    ));
+  }, [checkoutPhone]);
 
   useEffect(() => {
     if (!addresses?.length) {
@@ -28,103 +39,51 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
     }
   }, [addresses?.length]);
 
-  // Get current location
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData(prev => ({
-            ...prev,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }));
-          // Reverse geocode to get address (will handle loading state)
-          reverseGeocode(position.coords.latitude, position.coords.longitude);
-        },
-        (error) => {
-          setLocationLoading(false);
-          alert('Unable to get your location. Please enter manually.');
-        }
-      );
-    } else {
-      alert('Geolocation is not supported by your browser.');
+  useEffect(() => {
+    const pin = String(formData.postal_code || '').replace(/\D/g, '');
+    if (pin.length !== 6) {
+      setAreaOptions([]);
+      setPinStatus('');
+      return undefined;
     }
-  };
 
-  const reverseGeocode = async (lat, lng) => {
-    try {
-      setLocationLoading(true);
-      
-      // Try multiple geocoding services for better accuracy
-      // Method 1: OpenStreetMap Nominatim with high zoom
-      const nominatimResponse = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=en`,
-        {
-          headers: {
-            'User-Agent': 'GawriGanga-Website/1.0'
-          }
+    let cancelled = false;
+    setPinStatus('loading');
+    fetch(`https://api.postalpincode.in/pincode/${pin}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (cancelled) return;
+        const row = Array.isArray(data) ? data[0] : null;
+        const offices = row?.Status === 'Success' && Array.isArray(row.PostOffice) ? row.PostOffice : [];
+        if (!offices.length) {
+          setAreaOptions([]);
+          setPinStatus('error');
+          return;
         }
-      );
-      const nominatimData = await nominatimResponse.json();
-      
-      // Method 2: Try BigDataCloud API (free, good for India)
-      let bigDataCloudData = null;
-      try {
-        const bdcResponse = await fetch(
-          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
-        );
-        bigDataCloudData = await bdcResponse.json();
-      } catch (e) {
-        // Fallback if BigDataCloud fails
-      }
-      
-      // Extract and validate postal code from structured fields only
-      // Must be exactly 6 numeric digits for Indian PIN codes
-      const validatePostalCode = (code) => {
-        if (!code) return '';
-        const codeStr = String(code).trim();
-        return /^\d{6}$/.test(codeStr) ? codeStr : '';
-      };
-      
-      let postalCode = '';
-      // Prefer BigDataCloud postal code first
-      if (bigDataCloudData?.postcode) {
-        postalCode = validatePostalCode(bigDataCloudData.postcode);
-      }
-      // Fallback to Nominatim if BigDataCloud didn't provide valid code
-      if (!postalCode && nominatimData?.address?.postcode) {
-        postalCode = validatePostalCode(nominatimData.address.postcode);
-      }
-      
-      // Use Nominatim data for address fields
-      if (nominatimData?.address) {
-        setFormData(prev => ({
+        const areas = [...new Set(offices.map((office) => office.Name).filter(Boolean))];
+        const city = offices[0].District || offices[0].Block || offices[0].Division || '';
+        const state = offices[0].State || '';
+        setAreaOptions(areas);
+        setArea(areas[0] || '');
+        setFormData((prev) => ({
           ...prev,
-          address_line1: nominatimData.address.road || nominatimData.address.house_number || nominatimData.address.house || '',
-          address_line2: nominatimData.address.house_number && nominatimData.address.road ? nominatimData.address.house_number : '',
-          city: nominatimData.address.city || nominatimData.address.town || nominatimData.address.village || nominatimData.address.municipality || nominatimData.address.suburb || '',
-          state: nominatimData.address.state || nominatimData.address.region || '',
-          postal_code: postalCode,
-          country: nominatimData.address.country || 'India'
+          city,
+          state,
+          country: 'India',
         }));
-      } else if (bigDataCloudData) {
-        // Fallback to BigDataCloud if Nominatim fails
-        // postalCode is already validated above
-        setFormData(prev => ({
-          ...prev,
-          address_line1: bigDataCloudData.locality || bigDataCloudData.principalSubdivision || '',
-          city: bigDataCloudData.city || bigDataCloudData.locality || '',
-          state: bigDataCloudData.principalSubdivision || '',
-          postal_code: postalCode,
-          country: bigDataCloudData.countryName || 'India'
-        }));
-      }
-    } catch (error) {
-      // Silently fail - user can enter address manually
-    } finally {
-      setLocationLoading(false);
-    }
-  };
+        setPinStatus('found');
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setAreaOptions([]);
+          setPinStatus('error');
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.postal_code]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -150,6 +109,26 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
         setLoading(false);
         return;
       }
+      const pin = String(formData.postal_code || '').replace(/\D/g, '');
+      if (!/^\d{6}$/.test(pin)) {
+        alert('Enter a valid 6-digit PIN code');
+        setLoading(false);
+        return;
+      }
+      const house = houseNo.trim();
+      const flat = flatNo.trim();
+      const locality = area.trim();
+      if (!house) {
+        alert('Enter the house number');
+        setLoading(false);
+        return;
+      }
+      if (!locality || !formData.city || !formData.state) {
+        alert('Enter the area, city, and state');
+        setLoading(false);
+        return;
+      }
+      const addressLine = [house, flat, locality].filter(Boolean).join(', ');
 
       if (!isAuthenticated) {
         const { error: guestError } = await startGuestCheckout(
@@ -168,6 +147,11 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
         body: JSON.stringify({
           ...formData,
           receiver_phone: phoneDigits,
+          postal_code: pin,
+          address_line1: addressLine,
+          address_line2: '',
+          latitude: null,
+          longitude: null,
         })
       });
 
@@ -183,9 +167,14 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
       if (result.success) {
         onAddressCreated(result.data);
         setShowForm(false);
+        setHouseNo('');
+        setFlatNo('');
+        setArea('');
+        setAreaOptions([]);
+        setPinStatus('');
         setFormData({
           receiver_name: '',
-          receiver_phone: '',
+          receiver_phone: checkoutPhone || '',
           address_line1: '',
           address_line2: '',
           city: '',
@@ -207,18 +196,19 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-gray-900">
-          {isAuthenticated && addresses.length > 0 ? 'Select Delivery Address' : 'Delivery Address'}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="text-base font-bold text-stone-900">
+          {isAuthenticated && addresses.length > 0 ? 'Saved addresses' : 'Delivery address'}
         </h3>
         {(isAuthenticated || addresses.length > 0) && (
           <button
+            type="button"
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white"
           >
-            <FaPlus />
-            {showForm ? 'Cancel' : 'Add New Address'}
+            <FaPlus className="text-[10px]" />
+            {showForm ? 'Cancel' : 'Add new'}
           </button>
         )}
       </div>
@@ -230,10 +220,10 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
             <div
               key={address.id}
               onClick={() => onSelectAddress(address)}
-              className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+              className={`cursor-pointer rounded-2xl border-2 bg-white p-3 shadow-sm transition-all ${
                 selectedAddress?.id === address.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-200 hover:border-primary/50'
+                  ? 'border-primary'
+                  : 'border-transparent hover:border-stone-200'
               }`}
             >
               <div className="flex items-start justify-between">
@@ -268,121 +258,147 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
 
       {/* Add New Address Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4 border-2 border-primary/30 rounded-lg bg-gray-50">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-gray-900">Add New Address</h4>
-            <button
-              type="button"
-              onClick={getCurrentLocation}
-              disabled={locationLoading}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
-            >
-              <FaMapMarkerAlt />
-              {locationLoading ? 'Getting Location...' : 'Use Current Location'}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Receiver Name *
-              </label>
-              <input
-                type="text"
-                name="receiver_name"
-                value={formData.receiver_name}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                name="receiver_phone"
-                value={formData.receiver_phone}
-                onChange={handleInputChange}
-                required
-                pattern="[0-9]{10}"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-
+        <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address Line 1 *
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Receiver Name *
             </label>
             <input
               type="text"
-              name="address_line1"
-              value={formData.address_line1}
+              name="receiver_name"
+              value={formData.receiver_name}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address Line 2
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Phone Number *
             </label>
             <input
-              type="text"
-              name="address_line2"
-              value={formData.address_line2}
+              type="tel"
+              name="receiver_phone"
+              value={formData.receiver_phone}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+              pattern="[0-9]{10}"
+              className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                City *
-              </label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                State *
-              </label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Postal Code *
-              </label>
-              <input
-                type="text"
-                name="postal_code"
-                value={formData.postal_code}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
+          <div>
+            <label htmlFor="address-pin" className="mb-1 block text-sm font-medium text-gray-700">
+              PIN code *
+            </label>
+            <input
+              id="address-pin"
+              type="text"
+              inputMode="numeric"
+              name="postal_code"
+              value={formData.postal_code}
+              onChange={(e) => {
+                const pin = e.target.value.replace(/\D/g, '').slice(0, 6);
+                setFormData((prev) => ({ ...prev, postal_code: pin }));
+              }}
+              required
+              maxLength={6}
+              placeholder="6-digit PIN"
+              className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            {pinStatus === 'loading' && (
+              <p className="mt-1 text-xs text-stone-500">Finding area for this PIN...</p>
+            )}
+            {pinStatus === 'found' && (
+              <p className="mt-1 text-xs text-primary">
+                {formData.city}{formData.state ? `, ${formData.state}` : ''}
+              </p>
+            )}
+            {pinStatus === 'error' && (
+              <p className="mt-1 text-xs text-red-600">We could not find this PIN. Enter the area yourself.</p>
+            )}
           </div>
+
+          {(pinStatus === 'found' || pinStatus === 'error') && (
+            <>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  House no. *
+                </label>
+                <input
+                  type="text"
+                  value={houseNo}
+                  onChange={(e) => setHouseNo(e.target.value)}
+                  required
+                  placeholder="House / building number"
+                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Flat no.
+                </label>
+                <input
+                  type="text"
+                  value={flatNo}
+                  onChange={(e) => setFlatNo(e.target.value)}
+                  placeholder="Flat, floor, or apartment"
+                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="address-area" className="mb-1 block text-sm font-medium text-gray-700">
+                  Area *
+                </label>
+                <input
+                  id="address-area"
+                  type="text"
+                  list="pin-areas"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  required
+                  placeholder="Locality"
+                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                <datalist id="pin-areas">
+                  {areaOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  State *
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </>
+          )}
 
           <div className="flex items-center gap-2">
             <input
@@ -402,14 +418,14 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="flex-1 rounded-xl bg-primary px-4 py-2.5 font-semibold text-white hover:bg-primary/90 disabled:opacity-50"
             >
               {loading ? 'Saving...' : 'Save Address'}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="rounded-xl border border-stone-200 px-4 py-2.5 text-stone-700"
             >
               Cancel
             </button>

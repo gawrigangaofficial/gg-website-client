@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { FaTimes, FaMapMarkerAlt, FaCreditCard, FaCheckCircle, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import AddressForm from './AddressForm';
 import PaymentOptions from './PaymentOptions';
 import OrderConfirmation from './OrderConfirmation';
+import OtpInput from './OtpInput';
+import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../config/api.js';
 import { trackBeginCheckout } from '../utils/analytics.js';
 import {
@@ -26,8 +28,16 @@ const CheckoutModal = ({
   userId,
   userPhone,
   userName,
+  embedded = false,
 }) => {
+  const { sendPhoneOtp, verifyPhoneOtp } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
+  const [checkoutPhone, setCheckoutPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpLength, setOtpLength] = useState(6);
+  const [otpBusy, setOtpBusy] = useState(false);
+  const [otpError, setOtpError] = useState('');
+  const [verifiedPhone, setVerifiedPhone] = useState('');
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [orderData, setOrderData] = useState(null);
@@ -75,6 +85,35 @@ const CheckoutModal = ({
     trackBeginCheckout(checkoutTrackingValue, orderItems);
   }, [isOpen, cartItems, checkoutTrackingValue]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const digits = String(userPhone || '').replace(/\D/g, '').slice(-10);
+    setCheckoutPhone(/^[6-9]\d{9}$/.test(digits) ? digits : '');
+  }, [isOpen, userPhone]);
+
+  const [panelOpen, setPanelOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen || embedded) return undefined;
+    const frame = requestAnimationFrame(() => setPanelOpen(true));
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      cancelAnimationFrame(frame);
+      document.body.style.overflow = previousOverflow;
+      setPanelOpen(false);
+    };
+  }, [isOpen, embedded]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, checkoutPhone, selectedAddress, orderData, cartItems, totalAmount, userName]);
+
   // Fetch user addresses
   useEffect(() => {
     if (isOpen && userId) {
@@ -108,17 +147,69 @@ const CheckoutModal = ({
     setSelectedAddress(newAddress);
   };
 
-  const handleNext = () => {
-    if (currentStep === 1 && selectedAddress) {
-      if (payableAfterWallet <= 0) {
-        setPaymentMethod(useWallet && walletApplicableAmount > 0 ? 'wallet' : 'upi');
-        setCurrentStep(3);
-      } else {
-        setCurrentStep(2);
-      }
-    } else if (currentStep === 2) {
-      setCurrentStep(3);
+  const phoneDigits = String(checkoutPhone || '').replace(/\D/g, '').slice(0, 10);
+  const phoneIsValid = /^[6-9]\d{9}$/.test(phoneDigits);
+
+  const handleNext = async () => {
+    if (currentStep === 1 && paymentMethod) {
+      setCurrentStep(2);
+      return;
     }
+    if (currentStep === 2 && phoneIsValid) {
+      setCheckoutPhone(phoneDigits);
+      if (verifiedPhone === phoneDigits) {
+        setCurrentStep(4);
+        return;
+      }
+      setOtpBusy(true);
+      setOtpError('');
+      const { data, error } = await sendPhoneOtp(phoneDigits);
+      setOtpBusy(false);
+      if (error) {
+        setOtpError(error.message || 'Could not send OTP');
+        return;
+      }
+      if (typeof data?.otp_length === 'number' && data.otp_length > 0) {
+        setOtpLength(data.otp_length);
+      }
+      setOtp('');
+      setCurrentStep(3);
+      return;
+    }
+    if (currentStep === 3) {
+      const code = otp.replace(/\D/g, '');
+      if (code.length !== otpLength) return;
+      setOtpBusy(true);
+      setOtpError('');
+      const { error } = await verifyPhoneOtp(phoneDigits, code);
+      setOtpBusy(false);
+      if (error) {
+        setOtpError(error.message || 'Invalid OTP');
+        return;
+      }
+      setVerifiedPhone(phoneDigits);
+      setCurrentStep(4);
+      return;
+    }
+    if (currentStep === 4 && selectedAddress) {
+      setCurrentStep(5);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (!phoneIsValid || otpBusy) return;
+    setOtpBusy(true);
+    setOtpError('');
+    const { data, error } = await sendPhoneOtp(phoneDigits);
+    setOtpBusy(false);
+    if (error) {
+      setOtpError(error.message || 'Could not resend OTP');
+      return;
+    }
+    if (typeof data?.otp_length === 'number' && data.otp_length > 0) {
+      setOtpLength(data.otp_length);
+    }
+    setOtp('');
   };
 
   const handleBack = () => {
@@ -132,8 +223,8 @@ const CheckoutModal = ({
   };
 
   const handleClose = () => {
-    if (!orderData && selectedAddress?.receiver_phone && cartItems?.length) {
-      const phone = String(selectedAddress.receiver_phone).replace(/\D/g, '').slice(0, 10);
+    if (!orderData && cartItems?.length) {
+      const phone = String(checkoutPhone || selectedAddress?.receiver_phone || '').replace(/\D/g, '').slice(0, 10);
       if (/^[6-9]\d{9}$/.test(phone)) {
         const items = cartItems.map((item) => ({
           product_id: item.id,
@@ -145,7 +236,7 @@ const CheckoutModal = ({
           method: 'POST',
           body: JSON.stringify({
             phone_number: phone,
-            full_name: selectedAddress.receiver_name || userName || null,
+            full_name: selectedAddress?.receiver_name || userName || null,
             items,
             cart_total: Number(totalAmount) || 0,
           }),
@@ -153,6 +244,11 @@ const CheckoutModal = ({
       }
     }
     setCurrentStep(1);
+    setCheckoutPhone('');
+    setOtp('');
+    setOtpError('');
+    setVerifiedPhone('');
+    setOtpBusy(false);
     setSelectedAddress(null);
     setOrderData(null);
     setPaymentMethod('');
@@ -162,14 +258,19 @@ const CheckoutModal = ({
   if (!isOpen) return null;
 
   const steps = [
-    { number: 1, title: 'Address', icon: FaMapMarkerAlt },
-    { number: 2, title: 'Payment', icon: FaCreditCard },
-    { number: 3, title: 'Confirm', icon: FaCheckCircle }
+    { number: 1, title: 'Method' },
+    { number: 2, title: 'Number' },
+    { number: 3, title: 'OTP' },
+    { number: 4, title: 'Address' },
+    { number: 5, title: 'Pay' },
   ];
 
   const canProceed = () => {
-    if (currentStep === 1) return selectedAddress !== null;
-    if (currentStep === 2) return paymentMethod !== '';
+    if (otpBusy) return false;
+    if (currentStep === 1) return paymentMethod !== '';
+    if (currentStep === 2) return phoneIsValid;
+    if (currentStep === 3) return otp.replace(/\D/g, '').length === otpLength;
+    if (currentStep === 4) return selectedAddress !== null;
     return false;
   };
 
@@ -184,147 +285,207 @@ const CheckoutModal = ({
   const walletApplicableAmount = useWallet
     ? Math.min(Number(walletAmountToUse) || 0, Number(walletBalance) || 0, payableAmount)
     : 0;
-  const payableAfterWallet = Math.max(0, payableAmount - walletApplicableAmount);
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-bold text-primary">Checkout</h2>
+  const stepTitles = {
+    1: 'Payment options',
+    2: 'Mobile number',
+    3: 'OTP',
+    4: 'Address',
+    5: 'Payment',
+  };
+
+  const panel = (
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col bg-[#FFF6EE]">
+      <header className="border-b border-orange-100 bg-[#FFF6EE] px-4 py-3.5">
+        <div className="flex items-center gap-3">
           <button
-            onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors p-2 hover:bg-gray-100 rounded-full"
-            aria-label="Close"
+            type="button"
+            onClick={currentStep === 1 ? handleClose : handleBack}
+            className="rounded-full p-1.5 text-stone-800 transition-colors hover:bg-white"
+            aria-label={currentStep === 1 ? 'Back to cart' : 'Back'}
           >
-            <FaTimes className="text-xl" />
+            <FaArrowLeft className="text-base" />
           </button>
-        </div>
-
-        {/* Progress Steps */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => {
-              const StepIcon = step.icon;
-              const isActive = currentStep === step.number;
-              const isCompleted = currentStep > step.number;
-
-              return (
-                <React.Fragment key={step.number}>
-                  <div className="flex items-center flex-1">
-                    <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                      isActive
-                        ? 'bg-primary border-primary text-white'
-                        : isCompleted
-                        ? 'bg-green-500 border-green-500 text-white'
-                        : 'bg-white border-gray-300 text-gray-400'
-                    }`}>
-                      {isCompleted ? (
-                        <FaCheckCircle className="text-lg" />
-                      ) : (
-                        <StepIcon className="text-lg" />
-                      )}
-                    </div>
-                    <div className="ml-3 hidden sm:block">
-                      <div className={`text-sm font-medium ${
-                        isActive ? 'text-primary' : isCompleted ? 'text-green-600' : 'text-gray-500'
-                      }`}>
-                        Step {step.number}
-                      </div>
-                      <div className={`text-xs ${
-                        isActive ? 'text-primary' : 'text-gray-500'
-                      }`}>
-                        {step.title}
-                      </div>
-                    </div>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-4 ${
-                      isCompleted ? 'bg-green-500' : 'bg-gray-300'
-                    }`} />
-                  )}
-                </React.Fragment>
-              );
-            })}
+          <div>
+            <h2 className="text-lg font-bold text-stone-900">{stepTitles[currentStep]}</h2>
+            <p className="text-[11px] text-stone-500">Step {currentStep} of 5</p>
           </div>
         </div>
-
-        {/* Content */}
-        <div className="p-6">
-          {currentStep === 1 && (
-            <AddressForm
-              addresses={addresses}
-              selectedAddress={selectedAddress}
-              onSelectAddress={handleAddressSelect}
-              onAddressCreated={handleAddressCreated}
-              userId={userId}
-            />
-          )}
-
-          {currentStep === 2 && (
-            <PaymentOptions
-              baseAmount={baseAmount}
-              cartItems={cartItems}
-              deliveryCharges={deliveryCharges}
-              onPaymentSelect={(method) => {
-                setPaymentMethod(method);
-              }}
-            />
-          )}
-
-          {currentStep === 3 && (
-            <OrderConfirmation
-              cartItems={cartItems}
-              selectedAddress={selectedAddress}
-              totalAmount={totalAmount}
-              couponCode={couponCode}
-              couponDiscount={couponDiscount}
-              blessingCharge={blessingCharge}
-              walletBalance={walletBalance}
-              useWallet={useWallet}
-              walletAmountToUse={walletApplicableAmount}
-              shippingCharges={shippingCharges}
-              shippingReason={shippingReason}
-              userId={userId}
-              userPhone={userPhone}
-              userName={userName}
-              paymentMethod={paymentMethod}
-              onOrderPlaced={handleOrderPlaced}
-              orderData={orderData}
-            />
-          )}
+        <div className="mt-3 grid grid-cols-5 gap-1.5">
+          {steps.map((step) => {
+            const isActive = currentStep === step.number;
+            const isCompleted = currentStep > step.number;
+            return (
+              <div key={step.number}>
+                <div className={`h-1 rounded-full ${isActive || isCompleted ? 'bg-primary' : 'bg-stone-200'}`} />
+                <p className={`mt-1 text-[11px] font-semibold ${isActive ? 'text-stone-900' : isCompleted ? 'text-primary' : 'text-stone-400'}`}>
+                  {step.title}
+                </p>
+              </div>
+            );
+          })}
         </div>
+      </header>
 
-        {/* Footer Navigation */}
-        {currentStep < 3 && (
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+        {currentStep === 1 && (
+          <PaymentOptions
+            baseAmount={baseAmount}
+            cartItems={cartItems}
+            deliveryCharges={deliveryCharges}
+            selectedMethod={paymentMethod}
+            onPaymentSelect={(method) => {
+              setPaymentMethod(method);
+            }}
+          />
+        )}
+
+        {currentStep === 2 && (
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <p className="text-sm text-stone-600">
+              We will use this number for delivery updates.
+            </p>
+            <label htmlFor="checkout-phone" className="mt-4 block text-sm font-medium text-stone-700">
+              Phone number
+            </label>
+            <div className="mt-1 flex overflow-hidden rounded-xl border border-stone-200 focus-within:ring-2 focus-within:ring-primary">
+              <span className="flex items-center bg-stone-50 px-3 text-sm font-medium text-stone-600">+91</span>
+              <input
+                id="checkout-phone"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
+                maxLength={10}
+                value={checkoutPhone}
+                onChange={(e) => {
+                  const next = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setCheckoutPhone(next);
+                  if (next !== verifiedPhone) setVerifiedPhone('');
+                }}
+                placeholder="10-digit mobile number"
+                className="w-full bg-white px-3 py-3 text-base outline-none"
+              />
+            </div>
+            {checkoutPhone.length > 0 && !phoneIsValid && (
+              <p className="mt-2 text-xs text-red-600">Enter a valid 10-digit mobile number.</p>
+            )}
+            {otpError && (
+              <p className="mt-2 text-xs text-red-600">{otpError}</p>
+            )}
+          </div>
+        )}
+
+        {currentStep === 3 && (
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <p className="text-sm text-stone-600">
+              Enter the OTP sent to <span className="font-semibold text-stone-900">+91 {phoneDigits}</span>
+            </p>
             <button
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                currentStep === 1
-                  ? 'text-gray-400 cursor-not-allowed'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
+              type="button"
+              onClick={() => setCurrentStep(2)}
+              className="mt-1 text-xs font-semibold text-primary"
             >
-              <FaChevronLeft />
-              Back
+              Change number
             </button>
+            <div className="mt-4">
+              <OtpInput
+                length={otpLength}
+                value={otp}
+                onChange={setOtp}
+                disabled={otpBusy}
+                autoFocus
+              />
+            </div>
+            {otpError && (
+              <p className="mt-3 text-xs text-red-600">{otpError}</p>
+            )}
             <button
-              onClick={handleNext}
-              disabled={!canProceed()}
-              className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors ${
-                canProceed()
-                  ? 'bg-primary text-white hover:bg-primary/90'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              }`}
+              type="button"
+              onClick={handleResendOtp}
+              disabled={otpBusy}
+              className="mt-4 text-sm font-semibold text-primary disabled:opacity-50"
             >
-              Continue
-              <FaChevronRight />
+              Resend OTP
             </button>
           </div>
         )}
+
+        {currentStep === 4 && (
+          <AddressForm
+            addresses={addresses}
+            selectedAddress={selectedAddress}
+            onSelectAddress={handleAddressSelect}
+            onAddressCreated={handleAddressCreated}
+            userId={userId}
+            checkoutPhone={phoneDigits}
+          />
+        )}
+
+        {currentStep === 5 && (
+          <OrderConfirmation
+            cartItems={cartItems}
+            selectedAddress={selectedAddress}
+            totalAmount={totalAmount}
+            couponCode={couponCode}
+            couponDiscount={couponDiscount}
+            blessingCharge={blessingCharge}
+            walletBalance={walletBalance}
+            useWallet={useWallet}
+            walletAmountToUse={walletApplicableAmount}
+            shippingCharges={shippingCharges}
+            shippingReason={shippingReason}
+            userId={userId}
+            userPhone={phoneDigits || userPhone}
+            userName={userName}
+            paymentMethod={paymentMethod}
+            onOrderPlaced={handleOrderPlaced}
+            orderData={orderData}
+          />
+        )}
       </div>
+
+      {currentStep < 5 && (
+        <footer className="border-t border-orange-100 bg-[#FFF6EE] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={!canProceed()}
+            className={`w-full rounded-xl px-5 py-3 text-base font-semibold shadow-md ${
+              canProceed()
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'cursor-not-allowed bg-stone-200 text-stone-400 shadow-none'
+            }`}
+          >
+            {otpBusy
+              ? currentStep === 3 ? 'Verifying…' : 'Sending…'
+              : currentStep === 2
+                ? 'Send OTP'
+                : currentStep === 3
+                  ? 'Verify'
+                  : 'Continue'}
+          </button>
+        </footer>
+      )}
+    </div>
+  );
+
+  if (embedded) return panel;
+
+  return (
+    <div className="fixed inset-0 z-[150]" role="dialog" aria-modal="true" aria-label="Checkout">
+      <button
+        type="button"
+        className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${panelOpen ? 'opacity-100' : 'opacity-0'}`}
+        aria-label="Close checkout"
+        onClick={handleClose}
+      />
+      <aside
+        className={`absolute inset-y-0 right-0 flex w-full shadow-2xl transition-transform duration-300 ease-out sm:w-[440px] ${
+          panelOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        {panel}
+      </aside>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { FaTimesCircle, FaShoppingCart } from 'react-icons/fa';
 
 const REDIRECT_DELAY_MS = 2500;
@@ -7,6 +7,7 @@ const REDIRECT_DELAY_MS = 2500;
 const OrderFailed = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const orderId = searchParams.get('order_id');
   const reason = searchParams.get('reason') || 'payment_failed';
   const [showModal, setShowModal] = useState(true);
@@ -24,10 +25,10 @@ const OrderFailed = () => {
   useEffect(() => {
     if (!showModal) return;
     const t = setTimeout(() => {
-      navigate('/cart', { replace: true });
+      navigate('/cart', { replace: true, state: { backgroundLocation: location } });
     }, REDIRECT_DELAY_MS);
     return () => clearTimeout(t);
-  }, [showModal, navigate]);
+  }, [showModal, navigate, location]);
 
   return (
     <div className="min-h-screen py-12 px-4 bg-linear-to-br from-red-50/30 to-white">
@@ -53,7 +54,7 @@ const OrderFailed = () => {
             </div>
             <div className="mt-6 flex gap-3 justify-center">
               <button
-                onClick={() => navigate('/cart', { replace: true })}
+                onClick={() => navigate('/cart', { replace: true, state: { backgroundLocation: location } })}
                 className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 transition-colors text-sm"
               >
                 <FaShoppingCart />

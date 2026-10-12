@@ -507,7 +507,13 @@ const Navbar = () => {
             >
               {searchOpen ? <FaTimes className="text-xl" /> : <LuSearch className="text-xl" />}
             </button>
-            <Link to="/cart" onClick={closeMenu} className={mobileIconBtn} aria-label="Cart">
+            <Link
+              to="/cart"
+              state={{ backgroundLocation: location }}
+              onClick={closeMenu}
+              className={mobileIconBtn}
+              aria-label="Cart"
+            >
               <CgShoppingBag className="text-xl" />
               {cartCount > 0 && (
                 <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-white">
@@ -804,7 +810,7 @@ const Navbar = () => {
                   </span>
                 )}
               </Link>
-              <Link to="/cart" className="relative">
+              <Link to="/cart" state={{ backgroundLocation: location }} className="relative">
                 <CgShoppingBag className="text-primary text-2xl lg:text-3xl cursor-pointer hover:scale-110 transition-transform" />
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">

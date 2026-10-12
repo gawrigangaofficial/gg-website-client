@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCreditCard, FaUniversity, FaMobileAlt, FaMoneyBillWave } from 'react-icons/fa';
 import { trackAddPaymentInfo } from '../utils/analytics.js';
 import PaymentTrustBadges from './PaymentTrustBadges';
@@ -8,9 +8,14 @@ const PaymentOptions = ({
   baseAmount,
   cartItems = [],
   deliveryCharges = DEFAULT_DELIVERY_CHARGES,
+  selectedMethod: selectedMethodProp = '',
   onPaymentSelect,
 }) => {
-  const [selectedMethod, setSelectedMethod] = useState('');
+  const [selectedMethod, setSelectedMethod] = useState(selectedMethodProp);
+
+  useEffect(() => {
+    setSelectedMethod(selectedMethodProp || '');
+  }, [selectedMethodProp]);
   const shippingFor = (methodId) => resolveShippingAmount(deliveryCharges, methodId, methodId === 'cod' ? 120 : 70);
   const reasonFor = (methodId) => {
     const row = shippingForPaymentMethod(deliveryCharges, methodId);
@@ -59,19 +64,15 @@ const PaymentOptions = ({
   };
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-xl font-bold text-gray-900">Select Payment Method</h3>
-      
-      <div className="bg-primary/5 border-2 border-primary/20 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">Base Amount (without shipping):</span>
-          <span className="text-2xl font-bold text-primary">
-            ₹{Number(baseAmount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
-          </span>
-        </div>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
+        <span className="text-sm text-stone-600">Before shipping</span>
+        <span className="text-lg font-bold text-stone-900">
+          ₹{Number(baseAmount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+        </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {paymentMethods.map((method) => {
           const Icon = method.icon;
           const isSelected = selectedMethod === method.id;
@@ -81,31 +82,31 @@ const PaymentOptions = ({
             <div
               key={method.id}
               onClick={() => handleSelect(method.id)}
-              className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+              className={`cursor-pointer rounded-2xl border-2 bg-white p-3 shadow-sm transition-all ${
                 isSelected
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-200 hover:border-primary/50'
+                  ? 'border-primary'
+                  : 'border-transparent hover:border-stone-200'
               }`}
             >
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${
-                  isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'
+              <div className="flex items-center gap-3">
+                <div className={`rounded-xl p-2.5 ${
+                  isSelected ? 'bg-primary text-white' : 'bg-stone-100 text-stone-600'
                 }`}>
-                  <Icon className="text-xl" />
+                  <Icon className="text-base" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900">{method.name}</h4>
-                  <p className="text-sm text-gray-600">{method.description}</p>
-                  <p className="mt-1 text-xs text-gray-500">
-                    Shipping: ₹{shippingFor(method.id).toLocaleString('en-IN')} | Total: ₹{totalFor(method.id).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-sm font-semibold text-stone-900">{method.name}</h4>
+                  <p className="text-xs text-stone-500">{method.description}</p>
+                  <p className="mt-1 text-xs font-medium text-stone-700">
+                    Shipping ₹{shippingFor(method.id).toLocaleString('en-IN')} · ₹{totalFor(method.id).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                   </p>
                   {reason ? (
                     <p className="mt-1 text-xs font-medium text-amber-800">{reason}</p>
                   ) : null}
                 </div>
                 {isSelected && (
-                  <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-white"></div>
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
+                    <div className="h-2 w-2 rounded-full bg-white"></div>
                   </div>
                 )}
               </div>

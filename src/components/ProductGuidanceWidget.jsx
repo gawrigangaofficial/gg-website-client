@@ -252,6 +252,8 @@ const ProductGuidanceWidget = () => {
     }
   };
 
+  if (location.pathname === '/cart') return null;
+
   return (
     <>
       {!panelOpen && !loginGateOpen ? (

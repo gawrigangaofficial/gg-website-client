@@ -10,7 +10,7 @@ import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 import { AuthProvider } from './context/AuthContext'
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"
 
 const Home = lazy(() => import('./Pages/Home/Home'))
 const Spray = lazy(() => import('./Pages/Spray/Spray'))
@@ -53,6 +53,13 @@ const PageLoader = () => (
 
 
 const App = () => {
+  const location = useLocation();
+  const isCartOpen = location.pathname === '/cart';
+  const backgroundPath = location.state?.backgroundLocation?.pathname;
+  const backgroundLocation = isCartOpen
+    ? (backgroundPath && backgroundPath !== '/cart' ? location.state.backgroundLocation : { pathname: '/' })
+    : location;
+
   return (
     <ToastProvider>
       <AuthProvider>
@@ -65,7 +72,7 @@ const App = () => {
               <Navbar />
               <main className="flex-1">
                 <Suspense fallback={<PageLoader />}>
-                <Routes>
+                <Routes location={backgroundLocation}>
                   <Route path="/" element={<Home />} />
                   <Route path="/sprays" element={<Spray />} />
                   <Route path="/sprays/amrat-bindu" element={<AmratDharaProductPage />} />
@@ -80,7 +87,6 @@ const App = () => {
                   <Route path="/purpose-products" element={<PurposeProducts />} />
                   <Route path="/combos" element={<Combos />} />
                   <Route path="/product/:slug" element={<ProductPage />} />
-                  <Route path="/cart" element={<Cart />} />
                   <Route path="/wishlist" element={<Wishlist />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/orders/:id" element={<ViewDetails />} />
@@ -105,6 +111,11 @@ const App = () => {
                   <Route path="/auth/callback" element={<AuthCallback />} />
                 </Routes>
                 </Suspense>
+                {isCartOpen && (
+                  <Suspense fallback={null}>
+                    <Cart />
+                  </Suspense>
+                )}
               </main>
               <ProductGuidanceWidget />
               <Footer />

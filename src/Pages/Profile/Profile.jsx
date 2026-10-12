@@ -357,7 +357,7 @@ const Profile = () => {
                     <FaMapMarkerAlt className="text-5xl text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-600 mb-4">No saved addresses</p>
                     <button
-                      onClick={() => navigate('/cart')}
+                      onClick={() => navigate('/cart', { state: { backgroundLocation: location } })}
                       className="px-6 py-2.5 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90"
                     >
                       Add Address

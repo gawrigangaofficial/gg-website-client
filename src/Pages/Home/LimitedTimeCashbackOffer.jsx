@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   FaGift,
   FaWallet,
@@ -15,6 +15,7 @@ import {
 import rudrakshaSection from '../../assets/HomePage/HomeImg1.webp';
 
 const LimitedTimeCashbackOffer = () => {
+  const location = useLocation();
   return (
     <section
       className="relative overflow-hidden bg-[#FFFAEB]"
@@ -154,6 +155,7 @@ const LimitedTimeCashbackOffer = () => {
                 </Link>
                 <Link
                   to="/cart"
+                  state={{ backgroundLocation: location }}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-primary/40 bg-white px-8 py-3.5 text-base font-semibold text-primary transition hover:border-primary hover:bg-primary/5"
                 >
                   View cart

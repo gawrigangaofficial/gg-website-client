@@ -179,14 +179,14 @@ const OrderConfirmation = ({
   if (orderData) {
     const amount = orderData.final_amount ?? orderData.total_amount ?? 0;
     return (
-      <div className="text-center py-8">
-        <div className="mb-6">
-          <FaCheckCircle className="text-6xl text-green-500 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h3>
-          <p className="text-gray-600">Your order has been confirmed and will be delivered soon.</p>
+      <div className="py-2 text-center">
+        <div className="mb-4">
+          <FaCheckCircle className="mx-auto mb-3 text-5xl text-primary" />
+          <h3 className="mb-1 text-xl font-bold text-stone-900">Order placed</h3>
+          <p className="text-sm text-stone-600">Your order is confirmed and will be delivered soon.</p>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left">
+        <div className="mb-4 rounded-2xl bg-white p-4 text-left shadow-sm">
           <div className="space-y-3">
             <div>
               <span className="text-sm font-medium text-gray-600">Order Number:</span>
@@ -237,10 +237,8 @@ const OrderConfirmation = ({
   }
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-xl font-bold text-gray-900">Review Your Order</h3>
-
-      <div className="bg-gray-50 rounded-lg p-6">
+    <div className="space-y-3">
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
         <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <FaShoppingBag className="text-primary" />
           Order Summary
@@ -260,8 +258,8 @@ const OrderConfirmation = ({
         </div>
       </div>
 
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-stone-900">
           <FaMapMarkerAlt className="text-primary" />
           Delivery Address
         </h4>
@@ -281,8 +279,8 @@ const OrderConfirmation = ({
         )}
       </div>
 
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h4 className="font-semibold text-gray-900 mb-4">Price Breakdown</h4>
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <h4 className="mb-3 text-sm font-semibold text-stone-900">Price breakdown</h4>
         <p className="mb-4 text-sm text-gray-600 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2">
           Estimated delivery:{" "}
           <span className="font-semibold text-gray-800">{formatDeliveryByLabel()}</span> across India.
@@ -310,13 +308,13 @@ const OrderConfirmation = ({
             </div>
           )}
           {discountAmount > 0 && (
-            <div className="flex justify-between text-emerald-700">
+            <div className="flex justify-between text-primary">
               <span>Coupon ({couponCode || 'Applied'}):</span>
               <span>-₹{discountAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
             </div>
           )}
           {walletDeduction > 0 && (
-            <div className="flex justify-between text-emerald-700">
+            <div className="flex justify-between text-primary">
               <span>Wallet used:</span>
               <span>-₹{walletDeduction.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
             </div>
@@ -333,7 +331,7 @@ const OrderConfirmation = ({
       <button
         onClick={handlePlaceOrder}
         disabled={loading || !selectedAddress}
-        className="w-full px-6 py-4 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-semibold text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-base font-semibold text-white shadow-md hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaMobileAlt, FaCreditCard, FaUniversity, FaMoneyBillWave } from 'react-icons/fa';
+import easebuzzLogo from '../assets/eazebuzz.png';
 
 const PAYMENT_METHODS = [
   { Icon: FaMobileAlt, label: 'UPI' },
@@ -26,8 +27,9 @@ const PaymentTrustBadges = ({ compact = false, className = '' }) => {
             </div>
           ))}
         </div>
-        <p className="mt-2 text-center text-[10px] font-medium tracking-wide text-stone-500 sm:text-[11px]">
-          Secure checkout · Secured by Easebuzz
+        <p className="mt-2 flex items-center justify-center gap-1.5 text-[10px] font-medium text-stone-500 sm:text-[11px]">
+          Payment secured by
+          <img src={easebuzzLogo} alt="Easebuzz" className="h-4 w-auto object-contain sm:h-5" />
         </p>
       </div>
     );
@@ -48,7 +50,10 @@ const PaymentTrustBadges = ({ compact = false, className = '' }) => {
           </span>
         ))}
       </div>
-      <p className="mt-3 text-center text-[11px] text-gray-500">Secured by Easebuzz</p>
+      <p className="mt-3 flex items-center justify-center gap-1.5 border-t border-stone-200 pt-2 text-[11px] text-stone-500">
+        Payment secured by
+        <img src={easebuzzLogo} alt="Easebuzz" className="h-5 w-auto object-contain" />
+      </p>
     </div>
   );
 };
