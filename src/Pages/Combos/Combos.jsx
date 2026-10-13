@@ -41,11 +41,11 @@ const Combos = () => {
   }, []);
 
   return (
-    <div className="min-h-screen py-4 sm:py-6 lg:py-8">
+    <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
         <h1 className="sr-only">Combos</h1>
         <div className="mb-6 sm:mb-8 text-center">
-          <div className="w-full rounded-lg overflow-hidden shadow-md">
+          <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img
               src={combosHeaderBanner}
               alt="Gawri Ganga — curated combo packs and bundles"

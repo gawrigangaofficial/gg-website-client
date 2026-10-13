@@ -55,7 +55,7 @@ const Contact = () => {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50/95">
+    <div className="min-h-screen bg-[#FFFAEB]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         {/* Logo */}
         <div className="flex justify-center mb-10 sm:mb-14">

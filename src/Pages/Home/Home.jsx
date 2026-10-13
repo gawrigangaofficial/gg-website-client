@@ -27,7 +27,7 @@ import DesktopHomeShowcase from './DesktopHomeShowcase'
 
 
 const SectionDivider = () => (
-  <div className="mx-auto flex w-[92%] max-w-7xl items-center justify-center py-3 sm:py-4">
+  <div className="mx-auto hidden w-[92%] max-w-7xl items-center justify-center py-3 sm:py-4 md:flex">
     <div className="h-[2px] w-full rounded-full bg-linear-to-r from-transparent via-orange-300/90 to-transparent" />
   </div>
 )
@@ -69,7 +69,9 @@ const Home = () => {
       <SectionDivider />
       <LatestPostsSection />
       <SectionDivider />
-      <HomeReviewsSection />
+      <div className="hidden md:block">
+        <HomeReviewsSection />
+      </div>
       <SectionDivider />
       <TestimonialsSection />
       <SectionDivider />

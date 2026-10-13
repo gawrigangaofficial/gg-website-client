@@ -1004,7 +1004,7 @@ const ProductPage = () => {
 
   return (
     <div
-      className={`min-h-screen py-3 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white overflow-x-hidden pb-[calc(4.25rem+var(--gg-tabbar-offset))] ${
+      className={`min-h-screen overflow-x-hidden bg-[#FFFAEB] py-3 pb-[calc(4.25rem+var(--gg-tabbar-offset))] sm:py-6 lg:py-8 ${
         showStickyCta ? "md:pb-28 lg:pb-24" : "md:pb-8"
       }`}
     >

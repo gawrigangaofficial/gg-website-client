@@ -444,10 +444,7 @@ header {
   position: relative;
   overflow-anchor: none;
   color: #fff;
-  background:
-    radial-gradient(circle at 12% 20%, rgba(255, 214, 140, 0.18), transparent 28%),
-    radial-gradient(circle at 88% 0%, rgba(255, 180, 120, 0.16), transparent 26%),
-    linear-gradient(180deg, #ff7a2f 0%, #ff914d 55%, #ffb067 100%);
+  background: transparent;
 }
 
 .gg-diwali-header-compact {
@@ -459,10 +456,59 @@ header {
   z-index: 1;
 }
 
+@media (max-width: 767px) {
+  header.gg-mobile-chrome {
+    background: linear-gradient(180deg, #ff7a2f 0%, #f06a28 100%);
+    box-shadow: none;
+  }
+
+  header.gg-mobile-chrome:has(.gg-diwali-header-compact) {
+    background: rgba(240, 106, 40, 0.78);
+    backdrop-filter: blur(12px);
+  }
+
+  .gg-mobile-stage {
+    background: linear-gradient(180deg, #f06a28 0%, #c2410c 46%, #7f1d2e 100%);
+  }
+}
+
+.gg-mobile-stage-scallop {
+  height: 22px;
+  background-color: #fffaeb;
+  background-image: radial-gradient(circle at 14px 0, #7f1d2e 14px, transparent 14.6px);
+  background-size: 28px 22px;
+  background-repeat: repeat-x;
+}
+
+.gg-cream,
 body {
   background-color: #fffaeb;
   background-image: var(--gg-embroidery);
   background-size: 380px 380px;
+}
+
+@media (max-width: 767px) {
+  .gg-flow-bar {
+    background: linear-gradient(180deg, #ff7a2f 0%, #f06a28 100%);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .gg-flow-bar :is(h1, h2, button, .text-stone-900, .text-stone-800) {
+    color: #fff;
+  }
+
+  .gg-flow-bar :is(.text-stone-500, .text-stone-400, .text-primary) {
+    color: rgba(255, 246, 228, 0.86);
+  }
+
+  .gg-flow-bar .bg-primary {
+    background-color: #fff;
+  }
+
+  .gg-flow-bar .bg-stone-200 {
+    background-color: rgba(255, 255, 255, 0.35);
+  }
 }
 
 main [class~="bg-[#FFFAEB]"] {

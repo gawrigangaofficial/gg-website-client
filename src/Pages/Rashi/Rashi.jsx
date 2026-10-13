@@ -416,7 +416,7 @@ const Rashi = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50/30 to-white">
+    <div className="min-h-screen bg-[#FFFAEB]">
       <div className="w-full max-w-[1920px] mx-auto">
         {/* Rashi section – moving zodiac row only (no CTA on this page) */}
         <RashiSection hideCta />

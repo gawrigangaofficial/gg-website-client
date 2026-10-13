@@ -295,8 +295,8 @@ const CheckoutModal = ({
   };
 
   const panel = (
-    <div className="flex h-full min-h-0 w-full flex-1 flex-col bg-[#FFF6EE]">
-      <header className="border-b border-orange-100 bg-[#FFF6EE] px-4 py-3.5">
+    <div className="gg-cream flex h-full min-h-0 w-full flex-1 flex-col">
+      <header className="gg-flow-bar border-b border-orange-100 px-4 py-3.5">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -445,7 +445,7 @@ const CheckoutModal = ({
       </div>
 
       {currentStep < 5 && (
-        <footer className="border-t border-orange-100 bg-[#FFF6EE] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+        <footer className="border-t border-orange-100 bg-[#FFFAEB] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
           <button
             type="button"
             onClick={handleNext}

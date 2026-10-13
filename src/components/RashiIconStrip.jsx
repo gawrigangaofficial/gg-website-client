@@ -19,21 +19,21 @@ const ZODIAC_IMAGES = Object.entries(zodiacImageModules).reduce((acc, [path, src
 
 const RashiIconStrip = () => (
   <div className="gg-rashi-strip" aria-label="Shop by rashi">
-    <ul className="flex gap-3 overflow-x-auto px-3 py-1.5">
+    <ul className="flex snap-x gap-4 overflow-x-auto px-4 py-1 [scrollbar-width:none]">
       {ZODIAC_ORDER.map((sign) => (
         <li key={sign} className="shrink-0">
           <Link
             to={`/rashi?sign=${encodeURIComponent(sign)}`}
-            className="flex w-14 flex-col items-center gap-1"
+            className="flex w-16 snap-start flex-col items-center gap-1.5"
           >
-            <span className="h-11 w-11 overflow-hidden rounded-full bg-[#FFF3E6] ring-2 ring-[#ffd7b0]">
+            <span className="h-14 w-14 overflow-hidden rounded-full bg-[#FFF3E6] ring-2 ring-white/80">
               <img
                 src={ZODIAC_IMAGES[sign.toLowerCase()]}
                 alt=""
                 className="h-full w-full object-cover"
               />
             </span>
-            <span className="max-w-14 truncate text-[10px] font-semibold text-stone-700">{sign}</span>
+            <span className="max-w-16 truncate text-[11px] font-semibold text-[#fff6e4]">{sign}</span>
           </Link>
         </li>
       ))}

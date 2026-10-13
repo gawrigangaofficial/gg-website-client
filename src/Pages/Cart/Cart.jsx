@@ -360,7 +360,7 @@ const Cart = () => {
         />
 
         <aside
-          className={`absolute inset-y-0 right-0 flex w-full flex-col bg-[#FFF6EE] shadow-2xl transition-transform duration-300 ease-out sm:w-[440px] ${
+          className={`gg-cream absolute inset-y-0 right-0 flex w-full flex-col shadow-2xl transition-transform duration-300 ease-out sm:w-[440px] ${
             panelOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -383,7 +383,7 @@ const Cart = () => {
             />
           ) : (
           <>
-          <header className="flex items-center gap-3 border-b border-orange-100 bg-[#FFF6EE] px-4 py-3.5">
+          <header className="gg-flow-bar flex items-center gap-3 border-b border-orange-100 px-4 py-3.5">
             <button
               type="button"
               onClick={closeCart}
@@ -789,7 +789,7 @@ const Cart = () => {
           </div>
 
           {cartItems.length > 0 && (
-            <footer className="border-t border-orange-100 bg-[#FFF6EE] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+            <footer className="border-t border-orange-100 bg-[#FFFAEB] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
               <div className="flex items-end justify-between gap-3">
                 <div>
                   {originalTotal - payableAfterWallet > 0.5 && (

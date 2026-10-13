@@ -6,7 +6,7 @@ import malaImg from '../../assets/HomePage/Our-collection/Mala.webp';
 import spraysImg from '../../assets/HomePage/Our-collection/Maitri.webp';
 
 const MobileAppHome = () => (
-  <section id="diwali-offers" className="bg-[#FFFAEB] md:bg-transparent" aria-label="Diwali offers">
+  <section id="diwali-offers" className="gg-mobile-stage md:bg-transparent" aria-label="Diwali offers">
     <h1 className="sr-only">
       Gawri Ganga Diwali offers — Nepali Rudraksha, Tulsi malas, and spiritual products in India
     </h1>
@@ -36,11 +36,13 @@ const MobileAppHome = () => (
           </div>
         </div>
       </article>
-      <div className="mt-3 rounded-2xl bg-white py-2 ring-1 ring-orange-100">
-        <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500">
+      <div className="mt-4">
+        <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#ffe7c2]">
           Shop by rashi
         </p>
-        <RashiIconStrip />
+        <div className="-mx-3 mt-2">
+          <RashiIconStrip />
+        </div>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {[
@@ -54,6 +56,7 @@ const MobileAppHome = () => (
         ))}
       </div>
     </div>
+    <div className="gg-mobile-stage-scallop md:hidden" aria-hidden />
   </section>
 );
 

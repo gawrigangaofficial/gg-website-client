@@ -31,7 +31,7 @@ const Wishlist = () => {
 
   if (wishlistItems.length === 0) {
     return (
-      <div className="min-h-screen py-8 sm:py-12 bg-linear-to-br from-orange-50/30 to-white">
+      <div className="min-h-screen py-8 sm:py-12 bg-[#FFFAEB]">
         <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
           <Link
             to="/"
@@ -62,7 +62,7 @@ const Wishlist = () => {
   }
 
   return (
-    <div className="min-h-screen py-4 sm:py-6 lg:py-8 bg-linear-to-br from-orange-50/30 to-white">
+    <div className="min-h-screen py-4 sm:py-6 lg:py-8 bg-[#FFFAEB]">
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
         {/* Header */}
         <div className="mb-6 sm:mb-8">

@@ -182,7 +182,7 @@ const Profile = () => {
   );
 
   return (
-    <div className="min-h-screen bg-orange-50/40 py-8 px-4">
+    <div className="min-h-screen bg-[#FFFAEB] px-4 py-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-6">
@@ -225,7 +225,7 @@ const Profile = () => {
                 className={`flex-1 px-4 py-3.5 text-sm font-semibold transition-colors ${
                   activeTab === id
                     ? 'text-primary border-b-2 border-primary bg-primary/5'
-                    : 'text-gray-600 hover:text-primary hover:bg-gray-50'
+                    : 'text-gray-600 hover:bg-orange-50 hover:text-primary'
                 }`}
               >
                 <Icon className="inline mr-1.5 text-xs" />
@@ -239,7 +239,7 @@ const Profile = () => {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-lg font-bold text-gray-900 mb-3">Account</h2>
-                  <div className="rounded-xl bg-gray-50 p-4 space-y-3 text-sm">
+                  <div className="rounded-xl border border-orange-100 bg-white p-4 space-y-3 text-sm">
                     <div>
                       <span className="text-gray-500">Mobile</span>
                       <p className="font-medium text-gray-900">
@@ -263,7 +263,7 @@ const Profile = () => {
                     <h2 className="text-lg font-bold text-gray-900 mb-3">Active Orders</h2>
                     <div className="space-y-3">
                       {currentOrders.slice(0, 3).map((order) => (
-                        <div key={order.id} className="rounded-xl bg-gray-50 p-4 flex justify-between items-center gap-3">
+                        <div key={order.id} className="rounded-xl border border-orange-100 bg-white p-4 flex justify-between items-center gap-3">
                           <div>
                             <p className="font-semibold">#{order.order_number}</p>
                             <p className="text-sm text-gray-500">{formatCurrency(order.final_amount)}</p>

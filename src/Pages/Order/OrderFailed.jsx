@@ -31,7 +31,7 @@ const OrderFailed = () => {
   }, [showModal, navigate, location]);
 
   return (
-    <div className="min-h-screen py-12 px-4 bg-linear-to-br from-red-50/30 to-white">
+    <div className="min-h-screen bg-[#FFFAEB] px-4 py-12">
       {/* Payment failed modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">

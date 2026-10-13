@@ -7,6 +7,7 @@ import logo from "../assets/gglogo.svg";
 import mobileIcon from "../assets/icon-m.png";
 import {
   LuCircleUserRound,
+  LuGem,
   LuHouse,
   LuLayoutGrid,
   LuLeaf,
@@ -97,7 +98,7 @@ const desktopPillActive =
 
 const BOTTOM_NAV_ITEMS = [
   { name: "Home", href: "/", icon: LuHouse },
-  { name: "Categories", action: "menu", icon: LuLayoutGrid },
+  { name: "Accessories", href: "/accessories", icon: LuGem },
   { name: "Search", action: "search", icon: LuSearch },
   { name: "Rudraksha", href: "/rudraksha", icon: GiPrayerBeads },
   { name: "Sprays", href: "/sprays", icon: LuSparkles },
@@ -500,7 +501,9 @@ const Navbar = () => {
     const el = headerRef.current;
     if (!el) return undefined;
     const update = () => {
-      el.style.setProperty("--mobile-header-h", `${el.offsetHeight}px`);
+      const height = `${el.offsetHeight}px`;
+      el.style.setProperty("--mobile-header-h", height);
+      document.documentElement.style.setProperty("--mobile-header-h", height);
     };
     update();
     const observer = new ResizeObserver(update);
@@ -568,9 +571,15 @@ const Navbar = () => {
           @media (max-width: 767px) {
             .mobile-nav-backdrop {
               position: fixed;
-              inset: 0;
+              top: var(--mobile-header-h, 5.5rem);
+              right: 0;
+              bottom: 0;
+              left: 0;
               z-index: 30;
               background: rgba(15, 23, 42, 0.4);
+            }
+            .gg-diwali-header {
+              z-index: 45;
             }
             .mobile-nav-drawer,
             .mobile-search-panel {
@@ -588,7 +597,7 @@ const Navbar = () => {
         `}</style>
       <header
         ref={headerRef}
-        className={`sticky top-0 z-50 pt-[env(safe-area-inset-top)] shadow-md transition-colors md:static md:z-auto md:pt-0 ${
+        className={`gg-mobile-chrome sticky top-0 z-50 pt-[env(safe-area-inset-top)] shadow-md transition-colors md:static md:z-auto md:pt-0 ${
           location.pathname === "/"
             ? "gg-home-header md:border-0 md:shadow-none"
             : "md:border-b md:border-[#E9DFC4] md:bg-[#FFFAEB] md:shadow-md"
@@ -612,11 +621,6 @@ const Navbar = () => {
         </div>
 
         <div className={`gg-diwali-header md:hidden ${headerCompact ? "gg-diwali-header-compact" : ""}`}>
-          {!headerCompact && (
-            <p className="px-3 pb-1 pt-1.5 text-center text-[11px] font-semibold tracking-wide text-amber-50">
-              ₹1,000 wallet cashback for the first 100 users
-            </p>
-          )}
           <nav
             className="relative grid h-14 grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center px-1.5"
             aria-label="Mobile"
@@ -668,9 +672,13 @@ const Navbar = () => {
             <ul className="flex gap-2 overflow-x-auto px-3 pb-3">
               {MOBILE_CHIPS.map((chip) => {
                 const Icon = chip.icon;
-                const active = chip.href === "/"
-                  ? location.pathname === "/"
-                  : location.pathname.startsWith(chip.href);
+                const chipPath = chip.href.split('#')[0] || '/'
+                const chipHash = chip.href.includes('#') ? `#${chip.href.split('#')[1]}` : ''
+                const active = chipHash
+                  ? location.pathname === chipPath && location.hash === chipHash
+                  : chip.href === '/'
+                    ? location.pathname === '/' && !location.hash
+                    : location.pathname.startsWith(chipPath)
                 return (
                   <li key={chip.name} className="shrink-0">
                     <Link

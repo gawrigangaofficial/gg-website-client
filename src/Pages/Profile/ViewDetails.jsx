@@ -69,14 +69,14 @@ const ViewDetails = () => {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-orange-50/30 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFAEB]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50/30 to-white py-4 px-3 sm:py-6 sm:px-4 overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFAEB] py-4 px-3 sm:py-6 sm:px-4 overflow-x-hidden">
       <div className="max-w-xl mx-auto min-w-0">
         <button
           type="button"

@@ -13,10 +13,6 @@ import CollectionSortSelect, { sortProducts } from '../../components/CollectionS
 const ACCESSORIES_SUBCATEGORIES = [
   { id: 1, name: 'Mala' },
   { id: 2, name: 'Bracelet' },
-  { id: 3, name: 'Necklace' },
-  { id: 4, name: 'Earring' },
-  { id: 5, name: 'Ring' },
-  { id: 6, name: 'Other' },
 ];
 const Accessories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -109,8 +105,15 @@ const Accessories = () => {
       const result = await response.json();
       if (requestId !== fetchSeqRef.current) return;
       if (result.success) {
-        setAllProducts(result.data);
-        const filtered = result.data.filter(product => {
+        const rows = Array.isArray(result.data) ? result.data : [];
+        const visible = filters.subcategory === 'all'
+          ? rows.filter((product) => {
+              const type = String(product.subcategory || '').trim().toLowerCase();
+              return type === 'mala' || type === 'bracelet';
+            })
+          : rows;
+        setAllProducts(visible);
+        const filtered = visible.filter(product => {
           const price = product.price || 0;
           return price >= filters.priceMin && price <= filters.priceMax;
         });
@@ -143,12 +146,8 @@ const Accessories = () => {
 
   const typeChips = [
     { name: 'all', label: 'All' },
-    { name: 'Bracelet', label: 'Bracelets' },
     { name: 'Mala', label: 'Malas' },
-    { name: 'Necklace', label: 'Necklaces' },
-    { name: 'Earring', label: 'Earrings' },
-    { name: 'Ring', label: 'Rings' },
-    { name: 'Other', label: 'Other' },
+    { name: 'Bracelet', label: 'Bracelets' },
   ];
 
   const clearFilters = () => {
@@ -170,11 +169,11 @@ const Accessories = () => {
     : 100000;
 
   return (
-    <div className="min-h-screen py-4 sm:py-6 lg:py-8">
+    <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
         {/* Header with Banner */}
         <div className="mb-6 sm:mb-8 text-center">
-          <div className="w-full rounded-lg overflow-hidden shadow-md">
+          <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img
               src={accessoriesBanner}
               alt="Explore variety of Accessories"
@@ -215,7 +214,7 @@ const Accessories = () => {
 
         {/* Mobile Overlay */}
         <div
-          className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-all duration-300 ease-out ${
+          className={`fixed inset-x-0 top-[var(--mobile-header-h,5.5rem)] bottom-0 z-[60] bg-black/40 backdrop-blur-sm transition-all duration-300 ease-out lg:hidden ${
             showFilters ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           onClick={() => setShowFilters(false)}
@@ -226,11 +225,12 @@ const Accessories = () => {
           {/* Sidebar Filters */}
           <aside className={`
             fixed lg:static
-            top-0 left-0
-            h-full lg:h-auto
+            top-[var(--mobile-header-h,5.5rem)] lg:top-auto left-0
+            bottom-[var(--gg-tabbar-offset)] lg:bottom-auto
+            h-auto lg:h-auto
             w-72 sm:w-80 lg:w-72 xl:w-80
-            bg-white
-            z-50 lg:z-auto
+            bg-[#FFFAEB] lg:bg-white
+            z-[65] lg:z-auto
             transform transition-all duration-300 ease-out
             ${showFilters ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100'}
             ${showFilters ? 'visible' : 'invisible lg:visible'}
@@ -343,7 +343,7 @@ const Accessories = () => {
                   onChange={(e) => handleFilterChange('subcategory', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
                 >
-                  <option value="all">All Subcategories</option>
+                  <option value="all">Malas &amp; bracelets</option>
                   {ACCESSORIES_SUBCATEGORIES.map((subcat) => (
                     <option key={subcat.id} value={subcat.name}>
                       {subcat.name}

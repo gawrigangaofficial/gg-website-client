@@ -38,7 +38,7 @@ const bullets = [
 
 export default function CorporateBulkOrder() {
   return (
-    <div className="min-h-screen bg-stone-50/95">
+    <div className="min-h-screen bg-[#FFFAEB]">
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(webPageJsonLd)}</script>
       </Helmet>

@@ -58,7 +58,7 @@ const Blog = () => {
   );
 
   return (
-    <div className="min-h-screen bg-stone-50/95">
+    <div className="min-h-screen bg-[#FFFAEB]">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <Link
           to="/"

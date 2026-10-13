@@ -150,11 +150,11 @@ const TulsiMala = () => {
       : 100000;
 
   return (
-    <div className="min-h-screen py-4 sm:py-6 lg:py-8">
+    <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
       <div className="mx-auto w-full max-w-[1920px] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
         {/* Header with Banner */}
         <div className="mb-6 sm:mb-8 text-center">
-          <div className="w-full overflow-hidden rounded-lg shadow-md">
+          <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img
               src={tulsiBanner}
               alt="Explore variety of Tulsi Mala"
@@ -168,16 +168,17 @@ const TulsiMala = () => {
           <button
             type="button"
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center justify-center rounded-lg bg-primary p-2.5 text-white transition-colors hover:bg-primary/90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
             aria-label="Toggle filters"
           >
-            <FiFilter className="text-xl" />
+            <FiFilter className="text-base" />
+            Filters
           </button>
         </div>
 
         {/* Mobile Overlay */}
         <div
-          className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-all duration-300 ease-out lg:hidden ${
+          className={`fixed inset-x-0 top-[var(--mobile-header-h,5.5rem)] bottom-0 z-[60] bg-black/40 backdrop-blur-sm transition-all duration-300 ease-out lg:hidden ${
             showFilters ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
           onClick={() => setShowFilters(false)}
@@ -189,11 +190,12 @@ const TulsiMala = () => {
           <aside
             className={`
             fixed lg:static
-            top-0 left-0
-            h-full lg:h-auto
+            top-[var(--mobile-header-h,5.5rem)] lg:top-auto left-0
+            bottom-[var(--gg-tabbar-offset)] lg:bottom-auto
+            h-auto lg:h-auto
             w-72 sm:w-80 lg:w-72 xl:w-80
-            bg-white
-            z-50 lg:z-auto
+            bg-[#FFFAEB] lg:bg-white
+            z-[65] lg:z-auto
             transform transition-all duration-300 ease-out
             ${showFilters ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100'}
             ${showFilters ? 'visible' : 'invisible lg:visible'}
