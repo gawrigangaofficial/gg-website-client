@@ -214,7 +214,7 @@ function ProductTrustBesidePrice({ deliveryLabel }) {
           COD available
         </p>
         <p className="mt-0.5 text-[10px] leading-snug text-emerald-700/90 sm:text-[11px]">
-          Pay on delivery
+          ₹100 to confirm
         </p>
       </div>
       <div className="rounded-lg border border-stone-200 bg-white px-2.5 py-2">
@@ -371,7 +371,7 @@ function ProductStickyCtaBar({
       <div className="pointer-events-auto mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-orange-100 bg-white/95 px-2 py-1.5 shadow-lg backdrop-blur-md md:px-5 md:py-3">
         <div className="flex w-full flex-col gap-1 md:flex-row md:items-center md:justify-between md:gap-4">
           <p className="text-center text-[10px] font-semibold leading-none text-emerald-700 md:hidden">
-            Cash on Delivery across India
+            COD: ₹100 to confirm
           </p>
           <div className="hidden min-w-0 flex-1 md:block">
             <p className="truncate text-sm font-semibold text-stone-800">{productName}</p>
@@ -1902,6 +1902,7 @@ const ProductPage = () => {
         userId={userId}
         userPhone={user?.phone_number}
         userName={user?.full_name}
+        onExplore={() => navigate('/', { replace: true })}
       />
 
       <PreorderEmailModal

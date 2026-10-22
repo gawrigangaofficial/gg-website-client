@@ -29,7 +29,7 @@ const faqData = [
     id: 12,
     question: 'Is COD available?',
     answer:
-      'Yes, Cash on Delivery is available for most serviceable pin codes in India.',
+      'Yes. Cash on Delivery is available for most serviceable pin codes in India. Pay ₹100 online to confirm the order. That amount is adjusted from the total, and the rest is collected on delivery.',
     Icon: FaMoneyBillWave,
   },
   {

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaSpinner } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { apiFetch } from '../../config/api.js';
+import { parseCodAdvanceNote } from '../../utils/codAdvance.js';
 
 const ViewDetails = () => {
   const { id: orderId } = useParams();
@@ -48,6 +49,7 @@ const ViewDetails = () => {
   const discount = Number(order?.discount_amount || 0);
   const shipping = Number(order?.shipping_charges || 0);
   const finalAmount = Number(order?.final_amount ?? order?.total_amount ?? 0);
+  const codAdvance = parseCodAdvanceNote(order?.notes);
   const expectedWithoutBlessing = subtotal - discount + shipping;
 
   // Prefer explicit note marker; fallback to amount delta when final > expected.
@@ -60,7 +62,7 @@ const ViewDetails = () => {
 
   const statusClass = (status) => {
     const s = (status || '').toLowerCase();
-    if (['pending', 'processing'].includes(s)) return 'text-amber-600';
+    if (['pending', 'processing', 'partial'].includes(s)) return 'text-amber-600';
     if (['shipped'].includes(s)) return 'text-blue-600';
     if (['delivered', 'completed', 'paid'].includes(s)) return 'text-green-600';
     if (['cancelled', 'failed'].includes(s)) return 'text-red-600';
@@ -204,6 +206,18 @@ const ViewDetails = () => {
                   <dt className="min-w-0">Total</dt>
                   <dd className="shrink-0 whitespace-nowrap">₹{finalAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</dd>
                 </div>
+                {codAdvance && (
+                  <>
+                    <div className="flex justify-between gap-4 text-gray-700">
+                      <dt className="min-w-0">Paid online now</dt>
+                      <dd className="shrink-0 whitespace-nowrap">₹{codAdvance.paidNow.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</dd>
+                    </div>
+                    <div className="flex justify-between gap-4 text-gray-700">
+                      <dt className="min-w-0">Pay on delivery</dt>
+                      <dd className="shrink-0 whitespace-nowrap">₹{codAdvance.collectOnDelivery.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</dd>
+                    </div>
+                  </>
+                )}
               </dl>
             </div>
 

@@ -5,6 +5,7 @@ import { apiFetch } from '../config/api.js';
 import { trackPurchase } from '../utils/analytics.js';
 import { paymentGatewayEmail } from '../utils/checkoutContact.js';
 import { formatDeliveryByLabel } from '../utils/deliveryEstimate.js';
+import { codPayNowAmount } from '../utils/codAdvance.js';
 
 const ONLINE_PAYMENT_IDS = ['card', 'upi', 'netbanking'];
 const PAYMENT_METHOD_LABELS = {
@@ -33,6 +34,7 @@ const OrderConfirmation = ({
   userName,
   paymentMethod,
   onOrderPlaced,
+  onExplore,
   orderData: initialOrderData,
 }) => {
   const [loading, setLoading] = useState(false);
@@ -41,12 +43,17 @@ const OrderConfirmation = ({
 
   const discountAmount = Number(couponDiscount || 0);
   const grossFinalAmount = Math.max(0, totalAmount - discountAmount) + shippingCharges + (Number(blessingCharge) || 0);
-  const isOnlinePayment = ONLINE_PAYMENT_IDS.includes((paymentMethod || '').toLowerCase());
+  const normalizedPaymentMethod = String(paymentMethod || '').toLowerCase();
+  const isOnlinePayment = ONLINE_PAYMENT_IDS.includes(normalizedPaymentMethod);
+  const isCod = normalizedPaymentMethod === 'cod';
   const walletDeduction = useWallet
     ? Math.min(Number(walletAmountToUse) || 0, Number(walletBalance) || 0, grossFinalAmount)
     : 0;
   const isWalletApplied = walletDeduction > 0;
   const finalAmount = Math.max(0, grossFinalAmount - walletDeduction);
+  const codPayNow = isCod ? codPayNowAmount(finalAmount) : 0;
+  const codDueOnDelivery = isCod ? Math.max(0, Math.round((finalAmount - codPayNow) * 100) / 100) : 0;
+  const usesOnlineGateway = isOnlinePayment || (isCod && finalAmount > 0);
   const selectedMethodLabel =
     PAYMENT_METHOD_LABELS[String(paymentMethod || '').toLowerCase()] || 'UPI';
 
@@ -59,7 +66,7 @@ const OrderConfirmation = ({
       .replace(/\D/g, '')
       .slice(0, 10);
     const gatewayEmail = paymentGatewayEmail(gatewayPhone);
-    if (isOnlinePayment && !gatewayEmail) {
+    if (usesOnlineGateway && !gatewayEmail) {
       alert(
         'A valid 10-digit mobile number is required for online payment. Please check your delivery address.',
       );
@@ -76,7 +83,7 @@ const OrderConfirmation = ({
         quantity: item.quantity,
       }));
 
-      if (isOnlinePayment) {
+      if (usesOnlineGateway) {
         const firstname =
           (selectedAddress.receiver_name || userName || 'Customer').trim() || 'Customer';
         const email = gatewayEmail;
@@ -113,7 +120,12 @@ const OrderConfirmation = ({
           window.location.href = initData.payment_url;
           return;
         }
-        alert(initData.message || 'Could not open payment page. Please try again or choose Cash on Delivery.');
+        alert(
+          initData.message ||
+            (isCod
+              ? 'Could not open the confirmation payment. Please try again.'
+              : 'Could not open payment page. Please try again or choose Cash on Delivery.'),
+        );
         setLoading(false);
         return;
       }
@@ -225,13 +237,22 @@ const OrderConfirmation = ({
         <p className="text-sm text-gray-600">
           We will contact you on {selectedAddress?.receiver_phone || 'your mobile'} with order updates.
         </p>
-        <p className="mt-3 text-sm text-stone-600">
-          Want to track this order later?{' '}
-          <a href="/login" className="font-semibold text-primary underline-offset-2 hover:underline">
-            Sign in with OTP
-          </a>{' '}
-          using the same mobile number.
-        </p>
+        {!userId && (
+          <p className="mt-3 text-sm text-stone-600">
+            Want to track this order later?{' '}
+            <a href="/login" className="font-semibold text-primary underline-offset-2 hover:underline">
+              Sign in with OTP
+            </a>{' '}
+            using the same mobile number.
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={onExplore}
+          className="mt-5 w-full rounded-xl bg-primary px-5 py-3 text-base font-semibold text-white shadow-md hover:bg-primary/90"
+        >
+          Explore
+        </button>
       </div>
     );
   }
@@ -319,6 +340,18 @@ const OrderConfirmation = ({
               <span>-₹{walletDeduction.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
             </div>
           )}
+          {isCod && finalAmount > 0 && (
+            <>
+              <div className="flex justify-between text-gray-700">
+                <span>Pay now to confirm:</span>
+                <span>₹{codPayNow.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between text-gray-700">
+                <span>Pay on delivery:</span>
+                <span>₹{codDueOnDelivery.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+              </div>
+            </>
+          )}
           <div className="border-t border-gray-300 pt-2 mt-2">
             <div className="flex justify-between text-lg font-bold text-primary">
               <span>Total:</span>
@@ -341,7 +374,9 @@ const OrderConfirmation = ({
         ) : (
           <>
             <FaCheckCircle />
-            Place Order
+            {isCod && finalAmount > 0
+              ? `Pay ₹${codPayNow.toLocaleString('en-IN', { maximumFractionDigits: 2 })} to confirm COD`
+              : 'Place Order'}
           </>
         )}
       </button>

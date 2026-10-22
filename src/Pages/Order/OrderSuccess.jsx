@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FaCheckCircle, FaShoppingBag, FaSpinner } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import { apiFetch } from '../../config/api.js';
 import { trackPurchase } from '../../utils/analytics.js';
+import { parseCodAdvanceNote } from '../../utils/codAdvance.js';
 
 const REDIRECT_DELAY_MS = 2500;
 
@@ -48,12 +50,20 @@ function ConfettiBurst() {
 
 const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const orderId = searchParams.get('order_id');
   const { userId } = useAuth();
+  const { clearCart } = useCart();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(!!orderId);
   const [showModal, setShowModal] = useState(true);
   const purchaseTracked = useRef(false);
+  const codAdvance = parseCodAdvanceNote(order?.notes);
+
+  useEffect(() => {
+    if (!orderId) return;
+    clearCart();
+  }, [orderId, clearCart]);
 
   useEffect(() => {
     if (!order || purchaseTracked.current) return;
@@ -90,6 +100,15 @@ const OrderSuccess = () => {
     const t = setTimeout(() => setShowModal(false), REDIRECT_DELAY_MS);
     return () => clearTimeout(t);
   }, [showModal]);
+
+  useEffect(() => {
+    const trapBack = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', trapBack);
+    return () => window.removeEventListener('popstate', trapBack);
+  }, []);
 
   const address = order?.addresses ? (Array.isArray(order.addresses) ? order.addresses[0] : order.addresses) : null;
 
@@ -149,8 +168,30 @@ const OrderSuccess = () => {
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-600">Payment Method:</span>
-                    <p className="text-gray-900">Online Payment</p>
+                    <p className="text-gray-900">
+                      {order.payment_method === 'cod'
+                        ? 'Cash on Delivery'
+                        : order.payment_method === 'wallet'
+                          ? 'Wallet'
+                          : 'Online Payment'}
+                    </p>
                   </div>
+                  {codAdvance && (
+                    <>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Paid online now:</span>
+                        <p className="text-gray-900">
+                          ₹{codAdvance.paidNow.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Pay on delivery:</span>
+                        <p className="text-gray-900">
+                          ₹{codAdvance.collectOnDelivery.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                    </>
+                  )}
                   {address && (
                     <div>
                       <span className="text-sm font-medium text-gray-600">Delivery Address:</span>
@@ -179,20 +220,21 @@ const OrderSuccess = () => {
             )}
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                type="button"
+                onClick={() => navigate('/', { replace: true })}
+                className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+              >
+                Explore
+              </button>
               {orderId && userId && (
                 <Link
                   to="/profile"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
                 >
                   View my orders
                 </Link>
               )}
-              <Link
-                to="/"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
-              >
-                Continue shopping
-              </Link>
             </div>
           </>
         )}

@@ -74,6 +74,7 @@ const Cart = () => {
   const { isAuthenticated, userId, user } = useAuth();
   const navigate = useNavigate();
   const [showCheckout, setShowCheckout] = useState(false);
+  const [orderLocked, setOrderLocked] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [useWallet, setUseWallet] = useState(false);
@@ -110,11 +111,21 @@ const Cart = () => {
 
   useEffect(() => {
     const onKeyDown = (event) => {
-      if (event.key === 'Escape' && !showCheckout) closeCart();
+      if (event.key === 'Escape' && !showCheckout && !orderLocked) closeCart();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [closeCart, showCheckout]);
+  }, [closeCart, showCheckout, orderLocked]);
+
+  useEffect(() => {
+    if (!orderLocked) return undefined;
+    const trapBack = () => {
+      window.history.pushState({ orderConfirmed: true }, '', window.location.href);
+    };
+    window.history.pushState({ orderConfirmed: true }, '', window.location.href);
+    window.addEventListener('popstate', trapBack);
+    return () => window.removeEventListener('popstate', trapBack);
+  }, [orderLocked]);
 
   useEffect(() => {
     let cancelled = false;
@@ -356,7 +367,11 @@ const Cart = () => {
           type="button"
           className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${panelOpen ? 'opacity-100' : 'opacity-0'}`}
           aria-label="Close cart"
-          onClick={showCheckout ? () => setShowCheckout(false) : closeCart}
+          onClick={() => {
+            if (orderLocked) return;
+            if (showCheckout) setShowCheckout(false);
+            else closeCart();
+          }}
         />
 
         <aside
@@ -380,6 +395,8 @@ const Cart = () => {
               userId={userId}
               userPhone={user?.phone_number}
               userName={user?.full_name}
+              onOrderConfirmed={() => setOrderLocked(true)}
+              onExplore={() => navigate('/', { replace: true })}
             />
           ) : (
           <>

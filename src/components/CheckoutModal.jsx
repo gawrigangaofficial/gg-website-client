@@ -29,6 +29,8 @@ const CheckoutModal = ({
   userPhone,
   userName,
   embedded = false,
+  onExplore,
+  onOrderConfirmed,
 }) => {
   const { sendPhoneOtp, verifyPhoneOtp } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
@@ -108,7 +110,7 @@ const CheckoutModal = ({
   useEffect(() => {
     if (!isOpen) return undefined;
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') handleClose();
+      if (event.key === 'Escape' && !orderData) handleClose();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -149,9 +151,15 @@ const CheckoutModal = ({
 
   const phoneDigits = String(checkoutPhone || '').replace(/\D/g, '').slice(0, 10);
   const phoneIsValid = /^[6-9]\d{9}$/.test(phoneDigits);
+  const isLoggedIn = Boolean(userId);
 
   const handleNext = async () => {
     if (currentStep === 1 && paymentMethod) {
+      if (isLoggedIn) {
+        if (phoneIsValid) setVerifiedPhone(phoneDigits);
+        setCurrentStep(4);
+        return;
+      }
       setCurrentStep(2);
       return;
     }
@@ -213,6 +221,11 @@ const CheckoutModal = ({
   };
 
   const handleBack = () => {
+    if (orderData) return;
+    if (currentStep === 4 && isLoggedIn) {
+      setCurrentStep(1);
+      return;
+    }
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
@@ -220,9 +233,19 @@ const CheckoutModal = ({
 
   const handleOrderPlaced = (order) => {
     setOrderData(order);
+    onOrderConfirmed?.();
+  };
+
+  const handleExplore = () => {
+    if (onExplore) {
+      onExplore();
+      return;
+    }
+    window.location.assign('/');
   };
 
   const handleClose = () => {
+    if (orderData) return;
     if (!orderData && cartItems?.length) {
       const phone = String(checkoutPhone || selectedAddress?.receiver_phone || '').replace(/\D/g, '').slice(0, 10);
       if (/^[6-9]\d{9}$/.test(phone)) {
@@ -257,13 +280,20 @@ const CheckoutModal = ({
 
   if (!isOpen) return null;
 
-  const steps = [
-    { number: 1, title: 'Method' },
-    { number: 2, title: 'Number' },
-    { number: 3, title: 'OTP' },
-    { number: 4, title: 'Address' },
-    { number: 5, title: 'Pay' },
-  ];
+  const steps = isLoggedIn
+    ? [
+        { number: 1, title: 'Method' },
+        { number: 4, title: 'Address' },
+        { number: 5, title: 'Pay' },
+      ]
+    : [
+        { number: 1, title: 'Method' },
+        { number: 2, title: 'Number' },
+        { number: 3, title: 'OTP' },
+        { number: 4, title: 'Address' },
+        { number: 5, title: 'Pay' },
+      ];
+  const flowIndex = Math.max(0, steps.findIndex((step) => step.number === currentStep));
 
   const canProceed = () => {
     if (otpBusy) return false;
@@ -298,20 +328,27 @@ const CheckoutModal = ({
     <div className="gg-cream flex h-full min-h-0 w-full flex-1 flex-col">
       <header className="gg-flow-bar border-b border-orange-100 px-4 py-3.5">
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={currentStep === 1 ? handleClose : handleBack}
-            className="rounded-full p-1.5 text-stone-800 transition-colors hover:bg-white"
-            aria-label={currentStep === 1 ? 'Back to cart' : 'Back'}
-          >
-            <FaArrowLeft className="text-base" />
-          </button>
+          {!orderData && (
+            <button
+              type="button"
+              onClick={currentStep === 1 ? handleClose : handleBack}
+              className="rounded-full p-1.5 text-stone-800 transition-colors hover:bg-white"
+              aria-label={currentStep === 1 ? 'Back to cart' : 'Back'}
+            >
+              <FaArrowLeft className="text-base" />
+            </button>
+          )}
           <div>
-            <h2 className="text-lg font-bold text-stone-900">{stepTitles[currentStep]}</h2>
-            <p className="text-[11px] text-stone-500">Step {currentStep} of 5</p>
+            <h2 className="text-lg font-bold text-stone-900">
+              {orderData ? 'Order confirmed' : stepTitles[currentStep]}
+            </h2>
+            {!orderData && (
+              <p className="text-[11px] text-stone-500">Step {flowIndex + 1} of {steps.length}</p>
+            )}
           </div>
         </div>
-        <div className="mt-3 grid grid-cols-5 gap-1.5">
+        {!orderData && (
+        <div className="mt-3 grid gap-1.5" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
           {steps.map((step) => {
             const isActive = currentStep === step.number;
             const isCompleted = currentStep > step.number;
@@ -325,6 +362,7 @@ const CheckoutModal = ({
             );
           })}
         </div>
+        )}
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
@@ -439,6 +477,7 @@ const CheckoutModal = ({
             userName={userName}
             paymentMethod={paymentMethod}
             onOrderPlaced={handleOrderPlaced}
+            onExplore={handleExplore}
             orderData={orderData}
           />
         )}
@@ -477,7 +516,8 @@ const CheckoutModal = ({
         type="button"
         className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${panelOpen ? 'opacity-100' : 'opacity-0'}`}
         aria-label="Close checkout"
-        onClick={handleClose}
+        onClick={orderData ? undefined : handleClose}
+        disabled={Boolean(orderData)}
       />
       <aside
         className={`absolute inset-y-0 right-0 flex w-full shadow-2xl transition-transform duration-300 ease-out sm:w-[440px] ${

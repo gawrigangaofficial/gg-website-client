@@ -3,6 +3,7 @@ import { FaCreditCard, FaUniversity, FaMobileAlt, FaMoneyBillWave } from 'react-
 import { trackAddPaymentInfo } from '../utils/analytics.js';
 import PaymentTrustBadges from './PaymentTrustBadges';
 import { DEFAULT_DELIVERY_CHARGES, resolveShippingAmount, shippingForPaymentMethod } from '../utils/deliveryCharges.js';
+import { COD_CONFIRMATION_AMOUNT, codPayNowAmount } from '../utils/codAdvance.js';
 
 const PaymentOptions = ({
   baseAmount,
@@ -23,6 +24,11 @@ const PaymentOptions = ({
   };
   const totalFor = (methodId) => Number(baseAmount || 0) + shippingFor(methodId);
   const codShipping = shippingFor('cod');
+  const codTotal = totalFor('cod');
+  const codPayNow = codPayNowAmount(codTotal);
+  const codDescription = codTotal <= COD_CONFIRMATION_AMOUNT
+    ? `Pay ₹${codPayNow.toLocaleString('en-IN')} now to confirm. Nothing is due on delivery (Shipping ₹${codShipping.toLocaleString('en-IN')})`
+    : `Pay ₹${COD_CONFIRMATION_AMOUNT} now to confirm. The rest is collected on delivery (Shipping ₹${codShipping.toLocaleString('en-IN')})`;
 
   const paymentMethods = [
     {
@@ -47,7 +53,7 @@ const PaymentOptions = ({
       id: 'cod',
       name: 'Cash on Delivery',
       icon: FaMoneyBillWave,
-      description: `Pay when your order is delivered (Shipping ₹${codShipping.toLocaleString('en-IN')})`
+      description: codDescription
     }
   ];
 

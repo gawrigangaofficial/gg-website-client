@@ -117,7 +117,7 @@ export function productSeoCopy(product) {
       },
       {
         question: 'Do you ship across India?',
-        answer: 'Yes. Gawri Ganga dispatches from Noida to serviceable pin codes across India. Cash on delivery is available for most of those pin codes.',
+        answer: 'Yes. Gawri Ganga dispatches from Noida to serviceable pin codes across India. Cash on delivery is available for most of those pin codes. A ₹100 advance confirms the order and is adjusted from the amount due at delivery.',
       },
     ],
     { href: '/guides/why-rudraksha-karungali-and-tulsi-matter', label: 'Why these products matter' },
