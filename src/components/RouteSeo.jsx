@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { matchPath, useLocation, useSearchParams } from 'react-router-dom';
 import { getSeoGuide } from '../content/seoGuides';
+import { getShopCollection } from '../content/shopCollections';
 
 const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').replace(/\/$/, '');
 const OG_LOCALE = 'en_IN';
@@ -10,7 +11,7 @@ const DEFAULT_DESC =
 
 /** Rich copy for the home page (SEO + social). ~155–165 characters for description snippet. */
 const HOME_DESCRIPTION =
-  'Gawri Ganga: Nepali Rudraksha, japa malas, Tulsi malas, aura sprays & spiritual products online in India. Natural beads, ethical sourcing, guides—meditation, puja & daily practice.';
+  'Buy Nepali Rudraksha, Tulsi malas, Karungali malas, Rudraksha bracelets, and aura sprays from Gawri Ganga. Guides, gifting, and delivery across India.';
 
 /** Long-tail + adjacent intent (meta keywords; align with on-page copy). */
 const HOME_KEYWORDS =
@@ -121,7 +122,7 @@ function slugToReadableName(slug = '') {
 const ROUTE_META = [
   {
     path: '/',
-    title: 'Gawri Ganga | Authentic Rudraksha & Spiritual Wellness Online India',
+    title: 'Shop Nepali Rudraksha, Tulsi & Karungali | Gawri Ganga',
     description: HOME_DESCRIPTION,
     keywords: HOME_KEYWORDS,
   },
@@ -247,6 +248,28 @@ function decodeSubcategoryParam(raw) {
 }
 
 function matchRouteMeta(pathname, searchParams) {
+  if (pathname === '/faq') {
+    return {
+      path: '/faq',
+      title: 'Frequently Asked Questions | Gawri Ganga',
+      description: 'Answers about Nepali Rudraksha, Tulsi malas, Karungali, aura sprays, cash on delivery, and returns from Gawri Ganga in Noida.',
+      keywords: 'Gawri Ganga FAQ, rudraksha questions, karungali mala, tulsi mala, aura spray, cash on delivery',
+    };
+  }
+
+  const shopMatch = matchPath({ path: '/shop/:slug', end: true }, pathname);
+  if (shopMatch?.params?.slug) {
+    const collection = getShopCollection(shopMatch.params.slug);
+    if (collection) {
+      return {
+        path: '/shop/:slug',
+        title: `${collection.title} | Gawri Ganga`,
+        description: collection.description.slice(0, 160),
+        keywords: collection.title,
+      };
+    }
+  }
+
   const guideMatch = matchPath({ path: '/guides/:slug', end: true }, pathname);
   if (guideMatch?.params?.slug) {
     const guide = getSeoGuide(guideMatch.params.slug);

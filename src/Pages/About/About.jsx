@@ -8,6 +8,7 @@ import {
   FaHeart,
 } from 'react-icons/fa'
 import RelatedGuides from '../../components/RelatedGuides'
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
 
 const GOLD_DIVIDER = 'border-amber-800/40'
 const GOLD_ACCENT = 'text-amber-800/90'
@@ -16,6 +17,8 @@ const About = () => {
   return (
     <div className="min-h-screen bg-[#FFFAEB]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <Breadcrumbs items={[{ name: 'About', href: '/about' }]} />
+        <ExploreLinks />
         {/* Logo */}
         <div className="flex justify-center mb-10 sm:mb-14">
           <Link to="/" className="inline-block" aria-label="Gawri Ganga Home">

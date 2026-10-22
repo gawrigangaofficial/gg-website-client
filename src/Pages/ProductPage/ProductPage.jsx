@@ -49,6 +49,7 @@ import { trackViewContent } from "../../utils/analytics.js";
 import { getCardReviewCount } from "../../utils/reviewDisplayCount.js";
 import { productSeoCopy } from "../../utils/productSeoCopy.js";
 import RelatedGuides from "../../components/RelatedGuides.jsx";
+import { ExploreLinks } from "../../components/Breadcrumbs.jsx";
 import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../utils/productJsonLd.js";
 import { normalizeProductMedia } from "../../utils/productMedia.js";
 import { getGalleryViewLabel, getProductStoryContext } from "../../utils/productPageCopy.js";
@@ -1041,9 +1042,9 @@ const ProductPage = () => {
         </button>
 
         {/* Breadcrumbs */}
-        <nav className="mb-4 sm:mb-6 flex items-center gap-2 text-xs sm:text-sm text-gray-600 flex-wrap min-w-0">
-          <Link to="/" className="hover:text-primary transition-colors shrink-0">Home</Link>
-          <span className="text-gray-400 shrink-0">/</span>
+        <nav aria-label="Breadcrumb" className="mb-4 sm:mb-6 flex items-center gap-2 text-xs sm:text-sm text-gray-600 flex-wrap min-w-0">
+          <Link to="/" className="hover:text-primary transition-colors shrink-0 font-semibold text-primary">Home</Link>
+          <span className="text-gray-400 shrink-0" aria-hidden="true">/</span>
           {product.category && categoryToPath[product.category] ? (
             <>
               <Link
@@ -1052,13 +1053,14 @@ const ProductPage = () => {
               >
                 {product.category}
               </Link>
-              <span className="text-gray-400 shrink-0">/</span>
+              <span className="text-gray-400 shrink-0" aria-hidden="true">/</span>
             </>
           ) : null}
-          <span className="text-gray-900 font-medium truncate min-w-0 max-w-[55vw] sm:max-w-none" title={product.name}>
+          <span className="text-gray-900 font-medium truncate min-w-0 max-w-[55vw] sm:max-w-none" title={product.name} aria-current="page">
             {product.name}
           </span>
         </nav>
+        <ExploreLinks />
 
         {/* Product Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 xl:gap-12 min-w-0">

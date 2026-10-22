@@ -4,212 +4,100 @@ import {
   FaInstagram,
   FaFacebookF,
   FaEnvelope,
-  // FaWhatsapp, // TEMP: WhatsApp hidden
-  FaPinterest,
   FaYoutube,
-  FaLinkedinIn,
   FaArrowRight,
 } from 'react-icons/fa'
-import logo from '../assets/gglogo.svg'
+import { FOOTER_COLUMNS } from '../content/footerNav'
+import { useAuth } from '../context/AuthContext'
 
-// const WHATSAPP_NUMBER = String(import.meta.env.VITE_WHATSAPP_NUMBER || '').replace(/\D/g, '')
-
-// TEMP: WhatsApp hidden — re-enable when ready
-/*
-function getWhatsAppNumber() {
-  return WHATSAPP_NUMBER || '919717568740'
+function FooterLink({ item, trackHref }) {
+  const href = item.track ? trackHref : item.href
+  return (
+    <li>
+      <Link to={href} className="inline-block py-0.5 text-sm leading-snug text-white/90 hover:text-white">
+        {item.name}
+      </Link>
+    </li>
+  )
 }
 
-function getWhatsAppHref(message = 'Hi, I need help choosing the right Rudraksha.') {
-  return `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`
+function LinkList({ links, trackHref }) {
+  return (
+    <ul className="space-y-1.5">
+      {links.map((item) => (
+        <FooterLink key={item.name} item={item} trackHref={trackHref} />
+      ))}
+    </ul>
+  )
 }
-*/
 
 const Footer = () => {
   const [email, setEmail] = useState('')
-
-  const quickLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Rudraksha', href: '/rudraksha' },
-    { name: 'Tulsi malas', href: '/tulsimala' },
-    { name: 'Bracelets', href: '/accessories' },
-    { name: 'Rashi', href: '/rashi' },
-    { name: 'Corporate / Bulk', href: '/corporate-bulk-orders' },
-    { name: 'Contact Us', href: '/contact' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Guides and blog', href: '/blog' },
-    { name: 'Terms of Service', href: '/terms-of-service' },
-  ]
-
-  const policies = [
-    { name: 'Refund & Cancellation', href: '/refund-cancellation' },
-    { name: 'Terms & Conditions', href: '/terms-and-conditions' },
-    { name: 'Shipping Policy', href: '/shipping-policy' },
-    { name: 'Privacy Policy', href: '/privacy-policy' },
-  ]
+  const { isAuthenticated } = useAuth()
+  const trackHref = isAuthenticated ? '/profile' : '/login'
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault()
-    if (email.trim()) {
-      // TODO: connect to backend when ready
-      setEmail('')
-    }
+    if (email.trim()) setEmail('')
   }
 
   return (
-    <footer className="bg-primary mt-auto overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-14 min-w-0">
-        {/* Mobile: stacked layout with clear sections; Desktop: 4-column grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-8 lg:gap-10">
-          {/* Column 1: Company info – compact on mobile */}
-          <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center lg:items-start text-center lg:text-left pb-6 sm:pb-0 border-b border-white/20 sm:border-b-0">
-            <Link to="/" className="inline-block bg-[#FFEEE5] rounded-lg p-2 shadow-md">
-              <img src={logo} alt="Gawri Ganga" className="w-14 h-14 sm:w-14 sm:h-14 md:w-16 md:h-16" />
-            </Link>
-            <p className="mt-3 font-heading font-semibold text-white text-sm">
-              Purity · Power · Protection
-            </p>
-            <p className="mt-2 text-white/95 text-sm leading-relaxed max-w-[280px] sm:max-w-xs mx-auto lg:mx-0">
-              Nepali Rudraksha, japa &amp; Tulsi malas, aura sprays, and spiritual accessories natural beads, meditation essentials,
-              and India wide delivery from Noida.
-            </p>
-            <a
-              href="mailto:support@gawriganga.com"
-              className="mt-3 text-white font-semibold hover:underline text-sm break-all"
-            >
-              support@gawriganga.com
-            </a>
-            {/* TEMP: WhatsApp hidden — re-enable when ready
-            <a
-              href={getWhatsAppHref()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-2 text-white/95 hover:text-white text-sm font-medium"
-            >
-              <FaWhatsapp className="shrink-0" aria-hidden />
-              WhatsApp
-            </a>
-            */}
-            {/* Full address block – hidden on mobile, visible from sm */}
-            <div className="mt-4 space-y-1.5 text-white/95 text-xs sm:text-sm text-left max-w-xs mx-auto lg:mx-0 lg:max-w-none break-words hidden sm:block">
-              <p>Gawri Ganga</p>
-              <p className="text-white font-medium">GST: 09AAFCE9670A1ZL</p>
-              <p>Head Office — SECTOR 27, Noida, Uttar Pradesh, 201301</p>
-              <p>Mon–Sat, 10 AM–6 PM</p>
+    <footer id="site-footer" className="mt-auto bg-[#7f1d2e] text-white">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 xl:grid-cols-7">
+          {FOOTER_COLUMNS.map((column) => (
+            <div key={column.title} className={column.wide ? 'col-span-2' : ''}>
+              <h3 className="mb-3 font-heading text-sm font-bold">{column.title}</h3>
+              {column.groups ? (
+                <div className="grid grid-cols-2 gap-x-4">
+                  {column.groups.map((group) => (
+                    <LinkList key={group[0].href} links={group} trackHref={trackHref} />
+                  ))}
+                </div>
+              ) : (
+                <LinkList links={column.links} trackHref={trackHref} />
+              )}
             </div>
-          </div>
- 
-          {/* Mobile: Quick Links + Policies in one row, 2 columns */}
-          <div className="grid grid-cols-2 gap-6 sm:gap-0 sm:contents">
-            <div className="text-left sm:text-left">
-              <h3 className="font-heading font-bold text-white text-sm uppercase tracking-wider mb-3">
-                Quick Links
-              </h3>
-              <ul className="space-y-2">
-                {quickLinks.map((item) => (
-                  <li key={item.name}>
-                    <Link
-                      to={item.href}
-                      className="text-white/95 hover:text-white transition-colors text-sm inline-block py-1 active:opacity-80"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="text-left sm:text-left">
-              <h3 className="font-heading font-bold text-white text-sm uppercase tracking-wider mb-3">
-                Policies
-              </h3>
-              <ul className="space-y-2">
-                {policies.map((item) => (
-                  <li key={item.name}>
-                    <Link
-                      to={item.href}
-                      className="text-white/95 hover:text-white transition-colors text-sm inline-block py-1 active:opacity-80"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Column 4: Newsletter & Social – full width on mobile/sm */}
-          <div className="max-w-sm w-full mx-auto sm:mx-0 sm:col-span-2 lg:col-span-1 lg:max-w-none pt-4 sm:pt-0 border-t border-white/20 sm:border-t-0">
-            <h3 className="font-heading font-bold text-white text-sm uppercase tracking-wider mb-3 text-center sm:text-left">
-              Get our exclusive offers
-            </h3>
-            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email"
-                className="flex-1 min-w-0 px-4 py-3.5 sm:py-2.5 text-sm text-gray-900 bg-white border border-white rounded-xl sm:rounded-l-xl sm:rounded-r-none placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary"
-                aria-label="Email for newsletter"
-              />
-              <button
-                type="submit"
-                className="px-5 py-3.5 sm:py-2.5 bg-white text-primary rounded-xl sm:rounded-r-xl sm:rounded-l-none hover:bg-white/95 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary flex items-center justify-center gap-2 min-h-[48px] sm:min-h-0 font-medium text-sm"
-                aria-label="Subscribe"
-              >
-                <span className="sm:hidden">Subscribe</span>
-                <FaArrowRight className="text-lg shrink-0" />
-              </button>
-            </form>
-            <p className="mt-2 text-white/90 text-xs text-center sm:text-left">
-              Get exclusive coupons in your mailbox.
-            </p>
-            <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
-              <a
-                href="https://www.facebook.com/profile.php?id=61589197491701"
-                aria-label="Facebook"
-                className="w-10 h-10 sm:w-9 sm:h-9 rounded-full border-2 border-white/60 text-white flex items-center justify-center hover:bg-white hover:text-primary transition-colors shrink-0"
-              >
-                <FaFacebookF className="text-sm" />
-              </a>
-              <a
-                href="https://www.instagram.com/gawriganga.in"
-                aria-label="Instagram"
-                className="w-10 h-10 sm:w-9 sm:h-9 rounded-full border-2 border-white/60 text-white flex items-center justify-center hover:bg-white hover:text-primary transition-colors shrink-0"
-              >
-                <FaInstagram className="text-sm" />
-              </a>
-              <a
-                href="https://www.youtube.com/@gawri-ganga"
-                aria-label="YouTube"
-                className="w-10 h-10 sm:w-9 sm:h-9 rounded-full border-2 border-white/60 text-white flex items-center justify-center hover:bg-white hover:text-primary transition-colors shrink-0"
-              >
-                <FaYoutube className="text-sm" />
-              </a>
-              <a
-                href="mailto:support@gawriganga.com"
-                aria-label="Email"
-                className="w-10 h-10 sm:w-9 sm:h-9 rounded-full border-2 border-white/60 text-white flex items-center justify-center hover:bg-white hover:text-primary transition-colors shrink-0"
-              >
-                <FaEnvelope className="text-sm" />
-              </a>
-            </div>
+        <div className="mt-10 grid gap-6 border-t border-white/25 pt-6 md:grid-cols-[1.4fr_1fr] md:items-end">
+          <form onSubmit={handleNewsletterSubmit} className="flex max-w-md flex-col gap-2 sm:flex-row">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Your email"
+              className="min-w-0 flex-1 rounded-xl bg-white px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label="Email for newsletter"
+            />
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#7f1d2e]"
+            >
+              Subscribe
+              <FaArrowRight aria-hidden />
+            </button>
+          </form>
+          <div className="flex flex-wrap gap-3 md:justify-end">
+            <a href="https://www.facebook.com/profile.php?id=61589197491701" aria-label="Facebook" className="grid h-9 w-9 place-items-center rounded-full border border-white/60 hover:bg-white hover:text-[#7f1d2e]">
+              <FaFacebookF className="text-sm" />
+            </a>
+            <a href="https://www.instagram.com/gawriganga.in" aria-label="Instagram" className="grid h-9 w-9 place-items-center rounded-full border border-white/60 hover:bg-white hover:text-[#7f1d2e]">
+              <FaInstagram className="text-sm" />
+            </a>
+            <a href="https://www.youtube.com/@gawri-ganga" aria-label="YouTube" className="grid h-9 w-9 place-items-center rounded-full border border-white/60 hover:bg-white hover:text-[#7f1d2e]">
+              <FaYoutube className="text-sm" />
+            </a>
+            <a href="mailto:support@gawriganga.com" aria-label="Email" className="grid h-9 w-9 place-items-center rounded-full border border-white/60 hover:bg-white hover:text-[#7f1d2e]">
+              <FaEnvelope className="text-sm" />
+            </a>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-8 sm:mt-10 md:mt-12 pt-6 border-t border-white/30 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-          <div className="text-white/90 text-sm">
-            <p>© {new Date().getFullYear()} Gawri Ganga. All rights reserved.</p>
-            <p className="mt-1 text-xs text-white/80">Gawri Ganga is owned by BNB Basket and Boxes Gifting Solutions Private Limited</p>
-          </div>
-          <div className="flex flex-wrap justify-center sm:justify-end gap-4 text-sm">
-            <Link to="/privacy-policy" className="text-white/90 hover:text-white transition-colors py-1">
-              Privacy Policy
-            </Link>
-            <Link to="/terms-of-service" className="text-white/90 hover:text-white transition-colors py-1">
-              Terms of Service
-            </Link>
-          </div>
+        <div className="mt-6 text-sm text-white/80">
+          <p>© {new Date().getFullYear()} Gawri Ganga. All rights reserved.</p>
+          <p className="mt-1 text-xs">Gawri Ganga is owned by BNB Basket and Boxes Gifting Solutions Private Limited. Sector 27, Noida, Uttar Pradesh, 201301. support@gawriganga.com</p>
         </div>
       </div>
     </footer>

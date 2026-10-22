@@ -11,6 +11,7 @@ import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const ACCESSORY_FAQS = [
   {
@@ -197,6 +198,8 @@ const Accessories = () => {
         faqs={ACCESSORY_FAQS}
       />
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+        <Breadcrumbs items={[{ name: 'Bracelets and Karungali', href: '/accessories' }]} />
+        <ExploreLinks />
         <div className="mb-6 sm:mb-8 text-center">
           <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img

@@ -1,5 +1,6 @@
 import { writeFileSync } from 'node:fs'
 import { SEO_GUIDES } from '../src/content/seoGuides.js'
+import { SHOP_COLLECTIONS } from '../src/content/shopCollections.js'
 
 const products = [
   '1-mukhi-rudraksha',
@@ -53,6 +54,8 @@ const paths = [
   '/terms-and-conditions',
   '/shipping-policy',
   '/privacy-policy',
+  '/faq',
+  ...SHOP_COLLECTIONS.map((item) => `/shop/${item.slug}`),
   '/json.html',
   ...blogs.map((slug) => `/blog/${slug}`),
   ...SEO_GUIDES.map((guide) => `/guides/${guide.slug}`),

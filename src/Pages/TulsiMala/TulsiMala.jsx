@@ -11,6 +11,7 @@ import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const TULSI_FAQS = [
   {
@@ -178,6 +179,8 @@ const TulsiMala = () => {
         faqs={TULSI_FAQS}
       />
       <div className="mx-auto w-full max-w-[1920px] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+        <Breadcrumbs items={[{ name: 'Tulsi malas', href: '/tulsimala' }]} />
+        <ExploreLinks />
         <div className="mb-6 text-center sm:mb-8">
           <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { FaArrowLeft } from 'react-icons/fa'
 import { getSeoGuide, relatedGuideSlugs } from '../../content/seoGuides'
 import RelatedGuides from '../../components/RelatedGuides'
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
 
 const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').replace(/\/$/, '')
 
@@ -39,13 +40,8 @@ const SeoGuidePage = () => {
         <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
       </Helmet>
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
-        <nav className="text-sm text-stone-500" aria-label="Breadcrumb">
-          <Link to="/" className="font-semibold text-primary">Home</Link>
-          <span aria-hidden> / </span>
-          <Link to="/blog" className="font-semibold text-primary">Guides</Link>
-          <span aria-hidden> / </span>
-          <span className="text-stone-700">{guide.title}</span>
-        </nav>
+        <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }, { name: guide.title, href: `/guides/${guide.slug}` }]} />
+        <ExploreLinks />
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-primary">Gawri Ganga guide</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-stone-900 sm:text-4xl">{guide.title}</h1>
         <p className="mt-4 text-base leading-relaxed text-stone-700">{guide.description}</p>

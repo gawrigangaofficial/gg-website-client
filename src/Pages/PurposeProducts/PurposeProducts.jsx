@@ -5,6 +5,7 @@ import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const CATEGORY_OPTIONS = [
   { label: 'All', value: 'all', apiValue: null },
@@ -74,6 +75,8 @@ const PurposeProducts = () => {
   return (
     <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
       <div className="mx-auto w-full max-w-[1920px] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+        <Breadcrumbs items={[{ name: 'Products by purpose', href: '/purpose-products' }]} />
+        <ExploreLinks />
         <div className="mb-6 rounded-2xl border border-orange-100 bg-white p-4 shadow-sm sm:p-6">
           <h1 className="font-heading text-2xl font-bold text-stone-900 sm:text-3xl">
             {pageTitle}

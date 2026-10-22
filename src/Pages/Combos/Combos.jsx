@@ -9,6 +9,7 @@ import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import { fetchAllProductsByCategory } from '../../utils/shopProductFetch';
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const COMBO_FAQS = [
   {
@@ -65,6 +66,8 @@ const Combos = () => {
         faqs={COMBO_FAQS}
       />
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+        <Breadcrumbs items={[{ name: 'Gift sets', href: '/combos' }]} />
+        <ExploreLinks />
         <h1 className="mb-3 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Spiritual gift sets and combos</h1>
         <p className="mb-4 max-w-2xl text-sm leading-relaxed text-stone-600">
           Ready sets of Rudraksha, Tulsi, and aura sprays for home use and gifting. For corporate events, weddings, or a larger hamper run, request a quote.

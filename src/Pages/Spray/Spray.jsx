@@ -9,6 +9,7 @@ import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import { fetchAllProductsByCategory } from '../../utils/shopProductFetch';
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const SPRAY_FAQS = [
   {
@@ -56,6 +57,8 @@ const Spray = () => {
         faqs={SPRAY_FAQS}
       />
       <div className="mx-auto w-full max-w-[1920px] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+        <Breadcrumbs items={[{ name: 'Aura sprays', href: '/sprays' }]} />
+        <ExploreLinks />
         <img src={Heading} alt="Gawri Ganga aura sprays" className="mb-4 w-full rounded-3xl sm:mb-6" />
         <header className="mb-4 max-w-3xl sm:mb-6">
           <h1 className="font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Sacred aura and energy cleansing sprays</h1>

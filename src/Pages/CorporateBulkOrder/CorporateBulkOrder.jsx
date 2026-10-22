@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import logo from '../../assets/gglogo.svg'
 import { FaCheckCircle, FaBuilding, FaHandshake, FaTruck } from 'react-icons/fa'
 import CorporateBulkInquiryForm from '../../components/CorporateBulkInquiryForm'
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
 
 const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').replace(/\/$/, '')
 const PAGE_PATH = '/corporate-bulk-orders'
@@ -44,6 +45,8 @@ export default function CorporateBulkOrder() {
       </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <Breadcrumbs items={[{ name: 'Bulk gifting', href: '/corporate-bulk-orders' }]} />
+        <ExploreLinks />
         <div className="flex justify-center mb-10 sm:mb-12">
           <Link to="/" className="inline-block" aria-label="Gawri Ganga Home">
             <img src={logo} alt="Gawri Ganga" className="w-36 h-auto sm:w-44 md:w-52" />

@@ -13,6 +13,7 @@ import PreorderEmailModal from '../../components/PreorderEmailModal';
 import OtherSpraysSection from '../../components/OtherSpraysSection';
 import { submitPreorderRequest } from '../../utils/preorderRequest';
 import { trackViewContent } from '../../utils/analytics.js';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import amratDharaBg from '../../assets/Sprayelem/Amratdhara/amratdharabg.png';
 import bigWave from '../../assets/Sprayelem/Amratdhara/bigwave.png';
 import smallWave from '../../assets/Sprayelem/Amratdhara/small wave.png';
@@ -255,10 +256,8 @@ const AmratDharaProductPage = () => {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-6 sm:px-6 lg:px-10 xl:px-14">
-        <Link to="/sprays" className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#1a6ba0]/35 bg-white px-4 py-2 text-sm font-semibold text-[#1a6ba0]">
-          <FaArrowLeft />
-          Back to Sprays
-        </Link>
+        <Breadcrumbs items={[{ name: 'Aura sprays', href: '/sprays' }, { name: 'Amrat Bindu', href: '/sprays/amrat-bindu' }]} />
+        <ExploreLinks />
 
         <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-3 xl:grid-cols-[minmax(0,820px)_minmax(0,420px)] xl:items-start xl:justify-center xl:gap-3">
           <div className="min-w-0 space-y-6">

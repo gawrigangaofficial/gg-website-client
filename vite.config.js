@@ -5,6 +5,7 @@ import Sitemap from 'vite-plugin-sitemap'
 
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { SEO_GUIDES } from './src/content/seoGuides.js';
+import { SHOP_COLLECTIONS } from './src/content/shopCollections.js';
 
 /** Product detail paths for SPA sitemap (vite-plugin-sitemap only sees dist HTML). */
 const PRODUCT_SLUGS = [
@@ -51,6 +52,9 @@ const PUBLIC_ROUTES = [
   '/privacy-policy',
   '/combos',
   '/corporate-bulk-orders',
+  '/faq',
+  '/return-policy',
+  ...SHOP_COLLECTIONS.map((item) => `/shop/${item.slug}`),
   '/sprays/amrat-bindu',
   '/sprays/maitri',
   '/sprays/chakra-balance',

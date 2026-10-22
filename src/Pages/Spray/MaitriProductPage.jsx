@@ -13,6 +13,7 @@ import PreorderEmailModal from '../../components/PreorderEmailModal';
 import OtherSpraysSection from '../../components/OtherSpraysSection';
 import { submitPreorderRequest } from '../../utils/preorderRequest';
 import { trackViewContent } from '../../utils/analytics.js';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import maitriBg from '../../assets/Sprayelem/Maitri/maitribg.png';
 import clipGroup from '../../assets/Sprayelem/Maitri/Clip path group.png';
 import clipGroup2 from '../../assets/Sprayelem/Maitri/Clip path group (2).png';
@@ -248,10 +249,8 @@ const MaitriProductPage = () => {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-6 sm:px-6 lg:px-10 xl:px-14">
-        <Link to="/sprays" className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#c9689a]/35 bg-white px-4 py-2 text-sm font-semibold text-[#c9689a]">
-          <FaArrowLeft />
-          Back to Sprays
-        </Link>
+        <Breadcrumbs items={[{ name: 'Aura sprays', href: '/sprays' }, { name: 'Maitri', href: '/sprays/maitri' }]} />
+        <ExploreLinks />
 
         <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-3 xl:grid-cols-[minmax(0,820px)_minmax(0,420px)] xl:items-start xl:justify-center xl:gap-3">
           <div className="min-w-0 space-y-6">

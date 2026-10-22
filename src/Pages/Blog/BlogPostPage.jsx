@@ -4,6 +4,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const DEFAULT_HERO_IMAGE = 'https://via.placeholder.com/1200x630?text=Gawri+Ganga+Blog';
 
@@ -145,10 +146,8 @@ const BlogPostPage = () => {
         </div>
 
         <div className="mx-auto w-full max-w-6xl px-5 py-6 sm:px-8 sm:py-10 lg:px-12">
-          <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80">
-            <FaArrowLeft aria-hidden />
-            Back to blogs
-          </Link>
+          <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }, { name: post.title, href: `/blog/${post.slug}` }]} />
+          <ExploreLinks />
 
           <h1 className="mt-5 text-3xl font-bold leading-tight text-primary sm:text-4xl lg:text-5xl">{post.title}</h1>
           {displayDate ? <p className="mt-3 text-sm font-medium text-stone-500">{displayDate}</p> : null}

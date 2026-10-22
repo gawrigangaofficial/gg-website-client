@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
 
 const TermsAndConditions = () => {
   return (
     <div className="min-h-screen bg-[#FFFAEB]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <Link to="/" className="about-body text-primary hover:underline text-sm mb-6 inline-block">
-          ← Back to Home
-        </Link>
+        <Breadcrumbs items={[{ name: 'Terms and Conditions', href: '/terms-and-conditions' }]} />
+        <ExploreLinks />
         <h1 className="about-heading text-3xl sm:text-4xl md:text-5xl font-semibold text-stone-800 tracking-tight">
           Terms and Conditions
         </h1>

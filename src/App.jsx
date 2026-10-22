@@ -44,6 +44,8 @@ const TermsAndConditions = lazy(() => import('./Pages/Policies/TermsAndCondition
 const ShippingPolicy = lazy(() => import('./Pages/Policies/ShippingPolicy'))
 const PrivacyPolicy = lazy(() => import('./Pages/Policies/PrivacyPolicy'))
 const PurposeProducts = lazy(() => import('./Pages/PurposeProducts/PurposeProducts'))
+const ShopCollection = lazy(() => import('./Pages/Shop/ShopCollection'))
+const Faq = lazy(() => import('./Pages/Faq/Faq'))
 const Combos = lazy(() => import('./Pages/Combos/Combos'))
 
 const PageLoader = () => (
@@ -86,6 +88,8 @@ const App = () => {
                   <Route path="/rashi" element={<Rashi />} />
                   <Route path="/accessories" element={<Accessories />} />
                   <Route path="/purpose-products" element={<PurposeProducts />} />
+                  <Route path="/shop/:slug" element={<ShopCollection />} />
+                  <Route path="/faq" element={<Faq />} />
                   <Route path="/combos" element={<Combos />} />
                   <Route path="/product/:slug" element={<ProductPage />} />
                   <Route path="/wishlist" element={<Wishlist />} />

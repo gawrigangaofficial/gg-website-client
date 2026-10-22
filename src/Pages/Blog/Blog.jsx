@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import ggLogo from '../../assets/gglogo.svg';
 import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import { formatBlogListDate, stripHtmlForExcerpt } from '../../utils/blogListDisplay';
 import { SEO_GUIDES } from '../../content/seoGuides';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
@@ -61,13 +62,8 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-[#FFFAEB]">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <Link
-          to="/"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80"
-        >
-          <FaArrowLeft aria-hidden />
-          Back to home
-        </Link>
+        <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }]} />
+        <ExploreLinks />
         <div className="mb-10 flex justify-center">
           <img src={ggLogo} alt="Gawri Ganga" className="h-auto w-40 sm:w-48" loading="lazy" />
         </div>

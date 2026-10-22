@@ -8,6 +8,7 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import RelatedGuides from '../../components/RelatedGuides';
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 
 // Zodiac dropdown images from local assets (Client/src/assets/Zodiac)
 // Filenames can be lowercase (e.g. aries.jpg) or capitalized (Aries.png); keys are normalized to match rashi values.
@@ -423,6 +424,8 @@ const Rashi = () => {
         <RashiSection hideCta />
 
         <div className="px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 py-6 sm:py-8">
+          <Breadcrumbs items={[{ name: 'Rudraksha by rashi', href: '/rashi' }]} />
+          <ExploreLinks />
           {/* Header */}
           <div className="mb-6 sm:mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">

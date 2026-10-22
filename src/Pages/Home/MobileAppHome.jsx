@@ -7,9 +7,6 @@ import spraysImg from '../../assets/HomePage/Our-collection/Maitri.webp';
 
 const MobileAppHome = () => (
   <section id="diwali-offers" className="gg-mobile-stage md:bg-transparent" aria-label="Diwali offers">
-    <h1 className="sr-only">
-      Gawri Ganga — Nepali Rudraksha, Rudraksha bracelets, Tulsi malas, Karungali malas, and aura sprays in India
-    </h1>
     <div className="px-3 pb-2 pt-3 md:hidden">
       <article className="gg-diwali-panel relative overflow-hidden rounded-[1.4rem] px-4 pb-4 pt-5 text-white">
         <span className="gg-diya gg-diya-left" aria-hidden />

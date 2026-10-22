@@ -5,6 +5,7 @@ import { FaEnvelope, FaMapMarkerAlt, FaClock, FaPaperPlane } from 'react-icons/f
 import { trackLead } from '../../utils/analytics.js'
 import { apiFetch } from '../../config/api'
 import { useToast } from '../../components/Toaster'
+import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
 
 const GOLD_DIVIDER = 'border-amber-800/40'
 const GOLD_ACCENT = 'text-amber-800/90'
@@ -57,6 +58,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-[#FFFAEB]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <Breadcrumbs items={[{ name: 'Contact', href: '/contact' }]} />
+        <ExploreLinks />
         {/* Logo */}
         <div className="flex justify-center mb-10 sm:mb-14">
           <Link to="/" className="inline-block" aria-label="Gawri Ganga Home">

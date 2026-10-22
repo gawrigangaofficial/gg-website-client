@@ -1272,9 +1272,10 @@ const Navbar = () => {
                     : item.href === "/profile"
                       ? location.pathname.startsWith("/profile") || location.pathname.startsWith("/orders")
                       : isActive(item.href);
-            const className = `flex flex-col items-center justify-center gap-0.5 rounded-[1.15rem] px-1 py-1.5 text-[10px] font-semibold leading-none ${
+            const className = `flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-[1.15rem] px-0.5 py-1.5 text-[9px] font-semibold leading-none tracking-tight ${
               active ? "gg-tab-active" : "text-stone-500"
             }`;
+            const label = <span className="w-full truncate text-center">{item.name}</span>;
             const icon = (
               <span className="relative text-[1.15rem]">
                 <Icon aria-hidden />
@@ -1296,7 +1297,7 @@ const Navbar = () => {
                     aria-expanded={isMenuOpen}
                   >
                     {icon}
-                    {item.name}
+                    {label}
                   </button>
                 ) : item.action === "search" ? (
                   <button
@@ -1307,7 +1308,7 @@ const Navbar = () => {
                     aria-expanded={searchOpen}
                   >
                     {icon}
-                    {item.name}
+                    {label}
                   </button>
                 ) : (
                   <Link
@@ -1324,7 +1325,7 @@ const Navbar = () => {
                     aria-current={active ? "page" : undefined}
                   >
                     {icon}
-                    {item.name}
+                    {label}
                   </Link>
                 )}
               </li>
