@@ -30,11 +30,14 @@ const Footer = () => {
 
   const quickLinks = [
     { name: 'Home', href: '/' },
+    { name: 'Rudraksha', href: '/rudraksha' },
+    { name: 'Tulsi malas', href: '/tulsimala' },
+    { name: 'Bracelets', href: '/accessories' },
     { name: 'Rashi', href: '/rashi' },
     { name: 'Corporate / Bulk', href: '/corporate-bulk-orders' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'About Us', href: '/about' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'Guides and blog', href: '/blog' },
     { name: 'Terms of Service', href: '/terms-of-service' },
   ]
 

@@ -103,7 +103,7 @@ function PickRow({ product }) {
     <div className="flex items-center gap-2 border-b border-black/5 py-2 last:border-0">
       <Link to={`/product/${product.slug || product.id}`} className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-white">
         {product.images?.[0] ? (
-          <img src={product.images[0]} alt="" className="h-full w-full object-cover" />
+          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
         ) : null}
       </Link>
       <div className="min-w-0 flex-1">

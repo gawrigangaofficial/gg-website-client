@@ -71,7 +71,7 @@ const Contact = () => {
         {/* Headline */}
         <header className="text-center mb-12 sm:mb-16">
           <h1 className="about-heading text-3xl sm:text-4xl md:text-5xl font-semibold text-stone-800 tracking-tight">
-            Get in Touch
+            Contact Gawri Ganga in Noida
           </h1>
           <div
             className={`mt-6 mx-auto w-24 sm:w-32 h-px border-t ${GOLD_DIVIDER}`}

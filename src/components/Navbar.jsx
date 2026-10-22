@@ -202,7 +202,7 @@ function MobileSearchPanel({ onNavigate }) {
                   >
                     <span className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-stone-100">
                       {image ? (
-                        <img src={image} alt="" className="h-full w-full object-cover" />
+                        <img src={image} alt={product.name} className="h-full w-full object-cover" />
                       ) : null}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -305,7 +305,7 @@ function DesktopSearch() {
                   >
                     <span className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-stone-100">
                       {product.images?.[0] ? (
-                        <img src={product.images[0]} alt="" className="h-full w-full object-cover" />
+                        <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
                       ) : null}
                     </span>
                     <span className="min-w-0 flex-1 truncate text-sm font-semibold text-stone-800">
@@ -640,7 +640,7 @@ const Navbar = () => {
               className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center"
               aria-label="Gawri Ganga home"
             >
-              <img src={mobileIcon} alt="" className="h-9 w-9 object-contain" />
+              <img src={mobileIcon} alt="Gawri Ganga" className="h-9 w-9 object-contain" />
             </Link>
             <div className="col-start-3 flex items-center text-white">
               <Link

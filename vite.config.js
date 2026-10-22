@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import Sitemap from 'vite-plugin-sitemap'
 
 import { cloudflare } from "@cloudflare/vite-plugin";
+import { SEO_GUIDES } from './src/content/seoGuides.js';
 
 /** Product detail paths for SPA sitemap (vite-plugin-sitemap only sees dist HTML). */
 const PRODUCT_SLUGS = [
@@ -48,6 +49,12 @@ const PUBLIC_ROUTES = [
   '/terms-and-conditions',
   '/shipping-policy',
   '/privacy-policy',
+  '/combos',
+  '/corporate-bulk-orders',
+  '/sprays/amrat-bindu',
+  '/sprays/maitri',
+  '/sprays/chakra-balance',
+  '/sprays/shuddhi',
 ];
 
 const BLOG_SLUGS = [
@@ -71,6 +78,7 @@ export default defineConfig(({ mode }) => {
         dynamicRoutes: [
           ...PUBLIC_ROUTES,
           ...BLOG_SLUGS.map((slug) => `/blog/${slug}`),
+          ...SEO_GUIDES.map((guide) => `/guides/${guide.slug}`),
           ...PRODUCT_SLUGS.map((slug) => `/product/${slug}`),
         ],
         exclude: [

@@ -47,6 +47,8 @@ import { isProductPreorder, productCanBePurchased, getMaxOrderQuantity } from ".
 import { submitPreorderRequest } from "../../utils/preorderRequest";
 import { trackViewContent } from "../../utils/analytics.js";
 import { getCardReviewCount } from "../../utils/reviewDisplayCount.js";
+import { productSeoCopy } from "../../utils/productSeoCopy.js";
+import RelatedGuides from "../../components/RelatedGuides.jsx";
 import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../utils/productJsonLd.js";
 import { normalizeProductMedia } from "../../utils/productMedia.js";
 import { getGalleryViewLabel, getProductStoryContext } from "../../utils/productPageCopy.js";
@@ -962,6 +964,7 @@ const ProductPage = () => {
   const reviewCount = totalReviews;
   const stockStatus = getStockStatus(product);
   const deliveryByLabel = formatDeliveryByLabel();
+  const seoCopy = productSeoCopy(product);
   const productJsonLd = buildProductJsonLd({
     product,
     pricing,
@@ -1015,6 +1018,17 @@ const ProductPage = () => {
         {breadcrumbJsonLd ? (
           <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
         ) : null}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: seoCopy.faqs.map((item) => ({
+              '@type': 'Question',
+              name: item.question,
+              acceptedAnswer: { '@type': 'Answer', text: item.answer },
+            })),
+          })}
+        </script>
       </Helmet>
       <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-4 md:px-6 lg:px-8 xl:px-12 min-w-0">
         {/* Back Button */}
@@ -1187,6 +1201,11 @@ const ProductPage = () => {
                 </button>
               </div>
             </div>
+
+            <p className="text-sm leading-relaxed text-stone-600 sm:text-base">{seoCopy.lead}</p>
+            <Link to={seoCopy.guide.href} className="inline-flex text-sm font-semibold text-primary">
+              {seoCopy.guide.label}
+            </Link>
 
             {/* Star Rating and Reviews */}
             <div className="flex items-center gap-3">
@@ -1436,6 +1455,20 @@ const ProductPage = () => {
               productName={product.name}
               className="lg:hidden"
             />
+
+            <section className="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm" aria-label="Product answers">
+              <h2 className="font-heading text-lg font-bold text-stone-900">Answers before you buy</h2>
+              <div className="mt-3 space-y-3">
+                {seoCopy.faqs.map((item) => (
+                  <div key={item.question}>
+                    <h3 className="text-sm font-semibold text-stone-900">{item.question}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-stone-600">{item.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <RelatedGuides slugs={seoCopy.related} title="Guides for this product" />
 
             {/* Accordion */}
             <div className="pt-2">

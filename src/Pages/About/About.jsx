@@ -7,6 +7,7 @@ import {
   FaCheckCircle,
   FaHeart,
 } from 'react-icons/fa'
+import RelatedGuides from '../../components/RelatedGuides'
 
 const GOLD_DIVIDER = 'border-amber-800/40'
 const GOLD_ACCENT = 'text-amber-800/90'
@@ -29,8 +30,11 @@ const About = () => {
         {/* Headline */}
         <header className="text-center mb-12 sm:mb-16">
           <h1 className="about-heading text-3xl sm:text-4xl md:text-5xl font-semibold text-stone-800 tracking-tight">
-            40 Years of Sacred Trust
+            About Gawri Ganga — Nepali Rudraksha, Tulsi, and Karungali
           </h1>
+          <p className="about-heading mt-3 text-xl font-medium text-stone-700 sm:text-2xl">
+            40 Years of Sacred Trust
+          </p>
           <div
             className={`mt-6 mx-auto w-24 sm:w-32 h-px border-t ${GOLD_DIVIDER}`}
             aria-hidden
@@ -151,6 +155,10 @@ const About = () => {
             >
               Explore our collection
             </Link>
+            <RelatedGuides
+              slugs={['importance-of-wearing-rudraksha', 'benefits-of-wearing-karungali-mala', 'importance-of-tulsi-mala', 'why-wear-a-rudraksha-bracelet']}
+              title="Read why these are worn"
+            />
           </div>
         </section>
       </div>

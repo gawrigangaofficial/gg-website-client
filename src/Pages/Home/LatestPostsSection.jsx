@@ -118,7 +118,7 @@ const LatestPostsSection = () => {
                 >
                   <img
                     src={post.heroUrl}
-                    alt=""
+                    alt={post.title || 'Gawri Ganga guide'}
                     className="h-14 w-14 shrink-0 rounded-xl object-cover md:h-32 md:w-full md:rounded-none"
                     loading="lazy"
                   />

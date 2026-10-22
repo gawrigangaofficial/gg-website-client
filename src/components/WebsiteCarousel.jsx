@@ -150,7 +150,7 @@ const WebsiteCarousel = ({ forcedDevice = null }) => {
             <div key={image.id || index} className="w-full shrink-0">
               <img
                 src={image.image_url}
-                alt={`Carousel ${index + 1}`}
+                alt={image.alt_text || image.title || image.caption || `Gawri Ganga Rudraksha and spiritual products banner ${index + 1}`}
                 className="block h-auto w-full object-contain object-top"
                 loading={index === currentIndex ? 'eager' : 'lazy'}
                 decoding="async"

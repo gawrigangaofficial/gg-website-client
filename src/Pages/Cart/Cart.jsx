@@ -636,7 +636,7 @@ const Cart = () => {
                           )}
                           <span className="block h-28 overflow-hidden rounded-xl bg-white">
                             {product.images && product.images.length > 0 ? (
-                              <img src={product.images[0]} alt="" className="h-full w-full object-cover" />
+                              <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
                             ) : (
                               <span className="flex h-full items-center justify-center text-[10px] text-stone-400">No Image</span>
                             )}

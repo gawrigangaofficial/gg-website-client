@@ -34,11 +34,11 @@ const sprays = [
 
 const SpraySection = () => (
   <section className="bg-[#FFFAEB] py-6 md:py-10">
-    <img src={Heading} alt="" className="w-full" />
+    <img src={Heading} alt="Gawri Ganga aura cleansing sprays — Amrat Bindu, Maitri, Chakra Balance, and Shuddhi" className="w-full" />
     <div className="mx-auto w-[92%] max-w-7xl pt-5 md:pt-8">
       <header className="mb-4 text-center md:mb-8">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">Aura sprays</p>
-        <h2 className="mt-1 font-heading text-2xl font-bold text-stone-900 md:text-4xl">Pre-order now</h2>
+        <h2 className="mt-1 font-heading text-2xl font-bold text-stone-900 md:text-4xl">Sacred aura cleansing sprays</h2>
       </header>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
         {sprays.map((item) => (

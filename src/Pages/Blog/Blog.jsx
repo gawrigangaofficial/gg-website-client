@@ -5,6 +5,7 @@ import ggLogo from '../../assets/gglogo.svg';
 import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import { formatBlogListDate, stripHtmlForExcerpt } from '../../utils/blogListDisplay';
+import { SEO_GUIDES } from '../../content/seoGuides';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
 
 const Blog = () => {
@@ -71,9 +72,27 @@ const Blog = () => {
           <img src={ggLogo} alt="Gawri Ganga" className="h-auto w-40 sm:w-48" loading="lazy" />
         </div>
         <header className="text-center">
-          <h1 className="font-heading text-3xl font-bold text-stone-900 sm:text-4xl">Gawri Ganga Blog</h1>
-          <p className="mt-4 text-lg leading-relaxed text-stone-600">Insights, rituals, and practical guides from Gawri Ganga.</p>
+          <h1 className="font-heading text-3xl font-bold text-stone-900 sm:text-4xl">Rudraksha, Karungali, Tulsi, and bracelet guides</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-stone-600">
+            Why people wear Nepali Rudraksha, a Karungali mala, a Tulsi mala, and a Rudraksha bracelet, plus how to choose and care for each one.
+          </p>
         </header>
+
+        <section className="mt-10" aria-labelledby="buyer-guides-heading">
+          <h2 id="buyer-guides-heading" className="font-heading text-2xl font-bold text-stone-900">Importance and buyer guides</h2>
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {SEO_GUIDES.map((guide) => (
+              <article key={guide.slug} className="rounded-2xl border border-orange-100 bg-white p-5 shadow-sm">
+                <h3 className="text-lg font-bold text-stone-900">{guide.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">{guide.description}</p>
+                <Link to={`/guides/${guide.slug}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                  Read guide
+                  <FaArrowRight aria-hidden />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </section>
 
         {loading ? (
           <div className="mt-12 flex items-center justify-center">

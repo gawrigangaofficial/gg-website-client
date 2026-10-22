@@ -31,8 +31,8 @@ const webPageJsonLd = {
 }
 
 const bullets = [
-  'Volume pricing for Rudraksha malas, bracelets, Tulsi malas, sprays, and curated combos',
-  'Support for corporates, wellness studios, temples, retailers, and gifting programs',
+  'Volume pricing for Rudraksha malas, bracelets, Tulsi malas, sprays, and curated gift sets',
+  'Support for corporate events, weddings, temples, retailers, and festival gifting',
   'Clear timelines, dispatch from Noida, and help with GST documentation when required',
 ]
 
@@ -52,7 +52,7 @@ export default function CorporateBulkOrder() {
 
         <header className="text-center mb-10 sm:mb-14">
           <h1 className="about-heading text-3xl sm:text-4xl md:text-5xl font-semibold text-stone-800 tracking-tight">
-            Corporate &amp; bulk orders
+            Corporate, wedding, and festival gifting
           </h1>
           <div className={`mt-6 mx-auto w-24 sm:w-32 h-px border-t ${GOLD_DIVIDER}`} aria-hidden />
           <p className="about-body mt-6 text-stone-600 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">

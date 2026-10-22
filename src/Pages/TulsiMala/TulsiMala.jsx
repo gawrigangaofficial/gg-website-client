@@ -9,6 +9,26 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
+import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
+import RelatedGuides from '../../components/RelatedGuides';
+
+const TULSI_FAQS = [
+  {
+    question: 'How should I care for a Tulsi mala?',
+    answer:
+      'Keep the wood dry. Take it off for soap, swimming, and perfume. Wipe it and store it in a cloth pouch, away from heat.',
+  },
+  {
+    question: 'What is the difference between Rama Tulsi and Shyam Tulsi beads?',
+    answer:
+      'Lighter beads are commonly called Rama Tulsi and are chosen for a calm japa practice. Darker beads are called Shyam Tulsi and are chosen for a more protective feel. Colour alone does not prove the wood is genuine.',
+  },
+  {
+    question: 'Can anyone wear a Tulsi mala?',
+    answer:
+      'Yes. Wear it with clean hands and a simple intention. If your family follows a stricter rule, follow that.',
+  },
+];
 
 /** Must match `categories.name` in your database (comparison is case-insensitive). */
 const TULSI_CATEGORY = 'Tulsi Mala';
@@ -151,16 +171,25 @@ const TulsiMala = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
+      <CollectionSchema
+        name="Sacred Tulsi malas"
+        description="Tulsi malas for japa and daily wear, including kanthi and bead malas, from Gawri Ganga."
+        path="/tulsimala"
+        faqs={TULSI_FAQS}
+      />
       <div className="mx-auto w-full max-w-[1920px] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-        {/* Header with Banner */}
-        <div className="mb-6 sm:mb-8 text-center">
+        <div className="mb-6 text-center sm:mb-8">
           <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img
               src={tulsiBanner}
-              alt="Explore variety of Tulsi Mala"
+              alt="Tulsi malas for japa and daily wear at Gawri Ganga"
               className="h-auto w-full object-cover"
             />
           </div>
+          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Sacred Tulsi malas</h1>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-stone-600 sm:text-base">
+            Original Tulsi malas in holy basil wood for naam jap and daily wear. People wear a Tulsi mala for japa in the Vishnu tradition. Lighter Rama-style beads and darker Shyam-style beads are a colour difference, not a certificate. Keep the wood dry.
+          </p>
         </div>
 
         {/* Filter Toggle for Mobile */}
@@ -413,6 +442,14 @@ const TulsiMala = () => {
             )}
           </div>
         </div>
+        <CategoryFaq faqs={TULSI_FAQS} />
+        <RelatedGuides
+          slugs={[
+            'importance-of-tulsi-mala',
+            'shyam-tulsi-vs-rama-tulsi-mala',
+            'original-tulsi-mala-buying-guide',
+          ]}
+        />
       </div>
       <ExploreSectionsBlock excludeCategory="Tulsi Mala" />
     </div>

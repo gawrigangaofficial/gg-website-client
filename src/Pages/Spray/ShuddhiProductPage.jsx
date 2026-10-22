@@ -208,7 +208,7 @@ const ShuddhiProductPage = () => {
   if (error || !product || !pricing) {
     return (
       <section className="mx-auto max-w-[1920px] px-4 py-16 text-center sm:px-6 lg:px-10 xl:px-14">
-        <h1 className="text-2xl font-bold text-[#486323]">Shuddhi</h1>
+        <p className="text-2xl font-bold text-[#486323]">Shuddhi aura spray</p>
         <p className="mt-3 text-gray-600">{error || 'Product not available'}</p>
         <Link to="/sprays" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#597B2C] px-5 py-2.5 text-sm font-semibold text-white">
           <FaArrowLeft />

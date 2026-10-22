@@ -24,6 +24,7 @@ import TrustStrip from './TrustStrip'
 import Combos from './Combos'
 import MobileAppHome from './MobileAppHome'
 import DesktopHomeShowcase from './DesktopHomeShowcase'
+import RelatedGuides from '../../components/RelatedGuides'
 
 
 const SectionDivider = () => (
@@ -37,6 +38,23 @@ const Home = () => {
     <div className="bg-[#FFFAEB]">
       <MobileAppHome />
       <DesktopHomeShowcase />
+      <section className="mx-auto w-[92%] max-w-7xl py-6">
+        <h2 className="font-heading text-2xl font-bold text-stone-900 md:text-3xl">
+          Why people wear Rudraksha, Karungali, and Tulsi
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-stone-700 md:text-base">
+          Nepali Rudraksha is worn for japa and daily practice. A Rudraksha bracelet is the shorter wrist form. A Tulsi mala is holy basil wood for naam jap. A Karungali mala is ebony wood worn for steadiness. Aura sprays freshen a room without smoke. Each guide below explains the importance of that piece and how to care for it.
+        </p>
+        <RelatedGuides
+          slugs={[
+            'importance-of-wearing-rudraksha',
+            'why-wear-a-rudraksha-bracelet',
+            'benefits-of-wearing-karungali-mala',
+            'importance-of-tulsi-mala',
+          ]}
+          title="Guides on this site"
+        />
+      </section>
       <TrustStrip />
       {/* <GawriGangaIntroSection /> */}
       <SectionDivider />
@@ -79,7 +97,7 @@ const Home = () => {
       <section className="w-full bg-[#FFFAEB]">
         <img
           src={OriginImg}
-          alt="Why Gawri Ganga — our story and values"
+          alt="Gawri Ganga origin story — Nepali Rudraksha and sacred malas"
           className="block h-auto w-full max-w-none object-contain object-center"
           loading="lazy"
         />
@@ -88,7 +106,7 @@ const Home = () => {
       <section className="w-full bg-[#FFFAEB]">
         <img
           src={StartupIndiaImg}
-          alt="Why Gawri Ganga — our story and values"
+          alt="Startup India recognition for Gawri Ganga"
           className="block h-auto w-full max-w-none object-contain object-center"
           loading="lazy"
         />

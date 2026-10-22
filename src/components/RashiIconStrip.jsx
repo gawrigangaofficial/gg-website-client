@@ -29,7 +29,7 @@ const RashiIconStrip = () => (
             <span className="h-14 w-14 overflow-hidden rounded-full bg-[#FFF3E6] ring-2 ring-white/80">
               <img
                 src={ZODIAC_IMAGES[sign.toLowerCase()]}
-                alt=""
+                alt={`${sign} rashi Rudraksha`}
                 className="h-full w-full object-cover"
               />
             </span>

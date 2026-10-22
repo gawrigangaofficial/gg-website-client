@@ -152,7 +152,7 @@ const HomeReviewsSection = () => {
                     <div className="mb-3 overflow-hidden rounded-xl bg-stone-100">
                       <img
                         src={review.imageUrl}
-                        alt=""
+                        alt="Customer photo with a Gawri Ganga product"
                         loading="lazy"
                         decoding="async"
                         className="h-auto w-full object-cover"

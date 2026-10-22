@@ -8,7 +8,7 @@ import spraysImg from '../../assets/HomePage/Our-collection/Maitri.webp';
 const MobileAppHome = () => (
   <section id="diwali-offers" className="gg-mobile-stage md:bg-transparent" aria-label="Diwali offers">
     <h1 className="sr-only">
-      Gawri Ganga Diwali offers — Nepali Rudraksha, Tulsi malas, and spiritual products in India
+      Gawri Ganga — Nepali Rudraksha, Rudraksha bracelets, Tulsi malas, Karungali malas, and aura sprays in India
     </h1>
     <div className="px-3 pb-2 pt-3 md:hidden">
       <article className="gg-diwali-panel relative overflow-hidden rounded-[1.4rem] px-4 pb-4 pt-5 text-white">
@@ -27,7 +27,7 @@ const MobileAppHome = () => (
           <div className="relative h-28 w-28 shrink-0">
             <img
               src={malaImg}
-              alt="Tulsi mala"
+              alt="Tulsi mala from Gawri Ganga"
               className="h-full w-full rounded-full object-cover ring-4 ring-amber-200/80"
             />
             <span className="absolute -bottom-1 -right-1 rounded-full bg-white px-2 py-1 text-[10px] font-bold text-[#e07830]">
@@ -46,9 +46,9 @@ const MobileAppHome = () => (
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {[
-          { src: rudrakshaImg, alt: 'Rudraksha', to: '/rudraksha' },
-          { src: tulsiImg, alt: 'Tulsi mala', to: '/tulsimala' },
-          { src: spraysImg, alt: 'Aura spray', to: '/sprays' },
+          { src: rudrakshaImg, alt: 'Nepali Rudraksha beads', to: '/rudraksha' },
+          { src: tulsiImg, alt: 'Original Tulsi mala', to: '/tulsimala' },
+          { src: spraysImg, alt: 'Aura cleansing spray', to: '/sprays' },
         ].map((item) => (
           <Link key={item.to} to={item.to} className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-orange-100">
             <img src={item.src} alt={item.alt} className="h-24 w-full object-cover" />

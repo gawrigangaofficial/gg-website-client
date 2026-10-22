@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { matchPath, useLocation, useSearchParams } from 'react-router-dom';
+import { getSeoGuide } from '../content/seoGuides';
 
 const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').replace(/\/$/, '');
 const OG_LOCALE = 'en_IN';
@@ -13,15 +14,9 @@ const HOME_DESCRIPTION =
 
 /** Long-tail + adjacent intent (meta keywords; align with on-page copy). */
 const HOME_KEYWORDS =
-  'Gawri Ganga, authentic Rudraksha India, Nepali Rudraksha, Rudraksha mala online, spiritual products India, Tulsi mala online, aura spray India, buy rudraksha online India, rudraksha bracelet, japa mala';
+  'Gawri Ganga, aura cleansing spray online India, smoke free room spray, Nepali Rudraksha, rudraksha bracelet, original tulsi mala, karungali mala, spiritual gift hamper, japa mala';
 
 /** Dedicated /rudraksha collection — core long-tails + related searches (mukhi, japa, authenticity, astrology). */
-const RUDRAKSHA_PAGE_TITLE =
-  'Nepali Rudraksha Mala & Original Beads Online India | Gawri Ganga';
-
-const RUDRAKSHA_PAGE_DESCRIPTION =
-  'Original Nepali Rudraksha—1 Mukhi to 8+ Mukhi, 5 & 7 Mukhi, japa & wrist malas, 108 beads & bracelets. Natural beads, clear prices, India delivery (Delhi, Noida & nationwide).';
-
 const RUDRAKSHA_PAGE_KEYWORDS =
   'rudraksha, rudraksha mala, original rudraksha mala, 1 mukhi rudraksha benefits, 2 mukhi rudraksha benefits, 3 mukhi rudraksha, 5 mukhi rudraksha price, 7 mukhi rudraksha price, 9 mukhi rudraksh, panchmukhi rudraksha, rudraksha chain, kumbh rashi rudraksha, rudraksha bracelet for men, rudraksha bracelet for women, rudraksha wearing rules for females, रुद्राक्ष का पेड़, rudraksh ka ped';
 
@@ -38,10 +33,10 @@ const PURPOSE_KEYWORDS =
   'spiritual products by purpose, meditation essentials, puja items online, spiritual wellness products, money magnet bracelet benefits, pyrite bracelet benefits, karungali mala benefits, karungali malai benefits, 5 mukhi rudraksha side effects';
 
 const SPRAYS_KEYWORDS =
-  'aura spray India, spiritual room spray, meditation spray, chakra spray, energy cleansing spray, lavender spiritual spray, sacred space spray';
+  'aura cleansing spray online India, energy protection spray, smoke free sage spray, vastu room spray, chakra balancing spray, space clearing mist, aura spray India';
 
 const BLOG_KEYWORDS =
-  'shiv mantra, shiva mantra, shiv mantra in hindi, shiv mantra in sanskrit, shiv mantra in english, shiv mantra lyrics, shiv mantra list, shiva mantras list, lord shiva mantra, lord shiva mantras, lord shiva mantra in english, lord shiva powerful mantra, most powerful mantra of lord shiva, powerful mantra of lord shiva, powerful shiva mantra, mahadev mantra, mahadev mantra in hindi, mahadev mantra in sanskrit, shiv shlok, shiv shlok in hindi, shiv ji mantra, shiv ji ka mantra, shiv ji ke mantra, शिव मंत्र, शिव मंत्र लिस्ट, महादेव मंत्र, सर्व शक्तिशाली शिव मंत्र, who is ashwathama, aswathama god, aswathama mahabharata, divine meaning in hindi, ருத்ராட்சம் அணிந்து அசைவம் சாப்பிடலாமா';
+  'importance of rudraksha, why wear rudraksha, benefits of wearing karungali mala, why wear karungali mala, rudraksha bracelet, importance of tulsi mala, original tulsi mala, aura cleansing spray, Nepali Rudraksha, Gawri Ganga';
 
 const CORPORATE_BULK_KEYWORDS =
   'corporate bulk rudraksha, wholesale rudraksha India, bulk rudraksha mala, B2B spiritual products, temple rudraksha supply, corporate gifting rudraksha, bulk tulsi mala India, wellness studio wholesale, bulk order spiritual gifts, Gawri Ganga wholesale';
@@ -132,9 +127,9 @@ const ROUTE_META = [
   },
   {
     path: '/sprays',
-    title: 'Aura & Spiritual Sprays Online India | Gawri Ganga',
+    title: 'Buy Aura Cleansing Sprays Online India | Gawri Ganga',
     description:
-      'Aura and spiritual sprays for meditation, calm, and sacred space. Shop Amrat Bindu, Maitri, Chakra Balance & Shuddhi at Gawri Ganga—delivery across India.',
+      'Smoke-free aura sprays for home, puja, and travel. Shop Amrat Bindu, Maitri, Chakra Balance, and Shuddhi from Gawri Ganga, with delivery across India.',
     keywords: SPRAYS_KEYWORDS,
   },
   {
@@ -159,15 +154,16 @@ const ROUTE_META = [
   },
   {
     path: '/rudraksha',
-    title: RUDRAKSHA_PAGE_TITLE,
-    description: RUDRAKSHA_PAGE_DESCRIPTION,
+    title: 'Original Nepali Rudraksha Beads & Bracelets | Gawri Ganga',
+    description:
+      'Shop Nepali Rudraksha beads, japa malas, and bracelets. Clear mukhi details, quality checks, and delivery across India from Gawri Ganga.',
     keywords: RUDRAKSHA_PAGE_KEYWORDS,
   },
   {
     path: '/tulsimala',
-    title: 'Tulsi Mala & Japa Mala Online India | Gawri Ganga',
+    title: 'Original Tulsi Mala & Japa Mala Online | Gawri Ganga',
     description:
-      'Authentic Tulsi (holy basil) malas and japa malas for naam jaap and meditation. Clear details, secure checkout—Gawri Ganga, India-wide delivery.',
+      'Tulsi malas for japa and daily wear, including kanthi and bead malas. Shop natural wood beads at Gawri Ganga, with delivery across India.',
     keywords: TULSI_KEYWORDS,
   },
   {
@@ -179,9 +175,9 @@ const ROUTE_META = [
   },
   {
     path: '/accessories',
-    title: 'Spiritual Accessories & Mala Supplies | Gawri Ganga',
+    title: 'Rudraksha Bracelets & Karungali Malas | Gawri Ganga',
     description:
-      'Spiritual accessories, bracelets, and companion pieces for your practice—pair with Rudraksha and malas. Shop Gawri Ganga with India delivery.',
+      'Shop Rudraksha bracelets, Karungali wood malas, and sacred bead accessories. Clear product details and delivery across India from Gawri Ganga.',
     keywords: ACCESSORIES_KEYWORDS,
   },
   {
@@ -199,9 +195,9 @@ const ROUTE_META = [
   { path: '/about', title: 'About Us | Gawri Ganga', description: 'Learn about Gawri Ganga and our mission.' },
   {
     path: '/blog',
-    title: 'Blog | Rudraksha Care, Japa & Spiritual Wellness | Gawri Ganga',
+    title: 'Rudraksha, Karungali, Tulsi and Bracelet Guides | Gawri Ganga',
     description:
-      'Guides on Nepali Rudraksha, mukhi meanings, japa malas, meditation, and daily spiritual practice—from Gawri Ganga, India.',
+      'Why wear Rudraksha, a Karungali mala, a Tulsi mala, and a Rudraksha bracelet. Buyer guides from Gawri Ganga, with delivery across India.',
     keywords: BLOG_KEYWORDS,
   },
   {
@@ -214,10 +210,10 @@ const ROUTE_META = [
   { path: '/contact', title: 'Contact | Gawri Ganga', description: 'Get in touch with Gawri Ganga support.' },
   {
     path: '/combos',
-    title: 'Spiritual Combos & Practice Sets | Gawri Ganga',
+    title: 'Spiritual Gift Sets & Combos Online | Gawri Ganga',
     description:
-      'Shop curated combos of Rudraksha, Tulsi malas, and aura sprays for daily practice. Gawri Ganga, delivery across India.',
-    keywords: 'rudraksha combo, spiritual gift set, tulsi mala combo, aura spray set, Gawri Ganga combos',
+      'Rudraksha, Tulsi, and aura spray combos for festivals, weddings, and gifting. Order online or ask Gawri Ganga for a bulk quote.',
+    keywords: 'spiritual gift hamper, diwali spiritual gift box, rudraksha combo, tulsi mala combo, wedding return gift spiritual, Gawri Ganga',
   },
   {
     path: '/return-policy',
@@ -226,9 +222,9 @@ const ROUTE_META = [
   },
   {
     path: '/corporate-bulk-orders',
-    title: 'Corporate & Bulk Orders | Wholesale Rudraksha & Malas | Gawri Ganga',
+    title: 'Spiritual Gift Hampers & Bulk Orders | Gawri Ganga',
     description:
-      'Request volume pricing for authentic Nepali Rudraksha, Tulsi malas, aura sprays, and spiritual accessories—corporate gifting, temples, retailers, and institutions across India.',
+      'Request a quote for corporate, wedding, and festival gifting. Rudraksha, Tulsi malas, aura sprays, and curated combos from Gawri Ganga.',
     keywords: CORPORATE_BULK_KEYWORDS,
   },
   { path: '/privacy-policy', title: 'Privacy Policy | Gawri Ganga', description: 'How we handle your data.' },
@@ -251,6 +247,19 @@ function decodeSubcategoryParam(raw) {
 }
 
 function matchRouteMeta(pathname, searchParams) {
+  const guideMatch = matchPath({ path: '/guides/:slug', end: true }, pathname);
+  if (guideMatch?.params?.slug) {
+    const guide = getSeoGuide(guideMatch.params.slug);
+    if (guide) {
+      return {
+        path: '/guides/:slug',
+        title: `${guide.title} | Gawri Ganga`,
+        description: guide.description,
+        keywords: guide.keyword,
+      };
+    }
+  }
+
   const productMatch = matchPath({ path: '/product/:slug', end: true }, pathname);
   if (productMatch?.params?.slug) {
     const slug = productMatch.params.slug;

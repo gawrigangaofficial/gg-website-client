@@ -55,6 +55,20 @@ const faqData = [
   },
   {
     id: 21,
+    question: 'How do aura sprays work without burning sage or dhoop?',
+    answer:
+      'They are fragrant room mists. Shake and spray into the air so the scent freshens the space without smoke. They are not a medicine and they should not be sprayed onto beads.',
+    Icon: FaOm,
+  },
+  {
+    id: 26,
+    question: 'Can women wear Rudraksha and Karungali?',
+    answer:
+      'Yes. These beads are not limited by gender. Wear them clean and dry, and follow any family tradition you already keep.',
+    Icon: FaHeart,
+  },
+  {
+    id: 27,
     question: 'Can Aura Spray be used in temples or meditation rooms?',
     answer:
       'Yes. It is perfect for spiritual spaces, meditation rooms, yoga areas, or anywhere you want to create a calm environment.',

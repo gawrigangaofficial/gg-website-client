@@ -9,6 +9,26 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
+import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
+import RelatedGuides from '../../components/RelatedGuides';
+
+const ACCESSORY_FAQS = [
+  {
+    question: 'Is it fine to wear a Rudraksha bracelet every day?',
+    answer:
+      'Yes. Many people wear one through the day. Take it off for soap, swimming, and strong perfume so the bead and thread last longer.',
+  },
+  {
+    question: 'Can women wear Rudraksha bracelets and Karungali malas?',
+    answer:
+      'Yes. Gawri Ganga does not restrict these beads by gender. Wear them clean and dry, and follow any family rule you already keep.',
+  },
+  {
+    question: 'How do I look after a Karungali mala?',
+    answer:
+      'Karungali is dense ebony wood. Keep it dry, wipe it instead of soaking it, and store it away from heat so the beads do not crack.',
+  },
+];
 
 const ACCESSORIES_SUBCATEGORIES = [
   { id: 1, name: 'Mala' },
@@ -170,16 +190,25 @@ const Accessories = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
+      <CollectionSchema
+        name="Rudraksha bracelets and Karungali malas"
+        description="Rudraksha bracelets, Karungali wood malas, and sacred bead accessories from Gawri Ganga."
+        path="/accessories"
+        faqs={ACCESSORY_FAQS}
+      />
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-        {/* Header with Banner */}
         <div className="mb-6 sm:mb-8 text-center">
           <div className="w-full overflow-hidden rounded-2xl shadow-md">
             <img
               src={accessoriesBanner}
-              alt="Explore variety of Accessories"
+              alt="Rudraksha bracelets, malas, and Karungali at Gawri Ganga"
               className="w-full h-auto object-cover"
             />
           </div>
+          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Rudraksha bracelets and Karungali malas</h1>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">
+            Rudraksha bracelets for daily wear and Karungali malas in ebony wood. A bracelet is the shorter wrist form of a Rudraksha bead. A Karungali mala is worn for steadiness and a traditional sense of protection. Keep both dry, and take them off for soap.
+          </p>
         </div>
 
         <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
@@ -455,6 +484,15 @@ const Accessories = () => {
             )}
           </div>
         </div>
+        <CategoryFaq faqs={ACCESSORY_FAQS} />
+        <RelatedGuides
+          slugs={[
+            'why-wear-a-rudraksha-bracelet',
+            'benefits-of-wearing-karungali-mala',
+            'how-to-check-original-rudraksha-bracelet',
+            'rudraksha-bracelet-for-daily-wear',
+          ]}
+        />
       </div>
       <ExploreSectionsBlock excludeCategory="Accessories" />
     </div>

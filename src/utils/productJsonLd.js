@@ -14,6 +14,7 @@ export function buildProductJsonLd({ product, pricing, avgRating = 0, reviewCoun
     description: product.short_description || product.description || product.name,
     image: images.length ? images : undefined,
     sku: String(product.id),
+    category: product.category || undefined,
     brand: {
       '@type': 'Brand',
       name: 'Gawri Ganga',
@@ -26,8 +27,23 @@ export function buildProductJsonLd({ product, pricing, avgRating = 0, reviewCoun
       availability: inStock
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Gawri Ganga',
+        url: SITE,
+      },
     },
   };
+
+  if (product.subcategory) {
+    json.additionalProperty = [
+      {
+        '@type': 'PropertyValue',
+        name: 'Type',
+        value: product.subcategory,
+      },
+    ];
+  }
 
   if (reviewCount > 0 && avgRating > 0) {
     json.aggregateRating = {

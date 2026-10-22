@@ -9,6 +9,26 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
+import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
+import RelatedGuides from '../../components/RelatedGuides';
+
+const RUDRAKSHA_FAQS = [
+  {
+    question: 'How do I start wearing a Rudraksha at home?',
+    answer:
+      'Rinse the bead with clean water, dry it fully, and wear it with a short mantra you already know, such as Om Namah Shivaya. Keep it off while using soap.',
+  },
+  {
+    question: 'Can I wear Rudraksha with a Tulsi or Karungali mala?',
+    answer:
+      'Many people do. Use the neck for the mala you chant with and the wrist for a bracelet. If your family keeps them separate, follow that.',
+  },
+  {
+    question: 'Should I spray fragrance directly on the bead?',
+    answer:
+      'No. Use an aura spray in the air around you. Rudraksha lasts longer when the bead stays dry.',
+  },
+];
 
 const MUKHI_SUBCATEGORIES = Array.from({ length: 14 }, (_, i) => `${i + 1} Mukhi`);
 
@@ -181,6 +201,12 @@ const Rudraksh = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFAEB] py-4 sm:py-6 lg:py-8">
+      <CollectionSchema
+        name="Original Nepali Rudraksha beads and bracelets"
+        description="Nepali Rudraksha beads, japa malas, and bracelets from Gawri Ganga."
+        path="/rudraksha"
+        faqs={RUDRAKSHA_FAQS}
+      />
       <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
         {/* Header with Banner */}
         <div className="mb-6 sm:mb-8 text-center">
@@ -523,10 +549,27 @@ const Rudraksh = () => {
                 <Link to="/rashi" className="font-semibold text-primary underline-offset-2 hover:underline">
                   shop by Rashi
                 </Link>{' '}
-                guide and browse by Mukhi to match your practice.
+                guide and browse by Mukhi to match your practice. For daily wear, see{' '}
+                <Link to="/accessories?subcategory=Bracelet" className="font-semibold text-primary underline-offset-2 hover:underline">
+                  Rudraksha bracelets
+                </Link>
+                , and freshen the room with an{' '}
+                <Link to="/sprays" className="font-semibold text-primary underline-offset-2 hover:underline">
+                  aura spray
+                </Link>{' '}
+                before you put the bead on.
               </p>
             </div>
           </div>
+          <CategoryFaq faqs={RUDRAKSHA_FAQS} />
+          <RelatedGuides
+            slugs={[
+              'importance-of-wearing-rudraksha',
+              '5-mukhi-rudraksha-how-to-choose',
+              'can-you-wear-rudraksha-while-bathing',
+              'why-rudraksha-karungali-and-tulsi-matter',
+            ]}
+          />
         </div>
       </section>
     </div>

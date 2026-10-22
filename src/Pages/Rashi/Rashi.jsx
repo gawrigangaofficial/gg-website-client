@@ -7,6 +7,7 @@ import RashiSection from '../Home/RashiSection';
 import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
+import RelatedGuides from '../../components/RelatedGuides';
 
 // Zodiac dropdown images from local assets (Client/src/assets/Zodiac)
 // Filenames can be lowercase (e.g. aries.jpg) or capitalized (Aries.png); keys are normalized to match rashi values.
@@ -425,12 +426,16 @@ const Rashi = () => {
           {/* Header */}
           <div className="mb-6 sm:mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
-              Find Your Rashi Rudraksha
+              Rudraksha by rashi
             </h1>
             <p className="text-sm sm:text-base text-gray-600">
-              Discover the perfect Rudraksha beads for your zodiac sign
+              Choose a Nepali Rudraksha mukhi for your rashi. The bead is for japa and daily wear. It is a traditional match, not a medical or financial result.
             </p>
           </div>
+          <RelatedGuides
+            slugs={['importance-of-wearing-rudraksha', '5-mukhi-rudraksha-how-to-choose', 'why-wear-a-rudraksha-bracelet']}
+            title="Rudraksha guides"
+          />
 
           {/* Custom Rashi dropdown */}
           <div className="mb-8 max-w-xl mx-auto" ref={dropdownRef}>
@@ -445,7 +450,7 @@ const Rashi = () => {
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0 bg-gray-100">
                       <img
                         src={rashiImagesFromAssets[selectedRashi] || `https://via.placeholder.com/40?text=${selectedRashi.slice(0, 2)}`}
-                        alt=""
+                        alt={`${selectedRashi} rashi`}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -474,7 +479,7 @@ const Rashi = () => {
                       <div className="w-9 h-9 rounded-full overflow-hidden border border-primary/20 shrink-0 bg-gray-100">
                         <img
                           src={rashiImagesFromAssets[rashi.value] || `https://via.placeholder.com/36?text=${rashi.value.slice(0, 2)}`}
-                          alt=""
+                          alt={`${rashi.value} rashi`}
                           className="w-full h-full object-cover"
                         />
                       </div>
