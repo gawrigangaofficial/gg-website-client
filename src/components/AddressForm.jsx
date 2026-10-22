@@ -3,9 +3,9 @@ import { FaMapMarkerAlt, FaPlus, FaCheck } from 'react-icons/fa';
 import { apiFetch } from '../config/api.js';
 import { useAuth } from '../context/AuthContext';
 
-const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCreated, userId, checkoutPhone = '' }) => {
+const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCreated, userId, checkoutPhone = '', addressesLoading = false }) => {
   const { isAuthenticated, startGuestCheckout } = useAuth();
-  const [showForm, setShowForm] = useState(() => !addresses?.length);
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     receiver_name: '',
     receiver_phone: '',
@@ -34,10 +34,9 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
   }, [checkoutPhone]);
 
   useEffect(() => {
-    if (!addresses?.length) {
-      setShowForm(true);
-    }
-  }, [addresses?.length]);
+    if (addressesLoading) return;
+    setShowForm(!addresses?.length);
+  }, [addressesLoading, addresses?.length]);
 
   useEffect(() => {
     const pin = String(formData.postal_code || '').replace(/\D/g, '');
@@ -197,6 +196,12 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
 
   return (
     <div className="space-y-4">
+      {addressesLoading ? (
+        <p className="rounded-2xl bg-white px-4 py-6 text-sm text-stone-600 shadow-sm">
+          Loading saved addresses...
+        </p>
+      ) : (
+      <>
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-base font-bold text-stone-900">
           {isAuthenticated && addresses.length > 0 ? 'Saved addresses' : 'Delivery address'}
@@ -438,6 +443,8 @@ const AddressForm = ({ addresses, selectedAddress, onSelectAddress, onAddressCre
           <FaMapMarkerAlt className="text-4xl mx-auto mb-3 text-gray-300" />
           <p>No addresses found. Please add an address to continue.</p>
         </div>
+      )}
+      </>
       )}
     </div>
   );

@@ -42,6 +42,7 @@ const CheckoutModal = ({
   const [verifiedPhone, setVerifiedPhone] = useState('');
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [addresses, setAddresses] = useState([]);
+  const [addressesLoading, setAddressesLoading] = useState(false);
   const [orderData, setOrderData] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [deliveryCharges, setDeliveryCharges] = useState(DEFAULT_DELIVERY_CHARGES);
@@ -118,9 +119,18 @@ const CheckoutModal = ({
 
   // Fetch user addresses
   useEffect(() => {
-    if (isOpen && userId) {
-      fetchAddresses();
+    if (!isOpen || !userId) {
+      setAddressesLoading(false);
+      return;
     }
+    let cancelled = false;
+    setAddressesLoading(true);
+    fetchAddresses().finally(() => {
+      if (!cancelled) setAddressesLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen, userId]);
 
   const fetchAddresses = async () => {
@@ -128,9 +138,9 @@ const CheckoutModal = ({
       const response = await apiFetch(`/api/addresses/user/${userId}`);
       const result = await response.json();
       if (result.success) {
-        setAddresses(result.data || []);
-        // Set default address if available
-        const defaultAddress = result.data?.find(addr => addr.is_default);
+        const saved = result.data || [];
+        setAddresses(saved);
+        const defaultAddress = saved.find((addr) => addr.is_default) || saved[0];
         if (defaultAddress) {
           setSelectedAddress(defaultAddress);
         }
@@ -456,6 +466,7 @@ const CheckoutModal = ({
             onAddressCreated={handleAddressCreated}
             userId={userId}
             checkoutPhone={phoneDigits}
+            addressesLoading={addressesLoading}
           />
         )}
 

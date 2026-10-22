@@ -121,7 +121,8 @@ const OrderConfirmation = ({
           return;
         }
         alert(
-          initData.message ||
+          initData.detail ||
+            initData.message ||
             (isCod
               ? 'Could not open the confirmation payment. Please try again.'
               : 'Could not open payment page. Please try again or choose Cash on Delivery.'),

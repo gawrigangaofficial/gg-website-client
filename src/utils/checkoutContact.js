@@ -7,7 +7,7 @@ export function paymentGatewayEmail(phoneNumber) {
   const last10 =
     digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits.slice(-10);
   if (/^[6-9]\d{9}$/.test(last10)) {
-    return `${last10}@checkout.gawriganga.local`;
+    return `${last10}@checkout.gawriganga.com`;
   }
   return '';
 }
