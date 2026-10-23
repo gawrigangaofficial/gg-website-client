@@ -262,7 +262,6 @@ const DesktopHomeShowcase = () => {
             <Link to="/rudraksha" className="mt-1 inline-block text-sm font-semibold text-[#c2410c]">
               Explore all
             </Link>
-            <p className="mt-1 text-sm font-semibold text-stone-700">₹1,000 cashback · first 100 users</p>
           </div>
           <nav className="flex items-center gap-1 rounded-full bg-white px-2 py-1.5 shadow-[0_10px_30px_-18px_rgba(120,50,10,0.45)] ring-1 ring-orange-100" aria-label="Primary">
             <Link to="/" className="rounded-full bg-[#ff914d] px-4 py-2 text-sm font-semibold text-white">Home</Link>
@@ -315,9 +314,7 @@ const DesktopHomeShowcase = () => {
         <div className="grid items-start gap-4 lg:grid-cols-4">
           <article className="overflow-hidden rounded-[1.6rem] bg-[#e07830] px-4 pb-5 pt-6 text-white">
             <p className="text-center text-xs font-bold tracking-[0.2em]">DIWALI</p>
-            <p className="mt-2 text-center font-heading text-3xl font-bold leading-none">₹1,000</p>
-            <p className="mt-1 text-center text-sm font-semibold">wallet cashback</p>
-            <p className="mt-1 text-center text-xs text-amber-100">First 100 users</p>
+            <p className="mt-2 text-center font-heading text-2xl font-bold leading-tight">Shop the festival picks</p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               {[
                 ['Rudraksha', '/rudraksha'],

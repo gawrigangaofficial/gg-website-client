@@ -99,9 +99,6 @@ const BhaiDoojSection = () => {
             ))}
           </div>
         </div>
-        <p className="mx-auto mt-4 w-max max-w-full rounded-full bg-[#0d5a42] px-4 py-1.5 text-[11px] font-semibold text-[#f8e7b0] md:text-sm">
-          ★ ₹1,000 wallet cashback for the first 100 users
-        </p>
       </div>
     </section>
   )

@@ -606,15 +606,12 @@ const Navbar = () => {
         }`}
       >
         {/* Top Banner */}
-        <div className="gg-topbar hidden h-10 grid-cols-3 items-center gap-4 bg-primary px-6 text-sm text-white md:grid">
+        <div className="gg-topbar hidden h-10 items-center justify-between gap-4 bg-primary px-6 text-sm text-white md:flex">
           <p className="shrink-0">Authentic · Lab-Tested · Fast Delivery</p>
-          <p className="text-center font-medium">
-            ₹1,000 wallet cashback for first 100 users
-          </p>
           <Link
             to={isAuthenticated ? "/profile" : "/login"}
             state={isAuthenticated ? undefined : { from: location }}
-            className="justify-self-end font-medium hover:underline"
+            className="font-medium hover:underline"
           >
             Track your order
           </Link>

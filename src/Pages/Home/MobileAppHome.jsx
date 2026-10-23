@@ -17,9 +17,7 @@ const MobileAppHome = () => (
         <div className="relative z-10 flex items-center justify-between gap-3">
           <div className="pl-5">
             <p className="text-sm font-semibold text-amber-100">Diwali special</p>
-            <p className="mt-1 font-heading text-[2.6rem] font-bold leading-none text-white">₹1,000</p>
-            <p className="mt-1 text-lg font-semibold text-white">wallet cashback</p>
-            <p className="mt-2 text-xs text-amber-100/90">For the first 100 users</p>
+            <p className="mt-2 font-heading text-2xl font-bold leading-tight text-white">Shop malas and bracelets</p>
           </div>
           <div className="relative h-28 w-28 shrink-0">
             <img
