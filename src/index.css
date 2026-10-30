@@ -620,30 +620,48 @@ main [class~="bg-[#FFFAEB]"] {
   .gg-marquee-track { animation: none; }
 }
 
-/* Dhoop batti decoration (DhoopDecor): smoke wisps rise, sway and fade; the tip glows; the diya flame flickers. */
-@keyframes gg-smoke-rise {
-  0% { stroke-dasharray: 0 400; stroke-dashoffset: 0; opacity: 0; transform: translateY(0) scaleX(1); }
-  15% { opacity: 0.9; }
-  60% { stroke-dasharray: 220 400; opacity: 0.6; }
-  100% { stroke-dasharray: 260 400; stroke-dashoffset: -140; opacity: 0; transform: translateY(-26px) scaleX(1.25); }
+/* Dhoop decoration (DhoopDecor): each puff is a soft round cloud that rises from a stick tip, sways side to side,
+   grows as it climbs and fades out near the top of the page. Only transform and opacity animate. */
+.gg-dhoop {
+  /* Below 2xl the whole decoration is drawn at 78% so it covers less of the page; --rise is in its own (unscaled) pixels. */
+  --rise: calc(-1 * min((100vh - 260px) / 0.78, 1100px));
+  transform: scale(0.78);
+  transform-origin: 0 100%;
+}
+@media (min-width: 1536px) {
+  .gg-dhoop {
+    --rise: calc(-1 * min(100vh - 280px, 900px));
+    transform: none;
+  }
+}
+@keyframes gg-puff {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  8% { opacity: 0.65; }
+  35% { transform: translate(calc(-50% + var(--dx) * -0.7), calc(-50% + var(--rise) * 0.35)) scale(calc(var(--grow) * 0.45)); opacity: 0.55; }
+  68% { transform: translate(calc(-50% + var(--dx) * 0.9), calc(-50% + var(--rise) * 0.7)) scale(calc(var(--grow) * 0.78)); opacity: 0.3; }
+  100% { transform: translate(calc(-50% + var(--dx) * 0.2), calc(-50% + var(--rise))) scale(var(--grow)); opacity: 0; }
+}
+.gg-dhoop .gg-puff {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(168, 156, 148, 0.68), rgba(168, 156, 148, 0.34) 50%, rgba(168, 156, 148, 0));
+  opacity: 0;
+  animation: gg-puff 11s ease-out infinite;
+  will-change: transform, opacity;
 }
 @keyframes gg-ember-glow {
   0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.25); }
+  50% { opacity: 1; transform: scale(1.3); }
 }
 @keyframes gg-diya-flicker {
   0%, 100% { transform: scale(1, 1) rotate(-2deg); }
-  30% { transform: scale(0.94, 1.08) rotate(2deg); }
-  60% { transform: scale(1.05, 0.95) rotate(-1deg); }
+  30% { transform: scale(0.94, 1.1) rotate(2deg); }
+  60% { transform: scale(1.06, 0.94) rotate(-1deg); }
 }
-.gg-dhoop .gg-smoke {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: gg-smoke-rise 6s ease-out infinite;
-  will-change: transform, opacity;
-}
-.gg-dhoop .gg-smoke-2 { animation-delay: 2s; animation-duration: 6.5s; }
-.gg-dhoop .gg-smoke-3 { animation-delay: 4s; animation-duration: 5.5s; }
 .gg-dhoop .gg-ember {
   transform-box: fill-box;
   transform-origin: center;
@@ -655,8 +673,7 @@ main [class~="bg-[#FFFAEB]"] {
   animation: gg-diya-flicker 1.6s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .gg-dhoop .gg-smoke,
+  .gg-dhoop .gg-puff { display: none; }
   .gg-dhoop .gg-ember,
   .gg-dhoop .gg-diya-flame { animation: none; }
-  .gg-dhoop .gg-smoke { stroke-dasharray: 180 400; opacity: 0.45; }
 }
