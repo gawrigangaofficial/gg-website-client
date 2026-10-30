@@ -12,6 +12,7 @@ import CollectionSortSelect, { sortProducts } from '../../components/CollectionS
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
 const RUDRAKSHA_FAQS = [
   {
@@ -527,7 +528,7 @@ const Rudraksh = () => {
             id="rudraksha-collection-heading"
             className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-stone-900"
           >
-            Nepali Rudraksha &amp; Rudraksha mala online in India
+            {STATIC_META['/rudraksha'].h1}
           </h1>
 
           <div className="mt-4 grid gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">

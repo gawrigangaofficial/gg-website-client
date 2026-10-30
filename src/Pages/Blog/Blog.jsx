@@ -8,6 +8,7 @@ import { formatBlogListDate, stripHtmlForExcerpt } from '../../utils/blogListDis
 import { SEO_GUIDES } from '../../content/seoGuides';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
@@ -68,7 +69,7 @@ const Blog = () => {
           <img src={ggLogo} alt="Gawri Ganga" className="h-auto w-40 sm:w-48" loading="lazy" />
         </div>
         <header className="text-center">
-          <h1 className="font-heading text-3xl font-bold text-stone-900 sm:text-4xl">Rudraksha, Karungali, Tulsi, and bracelet guides</h1>
+          <h1 className="font-heading text-3xl font-bold text-stone-900 sm:text-4xl">{STATIC_META['/blog'].h1}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-stone-600">
             Why people wear Nepali Rudraksha, a Karungali mala, a Tulsi mala, and a Rudraksha bracelet, plus how to choose and care for each one.
           </p>

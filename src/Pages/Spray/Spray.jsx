@@ -10,6 +10,7 @@ import { fetchAllProductsByCategory } from '../../utils/shopProductFetch';
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
 const SPRAY_FAQS = [
   {
@@ -61,7 +62,7 @@ const Spray = () => {
         <ExploreLinks />
         <img src={Heading} alt="Gawri Ganga aura sprays" className="mb-4 w-full rounded-3xl sm:mb-6" />
         <header className="mb-4 max-w-3xl sm:mb-6">
-          <h1 className="font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Sacred aura and energy cleansing sprays</h1>
+          <h1 className="font-heading text-2xl font-bold text-stone-900 sm:text-3xl">{STATIC_META['/sprays'].h1}</h1>
           <p className="mt-2 text-sm leading-relaxed text-stone-600 sm:text-base">
             A smoke-free way to freshen a room when dhoop, camphor, or sage is not practical. Shake the bottle, spray a short arc into the air, and set one intention. Amrat Bindu, Maitri, Chakra Balance, and Shuddhi are the four mists in this collection.
           </p>

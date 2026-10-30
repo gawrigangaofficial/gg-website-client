@@ -8,6 +8,7 @@ import { apiFetch } from '../../config/api.js'
 import { pricingFromProduct } from '../../utils/productPricing'
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js'
 import { getShopCollection } from '../../content/shopCollections'
+import { collectionMeta } from '../../seo/meta'
 
 const ShopCollection = () => {
   const { slug } = useParams()
@@ -60,7 +61,7 @@ const ShopCollection = () => {
         <Breadcrumbs items={[{ name: collection.title, href: `/shop/${collection.slug}` }]} />
         <ExploreLinks />
         <header className="mb-6 max-w-3xl">
-          <h1 className="font-heading text-3xl font-bold text-stone-900 md:text-4xl">{collection.title}</h1>
+          <h1 className="font-heading text-3xl font-bold text-stone-900 md:text-4xl">{collectionMeta(collection.slug)?.h1 || collection.title}</h1>
           <p className="mt-3 text-sm leading-relaxed text-stone-700 md:text-base">{collection.description}</p>
         </header>
         {loading ? (

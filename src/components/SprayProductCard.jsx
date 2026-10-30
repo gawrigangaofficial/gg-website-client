@@ -238,14 +238,16 @@ const SprayProductCard = ({
             </p>
           ) : null}
 
-          <div className="mb-4 flex items-center gap-1.5">
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <FaStar key={i} className="text-sm fill-current" style={{ color: theme.accent }} />
-              ))}
+          {reviewCount > 0 ? (
+            <div className="mb-4 flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar key={i} className="text-sm fill-current" style={{ color: theme.accent }} />
+                ))}
+              </div>
+              <span className="text-xs font-medium text-gray-500 sm:text-sm">({reviewCount})</span>
             </div>
-            <span className="text-xs font-medium text-gray-500 sm:text-sm">({reviewCount})</span>
-          </div>
+          ) : null}
 
           {descriptionText ? (
             <div className="mb-2 min-w-0">

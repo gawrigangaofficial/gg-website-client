@@ -12,6 +12,7 @@ import CollectionSortSelect, { sortProducts } from '../../components/CollectionS
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
 const TULSI_FAQS = [
   {
@@ -189,7 +190,7 @@ const TulsiMala = () => {
               className="h-auto w-full object-cover"
             />
           </div>
-          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Sacred Tulsi malas</h1>
+          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">{STATIC_META['/tulsimala'].h1}</h1>
           <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-stone-600 sm:text-base">
             Original Tulsi malas in holy basil wood for naam jap and daily wear. People wear a Tulsi mala for japa in the Vishnu tradition. Lighter Rama-style beads and darker Shyam-style beads are a colour difference, not a certificate. Keep the wood dry.
           </p>

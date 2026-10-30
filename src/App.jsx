@@ -39,7 +39,6 @@ const Contact = lazy(() => import('./Pages/Contact/Contact'))
 const CorporateBulkOrder = lazy(() => import('./Pages/CorporateBulkOrder/CorporateBulkOrder'))
 const TermsOfService = lazy(() => import('./Pages/Policies/TermsOfService'))
 const RefundCancellation = lazy(() => import('./Pages/Policies/RefundCancellation'))
-const ReturnPolicy = lazy(() => import('./Pages/Policies/ReturnPolicy'))
 const TermsAndConditions = lazy(() => import('./Pages/Policies/TermsAndConditions'))
 const ShippingPolicy = lazy(() => import('./Pages/Policies/ShippingPolicy'))
 const PrivacyPolicy = lazy(() => import('./Pages/Policies/PrivacyPolicy'))
@@ -47,6 +46,7 @@ const PurposeProducts = lazy(() => import('./Pages/PurposeProducts/PurposeProduc
 const ShopCollection = lazy(() => import('./Pages/Shop/ShopCollection'))
 const Faq = lazy(() => import('./Pages/Faq/Faq'))
 const Combos = lazy(() => import('./Pages/Combos/Combos'))
+const NotFound = lazy(() => import('./Pages/NotFound/NotFound'))
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -107,7 +107,7 @@ const App = () => {
                   <Route path="/corporate-bulk-orders" element={<CorporateBulkOrder />} />
                   <Route path="/terms-of-service" element={<TermsOfService />} />
                   <Route path="/refund-cancellation" element={<RefundCancellation />} />
-                  <Route path="/return-policy" element={<ReturnPolicy />} />
+                  <Route path="/return-policy" element={<Navigate to="/refund-cancellation" replace />} />
                   <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                   <Route path="/shipping-policy" element={<ShippingPolicy />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -115,6 +115,7 @@ const App = () => {
                   <Route path="/signup" element={<Navigate to="/login" replace />} />
                   <Route path="/auth" element={<Navigate to="/login" replace />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
                 </Suspense>
                 {isCartOpen && (

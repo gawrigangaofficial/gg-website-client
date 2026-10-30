@@ -5,6 +5,9 @@ import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { Helmet } from 'react-helmet-async';
+import { articleJsonLd, blogPostMeta } from '../../seo/meta';
+import { usePageSeo } from '../../seo/SeoContext';
 
 const DEFAULT_HERO_IMAGE = 'https://via.placeholder.com/1200x630?text=Gawri+Ganga+Blog';
 
@@ -106,7 +109,13 @@ const BlogPostPage = () => {
     () => formatDate(post?.published_at || post?.created_at),
     [post?.published_at, post?.created_at],
   );
-  const renderedHtml = useMemo(() => sanitizeBlogHtml(post?.html_content), [post?.html_content]);
+  // The page already has one H1 (the title); headings inside the stored article start at H2.
+  const renderedHtml = useMemo(
+    () => sanitizeBlogHtml(post?.html_content).replace(/<(\/?)h1(\b[^>]*)>/gi, '<$1h2$2>'),
+    [post?.html_content],
+  );
+  const seoMeta = useMemo(() => (post ? blogPostMeta(post) : null), [post]);
+  usePageSeo(seoMeta ? { ...seoMeta, image: post?.header_image_url || post?.hero_image_url } : null);
 
   useEffect(() => {
     setCoverImage(post?.header_image_url || post?.hero_image_url || DEFAULT_HERO_IMAGE);
@@ -132,8 +141,20 @@ const BlogPostPage = () => {
     );
   }
 
+  const articleLd = articleJsonLd({
+    path: `/blog/${post.slug}`,
+    title: seoMeta.h1,
+    description: seoMeta.description,
+    image: post.header_image_url || post.hero_image_url,
+    published: post.published_at || post.created_at,
+    updated: post.updated_at,
+  });
+
   return (
     <div className="bg-[#FFFAEB]">
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
+      </Helmet>
       <article className="w-full bg-[#FFFAEB]">
         <div className="border-b border-stone-200 bg-[#FFFAEB] py-6 sm:py-8">
           <img
@@ -146,10 +167,10 @@ const BlogPostPage = () => {
         </div>
 
         <div className="mx-auto w-full max-w-6xl px-5 py-6 sm:px-8 sm:py-10 lg:px-12">
-          <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }, { name: post.title, href: `/blog/${post.slug}` }]} />
+          <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }, { name: seoMeta.h1, href: `/blog/${post.slug}` }]} />
           <ExploreLinks />
 
-          <h1 className="mt-5 text-3xl font-bold leading-tight text-primary sm:text-4xl lg:text-5xl">{post.title}</h1>
+          <h1 className="mt-5 text-3xl font-bold leading-tight text-primary sm:text-4xl lg:text-5xl">{seoMeta.h1}</h1>
           {displayDate ? <p className="mt-3 text-sm font-medium text-stone-500">{displayDate}</p> : null}
           {post.excerpt ? <p className="mt-5 rounded-xl bg-orange-50 px-4 py-3 text-base leading-relaxed text-stone-700">{post.excerpt}</p> : null}
 

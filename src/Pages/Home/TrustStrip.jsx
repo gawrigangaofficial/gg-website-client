@@ -3,7 +3,7 @@ import { FaCheckCircle, FaFlask, FaTruck, FaLock } from 'react-icons/fa'
 
 const trustItems = [
   { label: 'Authentic', Icon: FaCheckCircle },
-  { label: 'Lab-Tested', Icon: FaFlask },
+  { label: 'Certified Rudraksha', Icon: FaFlask },
   { label: 'Pan-India Delivery', Icon: FaTruck },
   { label: 'Secure Payment', Icon: FaLock },
 ]

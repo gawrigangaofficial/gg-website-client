@@ -32,11 +32,8 @@ const SeoGuidePage = () => {
 
   return (
     <article className="min-h-screen bg-[#FFFAEB]">
+      {/* Title, description and canonical come from RouteSeo; only the article schema is added here. */}
       <Helmet>
-        <title>{`${guide.title} | Gawri Ganga`}</title>
-        <meta name="description" content={guide.description} />
-        <meta name="keywords" content={guide.keyword} />
-        <link rel="canonical" href={url} />
         <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
       </Helmet>
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">

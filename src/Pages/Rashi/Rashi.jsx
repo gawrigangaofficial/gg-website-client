@@ -9,6 +9,7 @@ import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import RelatedGuides from '../../components/RelatedGuides';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
 // Zodiac dropdown images from local assets (Client/src/assets/Zodiac)
 // Filenames can be lowercase (e.g. aries.jpg) or capitalized (Aries.png); keys are normalized to match rashi values.
@@ -429,7 +430,7 @@ const Rashi = () => {
           {/* Header */}
           <div className="mb-6 sm:mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
-              Rudraksha by rashi
+              {STATIC_META['/rashi'].h1}
             </h1>
             <p className="text-sm sm:text-base text-gray-600">
               Choose a Nepali Rudraksha mukhi for your rashi. The bead is for japa and daily wear. It is a traditional match, not a medical or financial result.

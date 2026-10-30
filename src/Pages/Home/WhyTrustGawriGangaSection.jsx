@@ -3,7 +3,7 @@ import whyGgBg from '../../assets/HomePage/whygg.webp';
 
 const POINTS = [
   'Quality tested & spiritually sanctified',
-  'Trusted by Shiv devotees nationwide',
+  'Delivered across India',
   'Energized for positivity & protection',
 ];
 

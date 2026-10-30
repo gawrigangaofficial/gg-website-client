@@ -12,6 +12,7 @@ import CollectionSortSelect, { sortProducts } from '../../components/CollectionS
 import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
 import RelatedGuides from '../../components/RelatedGuides';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
 const ACCESSORY_FAQS = [
   {
@@ -208,7 +209,7 @@ const Accessories = () => {
               className="w-full h-auto object-cover"
             />
           </div>
-          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Rudraksha bracelets and Karungali malas</h1>
+          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">{STATIC_META['/accessories'].h1}</h1>
           <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">
             Rudraksha bracelets for daily wear and Karungali malas in ebony wood. A bracelet is the shorter wrist form of a Rudraksha bead. A Karungali mala is worn for steadiness and a traditional sense of protection. Keep both dry, and take them off for soap.
           </p>

@@ -83,11 +83,12 @@ function DealCard({ product }) {
             )}
           </div>
           <p className="mt-1 line-clamp-2 text-[13px] font-semibold leading-snug text-stone-800">{product.name}</p>
-          <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
-            <FaStar className="text-[10px] text-emerald-600" aria-hidden />
-            <span className="font-semibold text-stone-700">4.9</span>
-            <span>({reviewCount})</span>
-          </p>
+          {reviewCount > 0 ? (
+            <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
+              <FaStar className="text-[10px] text-emerald-600" aria-hidden />
+              <span>({reviewCount})</span>
+            </p>
+          ) : null}
         </div>
       </div>
     </Link>

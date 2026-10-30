@@ -66,7 +66,7 @@ export const FOOTER_COLUMNS = [
       { name: 'Contact us', href: '/contact' },
       { name: 'Track your order', href: '/login', track: true },
       { name: 'Privacy policy', href: '/privacy-policy' },
-      { name: 'Return policy', href: '/return-policy' },
+      { name: 'Returns and refunds', href: '/refund-cancellation' },
       { name: 'Shipping policy', href: '/shipping-policy' },
       { name: 'Terms of service', href: '/terms-of-service' },
     ],

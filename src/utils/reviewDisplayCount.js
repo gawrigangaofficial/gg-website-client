@@ -1,15 +1,8 @@
 /**
- * Display-only review count for product cards when the API does not expose a real total.
- * Numeric IDs keep the legacy `5 + (id % 3)` pattern; UUID/string IDs use a stable hash so the UI never shows NaN.
+ * Review count for product cards. The products API does not return review totals, so cards show no
+ * rating: a made-up count breaks Google's review-snippet rules and India's 2022 fake-review guidelines.
+ * Product pages show real ratings from /api/reviews. Return a real count here once the API provides one.
  */
-export function getCardReviewCount(productId) {
-  const n = Number(productId);
-  if (Number.isFinite(n)) return 5 + (Math.trunc(n) % 3);
-  const s = String(productId ?? '');
-  if (!s) return 0;
-  let h = 0;
-  for (let i = 0; i < s.length; i += 1) {
-    h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
-  }
-  return 5 + (Math.abs(h) % 3);
+export function getCardReviewCount(product) {
+  return Number(product?.review_count) || 0;
 }

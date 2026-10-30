@@ -20,7 +20,6 @@ import InstagramFeedSection from './InstagramFeedSection'
 import YouTubePodcastSection from './YouTubePodcastSection'
 import LatestPostsSection from './LatestPostsSection'
 import HomeReviewsSection from './HomeReviewsSection'
-import TestimonialsSection from './TestimonialsSection'
 import TrustStrip from './TrustStrip'
 import Combos from './Combos'
 import MobileAppHome from './MobileAppHome'
@@ -92,7 +91,6 @@ const Home = () => {
         <HomeReviewsSection />
       </div>
       <SectionDivider />
-      <TestimonialsSection />
       <SectionDivider />
       <AuthenticCertifiedSection />
       <section className="w-full bg-[#FFFAEB]">

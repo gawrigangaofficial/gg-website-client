@@ -6,14 +6,8 @@ const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').rep
 
 export function CollectionSchema({ name, description, path, faqs = [] }) {
   const url = `${SITE}${path}`
+  // BreadcrumbList comes from <Breadcrumbs>, which every collection page renders.
   const graph = [
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
-        { '@type': 'ListItem', position: 2, name, item: url },
-      ],
-    },
     {
       '@type': 'CollectionPage',
       name,
