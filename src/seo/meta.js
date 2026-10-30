@@ -433,11 +433,14 @@ export function blogPostMeta(post = {}) {
   const html = String(post.html_content || '')
   const docTitle = decode(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '').replace(/\s*\|\s*Gawri Ganga\s*$/i, '')
   const docDesc = decode(html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i)?.[1] || '')
-  const fallback = String(post.title || post.slug || '')
-    .replace(/[-_]/g, ' ')
-    .replace(/\s+blog$/i, '')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim()
+  // A real title is used as written; only a title made from the slug is capitalised word by word.
+  const fallback = post.title
+    ? String(post.title).trim()
+    : String(post.slug || '')
+        .replace(/[-_]/g, ' ')
+        .replace(/\s+blog$/i, '')
+        .replace(/\b\w/g, (c) => c.toUpperCase())
+        .trim()
   const h1 = docTitle || fallback
   const description = clip(docDesc || post.excerpt || `${h1}: a guide from Gawri Ganga.`)
   return { title: `${h1}${SUFFIX}`, description, h1, type: 'article' }
