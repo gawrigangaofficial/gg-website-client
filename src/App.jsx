@@ -4,7 +4,7 @@ import ScrollToTop from './components/ScrollToTop'
 import CookieConsent from './components/CookieConsent'
 import RouteSeo from './components/RouteSeo'
 import Footer from './components/Footer'
-import ProductGuidanceWidget from './components/ProductGuidanceWidget'
+import ShopAssistant from './components/ShopAssistant'
 import Loader from './components/Loader'
 import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
@@ -126,7 +126,7 @@ const App = () => {
                   </Suspense>
                 )}
               </main>
-              <ProductGuidanceWidget />
+              <ShopAssistant />
               <Footer />
             </div>
           </WishlistProvider>
