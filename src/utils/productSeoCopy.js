@@ -45,7 +45,7 @@ export function productSeoCopy(product) {
           answer: 'Do not soak the beads, spray perfume on them, or leave them in a hot car. Wipe them dry and store them in a cloth pouch.',
         },
       ],
-      { href: '/guides/benefits-of-wearing-karungali-mala', label: 'Why wear a Karungali mala' },
+      { href: '/guides/karungali-mala-benefits-and-how-to-wear', label: 'Karungali mala: benefits and how to wear it' },
       ['benefits-of-wearing-karungali-mala', 'karungali-mala-price-and-care', 'why-rudraksha-karungali-and-tulsi-matter'],
     );
   }
@@ -81,7 +81,7 @@ export function productSeoCopy(product) {
           answer: 'Look for natural mukhi lines from top to bottom and a clean drill hole. A water test is not proof of origin.',
         },
       ],
-      { href: '/guides/why-wear-a-rudraksha-bracelet', label: 'Why wear a Rudraksha bracelet' },
+      { href: '/guides/rudraksha-bracelet-for-men', label: 'Why wear a Rudraksha bracelet' },
       ['why-wear-a-rudraksha-bracelet', 'how-to-check-original-rudraksha-bracelet', 'rudraksha-bracelet-for-daily-wear'],
     );
   }
@@ -103,7 +103,7 @@ export function productSeoCopy(product) {
           answer: 'Take it off for bathing with soap. A quick rinse of your hands is fine. Do not leave the bead soaking.',
         },
       ],
-      { href: '/guides/importance-of-wearing-rudraksha', label: 'Importance of Rudraksha' },
+      { href: '/guides/how-to-wear-rudraksha', label: 'How to wear Rudraksha' },
       ['importance-of-wearing-rudraksha', '5-mukhi-rudraksha-how-to-choose', 'can-you-wear-rudraksha-while-bathing'],
     );
   }
@@ -120,7 +120,7 @@ export function productSeoCopy(product) {
         answer: 'Yes. Gawri Ganga dispatches from Noida to serviceable pin codes across India. Cash on delivery is available for most of those pin codes. A ₹100 advance confirms the order and is adjusted from the amount due at delivery.',
       },
     ],
-    { href: '/guides/why-rudraksha-karungali-and-tulsi-matter', label: 'Why these products matter' },
+    { href: '/guides/wearing-rudraksha-tulsi-and-karungali', label: 'Why these products matter' },
     ['why-rudraksha-karungali-and-tulsi-matter', 'importance-of-wearing-rudraksha', 'benefits-of-wearing-karungali-mala'],
   );
 }

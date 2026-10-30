@@ -19,13 +19,14 @@ import OurCollection from './OurCollection'
 import InstagramFeedSection from './InstagramFeedSection'
 import YouTubePodcastSection from './YouTubePodcastSection'
 import LatestPostsSection from './LatestPostsSection'
-import HomeReviewsSection from './HomeReviewsSection'
 import TestimonialsSection from './TestimonialsSection'
 import TrustStrip from './TrustStrip'
 import Combos from './Combos'
 import MobileAppHome from './MobileAppHome'
 import DesktopHomeShowcase from './DesktopHomeShowcase'
 import BhaiDoojSection from './BhaiDoojSection'
+import { FOUNDED_YEAR, LAB_LINE } from '../../config/site'
+import { STATIC_META } from '../../seo/meta'
 
 
 function StoryPanel({ title, tone = 'white', wide = false, children }) {
@@ -44,6 +45,27 @@ function StoryPanel({ title, tone = 'white', wide = false, children }) {
   )
 }
 
+/** The page H1 and the reason to buy, right under the banner. Same H1 as the prerendered HTML (src/seo/meta.js). */
+function HomeIntro() {
+  return (
+    <section className="mx-auto w-[92%] max-w-5xl py-6 text-center md:py-10">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Since {FOUNDED_YEAR} · Lab-tested · COD across India</p>
+      <h1 className="mt-2 font-heading text-2xl font-bold leading-tight text-stone-900 md:text-4xl">{STATIC_META['/'].h1}</h1>
+      <p className="mx-auto mt-3 max-w-3xl text-sm leading-relaxed text-stone-600 md:text-base">
+        Original Nepali Rudraksha from 1 to 14 Mukhi, Karungali and Tulsi malas. Every bead is tested by {LAB_LINE}, and the certificate comes with your order.
+      </p>
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
+        <Link to="/rudraksha" className="inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">
+          Shop original Rudraksha
+        </Link>
+        <Link to="/guides/rudraksha-price-list" className="inline-flex rounded-full border border-orange-300 bg-white px-5 py-2.5 text-sm font-semibold text-primary">
+          See the price list
+        </Link>
+      </div>
+    </section>
+  )
+}
+
 const SectionDivider = () => (
   <div className="mx-auto hidden w-[92%] max-w-7xl items-center justify-center py-3 sm:py-4 md:flex">
     <div className="h-[2px] w-full rounded-full bg-linear-to-r from-transparent via-orange-300/90 to-transparent" />
@@ -56,13 +78,18 @@ const Home = () => {
       <MobileAppHome />
       <DesktopHomeShowcase />
       <BhaiDoojSection />
+      <HomeIntro />
       <TrustStrip />
       {/* <GawriGangaIntroSection /> */}
       <SectionDivider />
-      <AccessoriesProd />
       <RudrakhshaProd />
+      <AccessoriesProd />
       <TulsiProd />
       <Combos />
+      <SectionDivider />
+      <TestimonialsSection />
+      <SectionDivider />
+      <AuthenticCertifiedSection />
       <SectionDivider />
       <FeaturedProductsSection />
       {/* <SectionDivider />
@@ -88,13 +115,7 @@ const Home = () => {
       <SectionDivider />
       <LatestPostsSection />
       <SectionDivider />
-      <div className="hidden md:block">
-        <HomeReviewsSection />
-      </div>
       <SectionDivider />
-      <TestimonialsSection />
-      <SectionDivider />
-      <AuthenticCertifiedSection />
       <section className="w-full bg-[#FFFAEB]">
         <img
           src={OriginImg}
@@ -115,9 +136,9 @@ const Home = () => {
       <section className="mx-auto w-[92%] max-w-6xl py-8 md:py-12">
         <header className="mb-5 text-center md:mb-7">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">From the Noida studio</p>
-          <h1 className="mt-2 font-heading text-2xl font-bold text-stone-900 md:text-4xl">
+          <h2 className="mt-2 font-heading text-2xl font-bold text-stone-900 md:text-4xl">
             Nepali Rudraksha, Tulsi and Karungali at Gawri Ganga
-          </h1>
+          </h2>
         </header>
         <div className="grid grid-cols-1 items-stretch gap-2 md:grid-cols-2">
           <StoryPanel title="The shop">
@@ -161,21 +182,21 @@ const Home = () => {
             <p>
               The importance of wearing Rudraksha is the habit it supports: a seed linked with Shiva that you can hold, count, and keep with you.
               A guide explains <Link to="/guides/importance-of-wearing-rudraksha" className="font-semibold text-primary">why people wear Rudraksha</Link> and how a mukhi count is only a face count, not a promise.
-              {' '}<Link to="/guides/why-wear-a-rudraksha-bracelet" className="font-semibold text-primary">Why wear a Rudraksha bracelet</Link> covers daily wrist wear, metal caps, and how to check the lines on the bead.
-              {' '}<Link to="/guides/how-to-check-original-rudraksha-bracelet" className="font-semibold text-primary">How to check an original Rudraksha bracelet</Link> and <Link to="/guides/5-mukhi-rudraksha-how-to-choose" className="font-semibold text-primary">how to choose a 5 Mukhi Rudraksha</Link> sit beside it.
+              {' '}<Link to="/guides/rudraksha-bracelet-for-men" className="font-semibold text-primary">Why wear a Rudraksha bracelet</Link> covers daily wrist wear, metal caps, and how to check the lines on the bead.
+              {' '}<Link to="/guides/how-to-identify-original-rudraksha" className="font-semibold text-primary">How to check an original Rudraksha bracelet</Link> and <Link to="/guides/5-mukhi-rudraksha-benefits" className="font-semibold text-primary">how to choose a 5 Mukhi Rudraksha</Link> sit beside it.
               {' '}<Link to="/guides/can-you-wear-rudraksha-while-bathing" className="font-semibold text-primary">Wearing Rudraksha while bathing</Link> explains soap, sweat, and the washroom.
             </p>
           </StoryPanel>
           <StoryPanel title="Karungali, Tulsi, and sprays" tone="cream">
             <p>
               People wear a Karungali mala because the dark ebony beads are smooth and traditionally kept for steadiness.
-              Read <Link to="/guides/benefits-of-wearing-karungali-mala" className="font-semibold text-primary">why wear a Karungali mala</Link> and <Link to="/guides/karungali-mala-price-and-care" className="font-semibold text-primary">Karungali mala price and care</Link> before you order the wood.
+              Read <Link to="/guides/karungali-mala-benefits-and-how-to-wear" className="font-semibold text-primary">why wear a Karungali mala</Link> and <Link to="/guides/karungali-mala-price-and-care" className="font-semibold text-primary">Karungali mala price and care</Link> before you order the wood.
               A Tulsi mala matters for japa in the Vishnu tradition.
               {' '}<Link to="/guides/importance-of-tulsi-mala" className="font-semibold text-primary">The importance of a Tulsi mala</Link>, <Link to="/guides/shyam-tulsi-vs-rama-tulsi-mala" className="font-semibold text-primary">Shyam Tulsi and Rama Tulsi</Link>, and the <Link to="/guides/original-tulsi-mala-buying-guide" className="font-semibold text-primary">original Tulsi mala buying guide</Link> explain colour and care.
               Colour alone is not a certificate.
-              {' '}<Link to="/guides/why-rudraksha-karungali-and-tulsi-matter" className="font-semibold text-primary">Why Rudraksha, Karungali, Tulsi, and aura sprays matter</Link> keeps each item in its own job.
+              {' '}<Link to="/guides/wearing-rudraksha-tulsi-and-karungali" className="font-semibold text-primary">Why Rudraksha, Karungali, Tulsi, and aura sprays matter</Link> keeps each item in its own job.
               {' '}<Link to="/guides/smoke-free-aura-cleansing-sprays" className="font-semibold text-primary">Smoke-free aura sprays</Link> and <Link to="/guides/spiritual-gift-hampers-india" className="font-semibold text-primary">spiritual gift sets</Link> cover the room mist and the hamper.
-              Every guide is listed on the <Link to="/blog" className="font-semibold text-primary">Gawri Ganga guides</Link> page.
+              Every guide is listed on the <Link to="/guides" className="font-semibold text-primary">Gawri Ganga guides</Link> page.
             </p>
           </StoryPanel>
         <StoryPanel title="How an order leaves Noida" tone="cream" wide>

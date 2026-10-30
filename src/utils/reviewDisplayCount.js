@@ -1,15 +1,56 @@
+import { useEffect, useState } from 'react';
+import { apiFetch } from '../config/api.js';
+
 /**
- * Display-only review count for product cards when the API does not expose a real total.
- * Numeric IDs keep the legacy `5 + (id % 3)` pattern; UUID/string IDs use a stable hash so the UI never shows NaN.
+ * Real ratings for product cards, built from approved reviews (/api/reviews/public).
+ * Fetched once per page load and shared by every card. A product with no approved review shows no stars.
  */
-export function getCardReviewCount(productId) {
-  const n = Number(productId);
-  if (Number.isFinite(n)) return 5 + (Math.trunc(n) % 3);
-  const s = String(productId ?? '');
-  if (!s) return 0;
-  let h = 0;
-  for (let i = 0; i < s.length; i += 1) {
-    h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+let statsPromise = null;
+let statsCache = null;
+
+function loadStats() {
+  if (!statsPromise) {
+    statsPromise = apiFetch('/api/reviews/public?limit=500')
+      .then((r) => r.json())
+      .then((json) => {
+        const map = {};
+        for (const review of json?.data || []) {
+          const id = String(review.product_id);
+          const entry = map[id] || (map[id] = { sum: 0, count: 0 });
+          entry.sum += Number(review.rating) || 0;
+          entry.count += 1;
+        }
+        statsCache = map;
+        return map;
+      })
+      .catch(() => {
+        statsCache = {};
+        return statsCache;
+      });
   }
-  return 5 + (Math.abs(h) % 3);
+  return statsPromise;
+}
+
+/** { average, count } for a product id; count is 0 until approved reviews exist. */
+export function useProductRating(productId) {
+  const [stats, setStats] = useState(statsCache);
+
+  useEffect(() => {
+    if (statsCache) return undefined;
+    let cancelled = false;
+    loadStats().then((map) => {
+      if (!cancelled) setStats(map);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const entry = stats?.[String(productId)];
+  return entry ? { average: entry.sum / entry.count, count: entry.count } : { average: 0, count: 0 };
+}
+
+/** Kept for existing callers that pass getReviewCount; cards now read useProductRating directly. */
+export function getCardReviewCount() {
+  return 0;
 }

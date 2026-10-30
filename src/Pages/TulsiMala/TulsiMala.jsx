@@ -9,27 +9,12 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
-import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
-import RelatedGuides from '../../components/RelatedGuides';
+import { CollectionSchema, PageEndFaq } from '../../components/CategorySeo';
+import { CATEGORY_FAQS } from '../../content/categoryFaqs';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
-const TULSI_FAQS = [
-  {
-    question: 'How should I care for a Tulsi mala?',
-    answer:
-      'Keep the wood dry. Take it off for soap, swimming, and perfume. Wipe it and store it in a cloth pouch, away from heat.',
-  },
-  {
-    question: 'What is the difference between Rama Tulsi and Shyam Tulsi beads?',
-    answer:
-      'Lighter beads are commonly called Rama Tulsi and are chosen for a calm japa practice. Darker beads are called Shyam Tulsi and are chosen for a more protective feel. Colour alone does not prove the wood is genuine.',
-  },
-  {
-    question: 'Can anyone wear a Tulsi mala?',
-    answer:
-      'Yes. Wear it with clean hands and a simple intention. If your family follows a stricter rule, follow that.',
-  },
-];
+const TULSI_FAQS = CATEGORY_FAQS.tulsi;
 
 /** Must match `categories.name` in your database (comparison is case-insensitive). */
 const TULSI_CATEGORY = 'Tulsi Mala';
@@ -189,7 +174,7 @@ const TulsiMala = () => {
               className="h-auto w-full object-cover"
             />
           </div>
-          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Sacred Tulsi malas</h1>
+          <h1 className="mt-4 font-heading text-2xl font-bold text-stone-900 sm:text-3xl">{STATIC_META['/tulsimala'].h1}</h1>
           <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-stone-600 sm:text-base">
             Original Tulsi malas in holy basil wood for naam jap and daily wear. People wear a Tulsi mala for japa in the Vishnu tradition. Lighter Rama-style beads and darker Shyam-style beads are a colour difference, not a certificate. Keep the wood dry.
           </p>
@@ -445,16 +430,9 @@ const TulsiMala = () => {
             )}
           </div>
         </div>
-        <CategoryFaq faqs={TULSI_FAQS} />
-        <RelatedGuides
-          slugs={[
-            'importance-of-tulsi-mala',
-            'shyam-tulsi-vs-rama-tulsi-mala',
-            'original-tulsi-mala-buying-guide',
-          ]}
-        />
       </div>
       <ExploreSectionsBlock excludeCategory="Tulsi Mala" />
+      <PageEndFaq faqs={TULSI_FAQS} guides={['importance-of-tulsi-mala', 'shyam-tulsi-vs-rama-tulsi-mala', 'original-tulsi-mala-buying-guide']} />
     </div>
   );
 };

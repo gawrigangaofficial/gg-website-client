@@ -603,3 +603,89 @@ main [class~="bg-[#FFFAEB]"] {
     color: #fff;
   }
 }
+/* Home reviews: continuous scroll (TestimonialsSection). The track holds the list twice, so -50% loops seamlessly. */
+@keyframes gg-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.gg-marquee-track {
+  animation: gg-marquee var(--gg-marquee-duration, 40s) linear infinite;
+}
+.gg-marquee:hover .gg-marquee-track,
+.gg-marquee:focus-within .gg-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gg-marquee { overflow-x: auto; }
+  .gg-marquee-track { animation: none; }
+}
+
+/* Dhoop decoration (DhoopDecor): each puff is a soft round cloud that rises from a stick tip, sways side to side,
+   grows as it climbs and fades out near the top of the page. Only transform and opacity animate. */
+.gg-dhoop {
+  /* Below 2xl the whole decoration is drawn at 78% so it covers less of the page; --rise is in its own (unscaled) pixels. */
+  --rise: calc(-1 * min((100vh - 260px) / 0.78, 1100px));
+  transform: scale(0.78);
+  transform-origin: 0 100%;
+}
+@media (min-width: 1536px) {
+  .gg-dhoop {
+    --rise: calc(-1 * min(100vh - 280px, 900px));
+    transform: none;
+  }
+}
+@keyframes gg-puff {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  8% { opacity: 0.65; }
+  35% { transform: translate(calc(-50% + var(--dx) * -0.7), calc(-50% + var(--rise) * 0.35)) scale(calc(var(--grow) * 0.45)); opacity: 0.55; }
+  68% { transform: translate(calc(-50% + var(--dx) * 0.9), calc(-50% + var(--rise) * 0.7)) scale(calc(var(--grow) * 0.78)); opacity: 0.3; }
+  100% { transform: translate(calc(-50% + var(--dx) * 0.2), calc(-50% + var(--rise))) scale(var(--grow)); opacity: 0; }
+}
+.gg-dhoop .gg-puff {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  /* White incense smoke: bright core, with a faint cool-grey edge so it still shows on cream pages. */
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85), rgba(248, 245, 241, 0.5) 40%, rgba(214, 208, 200, 0.22) 72%, rgba(214, 208, 200, 0));
+  opacity: 0;
+  animation: gg-puff 11s ease-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes gg-ember-glow {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+@keyframes gg-lamp-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(-2deg); }
+  30% { transform: scale(0.94, 1.1) rotate(2deg); }
+  60% { transform: scale(1.06, 0.94) rotate(-1deg); }
+}
+.gg-dhoop .gg-ember {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gg-ember-glow 2.4s ease-in-out infinite;
+}
+.gg-lamp .gg-lamp-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: gg-lamp-flicker 1.6s ease-in-out infinite;
+}
+@keyframes gg-lamp-glow {
+  0%, 100% { opacity: 0.7; transform: scale(0.92); }
+  45% { opacity: 1; transform: scale(1.08); }
+  75% { opacity: 0.8; transform: scale(0.97); }
+}
+.gg-lamp .gg-lamp-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gg-lamp-glow 1.9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gg-dhoop .gg-puff { display: none; }
+  .gg-dhoop .gg-ember,
+  .gg-lamp .gg-lamp-flame,
+  .gg-lamp .gg-lamp-glow { animation: none; }
+}

@@ -9,27 +9,12 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
-import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
-import RelatedGuides from '../../components/RelatedGuides';
+import { CollectionSchema, PageEndFaq } from '../../components/CategorySeo';
+import { CATEGORY_FAQS } from '../../content/categoryFaqs';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
-const RUDRAKSHA_FAQS = [
-  {
-    question: 'How do I start wearing a Rudraksha at home?',
-    answer:
-      'Rinse the bead with clean water, dry it fully, and wear it with a short mantra you already know, such as Om Namah Shivaya. Keep it off while using soap.',
-  },
-  {
-    question: 'Can I wear Rudraksha with a Tulsi or Karungali mala?',
-    answer:
-      'Many people do. Use the neck for the mala you chant with and the wrist for a bracelet. If your family keeps them separate, follow that.',
-  },
-  {
-    question: 'Should I spray fragrance directly on the bead?',
-    answer:
-      'No. Use an aura spray in the air around you. Rudraksha lasts longer when the bead stays dry.',
-  },
-];
+const RUDRAKSHA_FAQS = CATEGORY_FAQS.rudraksha;
 
 const MUKHI_SUBCATEGORIES = Array.from({ length: 14 }, (_, i) => `${i + 1} Mukhi`);
 
@@ -527,7 +512,7 @@ const Rudraksh = () => {
             id="rudraksha-collection-heading"
             className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-stone-900"
           >
-            Nepali Rudraksha &amp; Rudraksha mala online in India
+            {STATIC_META['/rudraksha'].h1}
           </h1>
 
           <div className="mt-4 grid gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
@@ -564,17 +549,12 @@ const Rudraksh = () => {
               </p>
             </div>
           </div>
-          <CategoryFaq faqs={RUDRAKSHA_FAQS} />
-          <RelatedGuides
-            slugs={[
-              'importance-of-wearing-rudraksha',
-              '5-mukhi-rudraksha-how-to-choose',
-              'can-you-wear-rudraksha-while-bathing',
-              'why-rudraksha-karungali-and-tulsi-matter',
-            ]}
-          />
         </div>
       </section>
+      <PageEndFaq
+        faqs={RUDRAKSHA_FAQS}
+        guides={['how-to-check-original-rudraksha-bracelet', '5-mukhi-rudraksha-how-to-choose', 'importance-of-wearing-rudraksha', 'can-you-wear-rudraksha-while-bathing']}
+      />
     </div>
   );
 };

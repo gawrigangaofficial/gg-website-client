@@ -414,7 +414,7 @@ const Cart = () => {
 
           <div className="flex-1 space-y-5 overflow-y-auto px-4 py-4">
             <p className="text-center text-xs font-medium text-stone-500">
-              Trusted by Shiv devotees nationwide
+              Delivered across India, with COD
             </p>
 
             {cartItems.length === 0 ? (

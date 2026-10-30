@@ -607,7 +607,7 @@ const Navbar = () => {
       >
         {/* Top Banner */}
         <div className="gg-topbar hidden h-10 items-center justify-between gap-4 bg-primary px-6 text-sm text-white md:flex">
-          <p className="shrink-0">Authentic · Lab-Tested · Fast Delivery</p>
+          <p className="shrink-0">Authentic · Lab-Tested · COD across India</p>
           <Link
             to={isAuthenticated ? "/profile" : "/login"}
             state={isAuthenticated ? undefined : { from: location }}

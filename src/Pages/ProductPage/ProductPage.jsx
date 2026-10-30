@@ -49,8 +49,14 @@ import { trackViewContent } from "../../utils/analytics.js";
 import { getCardReviewCount } from "../../utils/reviewDisplayCount.js";
 import { productSeoCopy } from "../../utils/productSeoCopy.js";
 import RelatedGuides from "../../components/RelatedGuides.jsx";
+import { CategoryFaq } from "../../components/CategorySeo.jsx";
 import { ExploreLinks } from "../../components/Breadcrumbs.jsx";
-import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../utils/productJsonLd.js";
+import { breadcrumbJsonLd as buildBreadcrumbJsonLd, cleanName, faqJsonLd, productCategory, productJsonLd as buildProductJsonLd, productMeta } from "../../seo/meta.js";
+import { mukhiFaqs, mukhiInfo } from "../../content/mukhi.js";
+import { RASHIS, rashiMukhis } from "../../content/rashi.js";
+import { LAB_LINE, RETURN_WINDOW_DAYS } from "../../config/site.js";
+import { fetchDeliveryCharges } from "../../utils/deliveryCharges.js";
+import { usePageSeo } from "../../seo/SeoContext.jsx";
 import { normalizeProductMedia } from "../../utils/productMedia.js";
 import { getGalleryViewLabel, getProductStoryContext } from "../../utils/productPageCopy.js";
 import { formatDeliveryByLabel } from "../../utils/deliveryEstimate.js";
@@ -173,7 +179,7 @@ function ProductLabCertificateBlock() {
         <div className="mx-auto w-full max-w-[140px] shrink-0 sm:mx-0 sm:max-w-[120px] md:max-w-[140px]">
           <img
             src={rdcImage}
-            alt="Lab-tested authenticity certificate, Gawri Ganga"
+            alt="Gawri Ganga authenticity certificate"
             loading="eager"
             decoding="async"
             className="w-full rounded-lg border border-primary/25 object-contain shadow-sm"
@@ -187,13 +193,13 @@ function ProductLabCertificateBlock() {
             Certificate-backed. Not just claimed.
           </h2>
           <p className="mt-1.5 text-xs leading-relaxed text-stone-600 sm:text-sm">
-            Every piece goes through verified quality checks. You receive genuine spiritual goods with
-            documentation you can trust, not marketplace guesswork.
+            Tested by {LAB_LINE}. Your certificate comes with the order, so you have documentation
+            you can trust, not marketplace guesswork.
           </p>
           <ul className="mt-2.5 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] font-semibold text-stone-700 sm:justify-start sm:text-xs">
             <li className="inline-flex items-center gap-1.5">
               <FaCertificate className="text-primary" aria-hidden />
-              Lab verification
+              ISO-certified lab
             </li>
             <li className="inline-flex items-center gap-1.5">
               <FaCheckCircle className="text-emerald-600" aria-hidden />
@@ -221,10 +227,10 @@ function ProductTrustBesidePrice({ deliveryLabel }) {
       <div className="rounded-lg border border-stone-200 bg-white px-2.5 py-2">
         <p className="inline-flex items-center gap-1.5 text-[11px] font-bold text-stone-800 sm:text-xs">
           <FaUndo className="text-primary" aria-hidden />
-          Easy returns
+          {RETURN_WINDOW_DAYS}-day returns
         </p>
         <p className="mt-0.5 text-[10px] leading-snug text-stone-500 sm:text-[11px]">
-          Clear return policy
+          <Link to="/refund-cancellation" className="underline-offset-2 hover:underline">See refund policy</Link>
         </p>
       </div>
       <div className="rounded-lg border border-amber-200 bg-amber-50/80 px-2.5 py-2">
@@ -419,6 +425,18 @@ const ProductPage = () => {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { isAuthenticated, userId, user, loading: authLoading } = useAuth();
   const [product, setProduct] = useState(null);
+  const [shippingAmount, setShippingAmount] = useState(null);
+  usePageSeo(product ? { ...productMeta(product), image: product.images?.[0] } : null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchDeliveryCharges().then((settings) => {
+      if (!cancelled) setShippingAmount(settings?.prepaid?.amount ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -518,21 +536,8 @@ const ProductPage = () => {
     Combos: "/combos",
   };
 
-  // Rashi → recommended Rudraksha Mukhi (matches Rashi page logic)
-  const rashiToRudrakshaMapping = {
-    Aries: ["1 Mukhi", "3 Mukhi", "11 Mukhi"],
-    Taurus: ["2 Mukhi", "6 Mukhi", "14 Mukhi"],
-    Gemini: ["3 Mukhi", "5 Mukhi", "12 Mukhi"],
-    Cancer: ["2 Mukhi", "4 Mukhi", "7 Mukhi"],
-    Leo: ["1 Mukhi", "5 Mukhi", "9 Mukhi"],
-    Virgo: ["6 Mukhi", "10 Mukhi", "14 Mukhi"],
-    Libra: ["2 Mukhi", "7 Mukhi", "11 Mukhi"],
-    Scorpio: ["3 Mukhi", "8 Mukhi", "13 Mukhi"],
-    Sagittarius: ["4 Mukhi", "9 Mukhi", "12 Mukhi"],
-    Capricorn: ["6 Mukhi", "10 Mukhi", "14 Mukhi"],
-    Aquarius: ["5 Mukhi", "11 Mukhi", "13 Mukhi"],
-    Pisces: ["4 Mukhi", "7 Mukhi", "12 Mukhi"],
-  };
+  // Rashi → recommended Rudraksha Mukhi (same rule as the Rashi page: src/content/rashi.js)
+  const rashiToRudrakshaMapping = Object.fromEntries(RASHIS.map((r) => [r.value, rashiMukhis(r.value)]));
 
   useEffect(() => {
     fetchProduct();
@@ -966,19 +971,28 @@ const ProductPage = () => {
   const stockStatus = getStockStatus(product);
   const deliveryByLabel = formatDeliveryByLabel();
   const seoCopy = productSeoCopy(product);
-  const productJsonLd = buildProductJsonLd({
-    product,
-    pricing,
-    avgRating,
+  const seoMeta = productMeta(product);
+  const displayName = cleanName(product.name);
+  const mukhi = mukhiInfo(displayName);
+  // Single mukhi beads answer what people search for (rashi, planet, god, how many) before the generic questions.
+  const productFaqs = [
+    ...(mukhi && !/mala|combo|bracelet/i.test(product.name)
+      ? mukhiFaqs(mukhi.number, { returnDays: RETURN_WINDOW_DAYS, labLine: LAB_LINE }).map((f) => ({ question: f.q, answer: f.a }))
+      : []),
+    ...seoCopy.faqs,
+  ];
+  const productJsonLd = buildProductJsonLd(product, {
+    price: pricing.currentPrice,
+    rating: avgRating,
     reviewCount: totalReviews,
+    shippingAmount,
   });
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
-    { name: "Home", url: "/" },
-    ...(product.category && categoryToPath[product.category]
-      ? [{ name: product.category, url: categoryToPath[product.category] }]
-      : []),
-    { name: product.name, url: `/product/${product.slug || product.id}` },
+    { name: "Home", path: "/" },
+    productCategory(product),
+    { name: displayName, path: seoMeta.canonicalPath },
   ]);
+  const faqLd = faqJsonLd(productFaqs);
   const hasMultipleImages = product.images && product.images.length > 1;
   const isPreorder = isProductPreorder(product);
   const canPurchase = productCanBePurchased(product);
@@ -991,14 +1005,10 @@ const ProductPage = () => {
     const text = `${product.subcategory || ""} ${product.name || ""}`.toLowerCase();
     const rashis = [];
     Object.entries(rashiToRudrakshaMapping).forEach(([rashi, mukhis]) => {
+      // Match whole numbers only, so "11 mukhi" never counts as "1 mukhi".
       const matches = mukhis.some((m) => {
-        const mLower = m.toLowerCase();
         const num = m.replace(/\s*mukhi$/i, "").trim();
-        return (
-          text.includes(mLower) ||
-          text.includes(num + " mukhi") ||
-          text.includes(num + "mukhi")
-        );
+        return new RegExp(`(^|\\D)${num}\\s*mukhi`).test(text);
       });
       if (matches) rashis.push(rashi);
     });
@@ -1019,17 +1029,7 @@ const ProductPage = () => {
         {breadcrumbJsonLd ? (
           <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
         ) : null}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: seoCopy.faqs.map((item) => ({
-              '@type': 'Question',
-              name: item.question,
-              acceptedAnswer: { '@type': 'Answer', text: item.answer },
-            })),
-          })}
-        </script>
+        {faqLd ? <script type="application/ld+json">{JSON.stringify(faqLd)}</script> : null}
       </Helmet>
       <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-4 md:px-6 lg:px-8 xl:px-12 min-w-0">
         {/* Back Button */}
@@ -1174,7 +1174,7 @@ const ProductPage = () => {
             {/* Product Name with Share & Like (wishlist) */}
             <div className="flex items-start justify-between gap-3 sm:gap-4 min-w-0">
               <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-gray-900 flex-1 min-w-0 break-words pr-1">
-                {product.name}
+                {seoMeta.h1}
               </h1>
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pt-0.5">
                 <button
@@ -1209,20 +1209,22 @@ const ProductPage = () => {
               {seoCopy.guide.label}
             </Link>
 
-            {/* Star Rating and Reviews */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className="text-primary text-base sm:text-lg fill-current"
-                  />
-                ))}
+            {/* Star rating from real reviews only; hidden until a product has one */}
+            {reviewCount > 0 ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1" aria-label={`Rated ${avgRating.toFixed(1)} out of 5`}>
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar
+                      key={i}
+                      className={`text-base sm:text-lg ${i < Math.round(avgRating) ? "text-primary fill-current" : "text-gray-300"}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm sm:text-base text-gray-600 font-medium">
+                  {avgRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
+                </span>
               </div>
-              <span className="text-sm sm:text-base text-gray-600 font-medium">
-                {reviewCount} Reviews
-              </span>
-            </div>
+            ) : null}
 
             {/* Pricing – wraps on very small screens */}
             <div className="space-y-2 pb-2 border-b border-gray-200 min-w-0">
@@ -1313,12 +1315,12 @@ const ProductPage = () => {
               <div className="flex flex-wrap items-center gap-2 py-2">
                 <span className="text-sm font-semibold text-gray-700">Recommended for:</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {recommendedRashis.map((r) => (
+                  {(recommendedRashis.length === RASHIS.length ? ["All 12 rashis"] : recommendedRashis).map((r) => (
                     <span
                       key={r}
                       className="px-2.5 py-1 bg-primary/10 text-primary border border-primary/30 rounded-md text-xs font-semibold"
                     >
-                      {r}
+                      {RASHIS.find((x) => x.value === r)?.name || r}
                     </span>
                   ))}
                 </div>
@@ -1457,20 +1459,6 @@ const ProductPage = () => {
               productName={product.name}
               className="lg:hidden"
             />
-
-            <section className="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm" aria-label="Product answers">
-              <h2 className="font-heading text-lg font-bold text-stone-900">Answers before you buy</h2>
-              <div className="mt-3 space-y-3">
-                {seoCopy.faqs.map((item) => (
-                  <div key={item.question}>
-                    <h3 className="text-sm font-semibold text-stone-900">{item.question}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-stone-600">{item.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <RelatedGuides slugs={seoCopy.related} title="Guides for this product" />
 
             {/* Accordion */}
             <div className="pt-2">
@@ -1892,6 +1880,12 @@ const ProductPage = () => {
             )}
           </section>
         )}
+
+        {/* FAQs and guides close the page, after every product section */}
+        <div className="mt-8 border-t border-gray-200 pt-4 sm:mt-12">
+          <CategoryFaq faqs={productFaqs} title="Answers before you buy" />
+          <RelatedGuides slugs={seoCopy.related} title="Guides for this product" />
+        </div>
       </div>
 
       {/* Checkout Modal */}

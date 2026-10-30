@@ -7,27 +7,12 @@ import Heading from '../../assets/Sprayelem/Header.webp';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import { fetchAllProductsByCategory } from '../../utils/shopProductFetch';
-import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
-import RelatedGuides from '../../components/RelatedGuides';
+import { CollectionSchema, PageEndFaq } from '../../components/CategorySeo';
+import { CATEGORY_FAQS } from '../../content/categoryFaqs';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
+import { STATIC_META } from '../../seo/meta';
 
-const SPRAY_FAQS = [
-  {
-    question: 'How do aura sprays freshen a room without dhoop or sage smoke?',
-    answer:
-      'They are room mists. Shake the bottle and spray a short arc into the air. The fragrance settles in a few minutes, which is useful in apartments, offices, and while travelling, where smoke is not practical.',
-  },
-  {
-    question: 'Which Gawri Ganga spray should I start with?',
-    answer:
-      'Amrat Bindu is a lavender mist for quieter evenings. Maitri is warm and floral. Chakra Balance is a brighter hibiscus spray. Shuddhi uses mogra and kewda when you want a fresher puja or practice space.',
-  },
-  {
-    question: 'Can I spray these on Rudraksha or wood malas?',
-    answer:
-      'Spray into the air around you, not onto beads, fabric, or the face. Wood malas and Rudraksha stay in better shape when they are kept dry.',
-  },
-];
+const SPRAY_FAQS = CATEGORY_FAQS.sprays;
 
 const Spray = () => {
   const [products, setProducts] = useState([]);
@@ -61,7 +46,7 @@ const Spray = () => {
         <ExploreLinks />
         <img src={Heading} alt="Gawri Ganga aura sprays" className="mb-4 w-full rounded-3xl sm:mb-6" />
         <header className="mb-4 max-w-3xl sm:mb-6">
-          <h1 className="font-heading text-2xl font-bold text-stone-900 sm:text-3xl">Sacred aura and energy cleansing sprays</h1>
+          <h1 className="font-heading text-2xl font-bold text-stone-900 sm:text-3xl">{STATIC_META['/sprays'].h1}</h1>
           <p className="mt-2 text-sm leading-relaxed text-stone-600 sm:text-base">
             A smoke-free way to freshen a room when dhoop, camphor, or sage is not practical. Shake the bottle, spray a short arc into the air, and set one intention. Amrat Bindu, Maitri, Chakra Balance, and Shuddhi are the four mists in this collection.
           </p>
@@ -90,12 +75,9 @@ const Spray = () => {
             ))}
           </div>
         )}
-        <CategoryFaq faqs={SPRAY_FAQS} />
-        <RelatedGuides
-          slugs={['smoke-free-aura-cleansing-sprays', 'why-rudraksha-karungali-and-tulsi-matter']}
-        />
       </div>
       <ExploreSectionsBlock excludeCategory="Sprays" />
+      <PageEndFaq faqs={SPRAY_FAQS} guides={['smoke-free-aura-cleansing-sprays', 'why-rudraksha-karungali-and-tulsi-matter']} />
     </div>
   );
 };

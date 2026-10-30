@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useToast } from './Toaster';
 import { pricingFromProduct } from '../utils/productPricing';
+import { useProductRating } from '../utils/reviewDisplayCount.js';
 import { formatMeasuresSummary } from '../utils/productMeasures';
 
 const SPRAY_THEMES = {
@@ -94,7 +95,6 @@ function getSprayEssence(subcategory) {
 const SprayProductCard = ({
   product,
   calculatePricing,
-  getReviewCount,
   onAddToCart
 }) => {
   const { addToCart } = useCart();
@@ -103,7 +103,7 @@ const SprayProductCard = ({
   const inWishlist = isInWishlist(product.id);
 
   const pricing = calculatePricing ? calculatePricing(product) : pricingFromProduct(product);
-  const reviewCount = getReviewCount ? getReviewCount(product.id) : 5;
+  const { count: reviewCount } = useProductRating(product.id);
   const essence = getSprayEssence(product.subcategory);
   const theme = resolveSprayTheme(product);
   const descriptionText = String(
@@ -238,14 +238,16 @@ const SprayProductCard = ({
             </p>
           ) : null}
 
-          <div className="mb-4 flex items-center gap-1.5">
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <FaStar key={i} className="text-sm fill-current" style={{ color: theme.accent }} />
-              ))}
+          {reviewCount > 0 ? (
+            <div className="mb-4 flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar key={i} className="text-sm fill-current" style={{ color: theme.accent }} />
+                ))}
+              </div>
+              <span className="text-xs font-medium text-gray-500 sm:text-sm">({reviewCount})</span>
             </div>
-            <span className="text-xs font-medium text-gray-500 sm:text-sm">({reviewCount})</span>
-          </div>
+          ) : null}
 
           {descriptionText ? (
             <div className="mb-2 min-w-0">

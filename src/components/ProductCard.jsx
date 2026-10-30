@@ -7,6 +7,7 @@ import { useToast } from './Toaster';
 import { pricingFromProduct } from '../utils/productPricing';
 import { isProductPreorder } from '../utils/productPreorder';
 import { formatMeasuresSummary } from '../utils/productMeasures';
+import { useProductRating } from '../utils/reviewDisplayCount.js';
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -28,7 +29,6 @@ const ProductCard = ({
   variant = 'default', // 'rudraksh', 'spray', 'rashi', 'default'
   size = 'default', // 'default' | 'lg' — larger image, type, and actions
   calculatePricing,
-  getReviewCount,
   getEssence,
   onAddToCart
 }) => {
@@ -43,7 +43,7 @@ const ProductCard = ({
   const pricing = calculatePricing ? calculatePricing(product) : pricingFromProduct(product);
 
   // Get review count
-  const reviewCount = getReviewCount ? getReviewCount(product.id) : 5;
+  const { average: ratingAverage, count: reviewCount } = useProductRating(product.id);
 
   // Get essence for spray variant
   const essence = variant === 'spray' && getEssence ? getEssence(product.subcategory) : null;
@@ -171,11 +171,13 @@ const ProductCard = ({
         <p className="mt-1 line-clamp-2 text-[13px] font-medium leading-snug text-stone-800">
           {product.name}
         </p>
-        <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
-          <FaStar className="text-[10px] text-emerald-600" aria-hidden />
-          <span className="font-semibold text-stone-700">4.9</span>
-          <span>({reviewCount})</span>
-        </p>
+        {reviewCount > 0 ? (
+          <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
+            <FaStar className="text-[10px] text-emerald-600" aria-hidden />
+            <span className="font-semibold text-stone-700">{ratingAverage.toFixed(1)}</span>
+            <span>({reviewCount})</span>
+          </p>
+        ) : null}
         {outOfStock ? (
           <p className="mt-1 text-[11px] font-semibold text-red-600">Out of stock</p>
         ) : null}
@@ -273,22 +275,24 @@ const ProductCard = ({
           </p>
         )}
 
-        {/* Star Rating */}
-        <div className={`flex items-center ${large ? 'gap-1 mb-1.5' : 'gap-0.5 lg:gap-1 mb-1.5 sm:mb-2 lg:mb-3'}`}
-        >
-          <div className="flex items-center gap-0.5 sm:gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <FaStar
-                key={i}
-                className={`text-primary fill-current ${large ? 'text-[10px] sm:text-xs' : 'text-[9px] sm:text-[10px] lg:text-sm'}`}
-              />
-            ))}
-          </div>
-          <span className={`text-gray-500 font-medium ${large ? 'text-[10px] sm:text-xs ml-0.5' : 'text-[9px] sm:text-[10px] lg:text-xs ml-0.5 lg:ml-1'}`}
+        {/* Star rating: only when the product has real reviews */}
+        {reviewCount > 0 ? (
+          <div className={`flex items-center ${large ? 'gap-1 mb-1.5' : 'gap-0.5 lg:gap-1 mb-1.5 sm:mb-2 lg:mb-3'}`}
           >
-            4.9 ({reviewCount} reviews)
-          </span>
-        </div>
+            <div className="flex items-center gap-0.5 sm:gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <FaStar
+                  key={i}
+                  className={`${i < Math.round(ratingAverage) ? 'text-primary fill-current' : 'text-gray-300'} ${large ? 'text-[10px] sm:text-xs' : 'text-[9px] sm:text-[10px] lg:text-sm'}`}
+                />
+              ))}
+            </div>
+            <span className={`text-gray-500 font-medium ${large ? 'text-[10px] sm:text-xs ml-0.5' : 'text-[9px] sm:text-[10px] lg:text-xs ml-0.5 lg:ml-1'}`}
+            >
+              {ratingAverage.toFixed(1)} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+            </span>
+          </div>
+        ) : null}
 
         <p className={`text-emerald-700 font-semibold ${large ? 'text-[10px] sm:text-[11px] mb-1.5' : 'text-[9px] sm:text-[10px] mb-1.5'}`}>
           Authentic | COD Available
