@@ -7,23 +7,12 @@ import combosHeaderBanner from '../../assets/Combos/combos-header.webp';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import { fetchAllProductsByCategory } from '../../utils/shopProductFetch';
-import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
-import RelatedGuides from '../../components/RelatedGuides';
+import { CollectionSchema, PageEndFaq } from '../../components/CategorySeo';
+import { CATEGORY_FAQS } from '../../content/categoryFaqs';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import { STATIC_META } from '../../seo/meta';
 
-const COMBO_FAQS = [
-  {
-    question: 'Can these sets be used as festival or wedding gifts?',
-    answer:
-      'Yes. Combos pair Rudraksha, Tulsi, and aura sprays into one order, which works for Diwali, weddings, and return gifts. For a larger run, use the corporate quote form.',
-  },
-  {
-    question: 'Do you pack bulk or corporate orders?',
-    answer:
-      'Yes. Share the quantity, date, and delivery city on the bulk order page and the team will reply with a quote.',
-  },
-];
+const COMBO_FAQS = CATEGORY_FAQS.combos;
 
 /** Must match `categories.name` in your database (comparison is case-insensitive on the API). */
 const COMBOS_CATEGORY = 'Combos';
@@ -120,13 +109,10 @@ const Combos = () => {
             ))}
           </div>
         )}
-        <CategoryFaq faqs={COMBO_FAQS} title="Gifting questions" />
-        <RelatedGuides
-          slugs={['spiritual-gift-hampers-india', 'why-rudraksha-karungali-and-tulsi-matter', 'importance-of-wearing-rudraksha']}
-        />
       </div>
 
       <ExploreSectionsBlock excludeCategory="Combos" />
+      <PageEndFaq faqs={COMBO_FAQS} guides={['spiritual-gift-hampers-india', 'why-rudraksha-karungali-and-tulsi-matter', 'importance-of-wearing-rudraksha']} title="Gifting questions" />
     </div>
   );
 };

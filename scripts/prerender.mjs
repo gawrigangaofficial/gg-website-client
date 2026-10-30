@@ -31,6 +31,9 @@ const { mukhiInfo, mukhiFaqs, mukhiRashi } = await load('src/content/mukhi.js')
 const { SEO_GUIDES, MERGED_GUIDES } = await load('src/content/seoGuides.js')
 const { GUIDES, guideText } = await load('src/content/guides/index.js')
 const { RASHIS, rashiMukhis, rashiPageMeta, rashiFaqs } = await load('src/content/rashi.js')
+const { CATEGORY_FAQS } = await load('src/content/categoryFaqs.js')
+// FAQs shown at the end of each static page (same lists as the React pages).
+const PAGE_FAQS = { '/rudraksha': CATEGORY_FAQS.rudraksha, '/tulsimala': CATEGORY_FAQS.tulsi, '/accessories': CATEGORY_FAQS.accessories, '/combos': CATEGORY_FAQS.combos, '/sprays': CATEGORY_FAQS.sprays, '/rashi': CATEGORY_FAQS.rashi }
 const { SHOP_COLLECTIONS } = await load('src/content/shopCollections.js')
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -184,6 +187,10 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
   if (p === '/blog') {
     inner += `<h2>Guides</h2>${list([...GUIDES.map((g) => link(`/blog/${g.slug}`, g.title)), ...SEO_GUIDES.map((g) => link(`/guides/${g.slug}`, g.title)), ...posts.map((b) => link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1))])}`
   }
+  if (PAGE_FAQS[p]) {
+    inner += faqHtml(PAGE_FAQS[p])
+    jsonLd.push(meta.faqJsonLd(PAGE_FAQS[p]))
+  }
   if (p !== '/') jsonLd.push(meta.breadcrumbJsonLd(crumbs({ name: m.h1 || m.title, path: p })))
   emit(p, page(m, { jsonLd, priority: PRIORITY[p] ?? 0.4 }), inner)
 }
@@ -195,8 +202,8 @@ for (const c of SHOP_COLLECTIONS) {
     c.test ? c.test(p) : (Array.isArray(p.purposes) ? p.purposes : String(p.purposes || '').split(',')).some((x) => String(x).trim().toLowerCase() === String(c.purpose).toLowerCase()),
   )
   const route = `/shop/${c.slug}`
-  const inner = `${crumbHtml(crumbs({ name: m.h1, path: route }))}<h1>${esc(m.h1)}</h1><p>${esc(m.description)}</p>${items.length ? `<h2>Products</h2>${productLinks(items)}` : ''}${(c.sections || []).map((x) => `<h2>${esc(x.heading)}</h2><p>${esc(x.body)}</p>`).join('')}${faqHtml(c.faqs || [])}`
-  emit(route, page(m, { jsonLd: [meta.itemListJsonLd(items, m.h1), meta.breadcrumbJsonLd(crumbs({ name: m.h1, path: route })), meta.faqJsonLd(c.faqs || [])], priority: c.slug === 'karungali-mala' ? 0.8 : 0.5 }), inner)
+  const inner = `${crumbHtml(crumbs({ name: m.h1, path: route }))}<h1>${esc(m.h1)}</h1><p>${esc(m.description)}</p>${items.length ? `<h2>Products</h2>${productLinks(items)}` : ''}${(c.sections || []).map((x) => `<h2>${esc(x.heading)}</h2><p>${esc(x.body)}</p>`).join('')}${faqHtml(c.faqs || CATEGORY_FAQS.general)}`
+  emit(route, page(m, { jsonLd: [meta.itemListJsonLd(items, m.h1), meta.breadcrumbJsonLd(crumbs({ name: m.h1, path: route })), meta.faqJsonLd(c.faqs || CATEGORY_FAQS.general)], priority: c.slug === 'karungali-mala' ? 0.8 : 0.5 }), inner)
 }
 
 // ---------- products ----------

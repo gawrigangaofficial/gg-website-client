@@ -9,28 +9,12 @@ import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import CollectionSortSelect, { sortProducts } from '../../components/CollectionSortSelect';
-import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo';
-import RelatedGuides from '../../components/RelatedGuides';
+import { CollectionSchema, PageEndFaq } from '../../components/CategorySeo';
+import { CATEGORY_FAQS } from '../../content/categoryFaqs';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import { STATIC_META } from '../../seo/meta';
 
-const ACCESSORY_FAQS = [
-  {
-    question: 'Is it fine to wear a Rudraksha bracelet every day?',
-    answer:
-      'Yes. Many people wear one through the day. Take it off for soap, swimming, and strong perfume so the bead and thread last longer.',
-  },
-  {
-    question: 'Can women wear Rudraksha bracelets and Karungali malas?',
-    answer:
-      'Yes. Gawri Ganga does not restrict these beads by gender. Wear them clean and dry, and follow any family rule you already keep.',
-  },
-  {
-    question: 'How do I look after a Karungali mala?',
-    answer:
-      'Karungali is dense ebony wood. Keep it dry, wipe it instead of soaking it, and store it away from heat so the beads do not crack.',
-  },
-];
+const ACCESSORY_FAQS = CATEGORY_FAQS.accessories;
 
 const ACCESSORIES_SUBCATEGORIES = [
   { id: 1, name: 'Mala' },
@@ -488,17 +472,9 @@ const Accessories = () => {
             )}
           </div>
         </div>
-        <CategoryFaq faqs={ACCESSORY_FAQS} />
-        <RelatedGuides
-          slugs={[
-            'why-wear-a-rudraksha-bracelet',
-            'benefits-of-wearing-karungali-mala',
-            'how-to-check-original-rudraksha-bracelet',
-            'rudraksha-bracelet-for-daily-wear',
-          ]}
-        />
       </div>
       <ExploreSectionsBlock excludeCategory="Accessories" />
+      <PageEndFaq faqs={ACCESSORY_FAQS} guides={['why-wear-a-rudraksha-bracelet', 'benefits-of-wearing-karungali-mala', 'how-to-check-original-rudraksha-bracelet', 'rudraksha-bracelet-for-daily-wear']} />
     </div>
   );
 };

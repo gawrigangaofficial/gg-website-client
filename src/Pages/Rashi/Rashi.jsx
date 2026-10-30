@@ -7,7 +7,8 @@ import RashiSection from '../Home/RashiSection';
 import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
-import RelatedGuides from '../../components/RelatedGuides';
+import { PageEndFaq } from '../../components/CategorySeo';
+import { CATEGORY_FAQS } from '../../content/categoryFaqs';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import { STATIC_META } from '../../seo/meta';
 import { RASHIS, rashiMukhis } from '../../content/rashi';
@@ -426,10 +427,6 @@ const Rashi = () => {
               </ul>
             </nav>
           </div>
-          <RelatedGuides
-            slugs={['importance-of-wearing-rudraksha', 'why-wear-a-rudraksha-bracelet', 'can-you-wear-rudraksha-while-bathing']}
-            title="Rudraksha guides"
-          />
 
           {/* Custom Rashi dropdown */}
           <div className="mb-8 max-w-xl mx-auto" ref={dropdownRef}>
@@ -826,6 +823,12 @@ const Rashi = () => {
         )}
         </div>
       </div>
+      <PageEndFaq
+        faqs={CATEGORY_FAQS.rashi}
+        withSchema
+        title="Rudraksha by rashi: questions"
+        guides={['5-mukhi-rudraksha-how-to-choose', 'importance-of-wearing-rudraksha', 'can-you-wear-rudraksha-while-bathing']}
+      />
     </div>
   );
 };

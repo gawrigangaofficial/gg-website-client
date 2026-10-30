@@ -103,10 +103,6 @@ const RashiSignPage = () => {
           </p>
         </section>
 
-        <div className="max-w-3xl">
-          <CategoryFaq faqs={faqs} />
-        </div>
-
         <nav className="mt-10" aria-label="Other rashis">
           <h2 className="font-heading text-xl font-bold text-stone-900">Rudraksha for other rashis</h2>
           <ul className="mt-3 flex flex-wrap gap-2">
@@ -119,6 +115,8 @@ const RashiSignPage = () => {
             ))}
           </ul>
         </nav>
+
+        <CategoryFaq faqs={faqs} title={`${rashi.name} rashi: questions`} />
       </div>
     </div>
   )

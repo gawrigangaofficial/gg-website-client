@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import {
   FaInstagram,
   FaFacebookF,
   FaEnvelope,
   FaYoutube,
-  FaArrowRight,
+  FaWhatsapp,
+  FaMapMarkerAlt,
 } from 'react-icons/fa'
+import logoWhite from '../assets/gglogo-white.webp'
+import { ADDRESS, EMAIL, FOUNDED_YEAR, LABS, WHATSAPP_NUMBER } from '../config/site'
 import { FOOTER_COLUMNS } from '../content/footerNav'
 import { useAuth } from '../context/AuthContext'
 
@@ -32,19 +35,45 @@ function LinkList({ links, trackHref }) {
 }
 
 const Footer = () => {
-  const [email, setEmail] = useState('')
   const { isAuthenticated } = useAuth()
   const trackHref = isAuthenticated ? '/profile' : '/login'
-
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault()
-    if (email.trim()) setEmail('')
-  }
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Namaste! I need help choosing a Rudraksha.')}`
 
   return (
     <footer id="site-footer" className="mt-auto bg-[#7f1d2e] text-white">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 xl:grid-cols-7">
+        <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
+        {/* Brand: logo, promise and how to reach us */}
+        <div>
+          <Link to="/" aria-label="Gawri Ganga home" className="inline-block">
+            <img src={logoWhite} alt="Gawri Ganga" width="154" height="111" className="h-auto w-36" loading="lazy" />
+          </Link>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-amber-200">
+            Since {FOUNDED_YEAR} · Lab-tested · COD across India
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-white/85">
+            Original Nepali Rudraksha, Karungali and Tulsi malas. Every bead is tested by {LABS.join(' and ')}.
+          </p>
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-[#7f1d2e] hover:bg-amber-50"
+          >
+            <FaWhatsapp aria-hidden /> Chat on WhatsApp
+          </a>
+          <ul className="mt-5 space-y-2 text-sm text-white/85">
+            <li>
+              <a href={`mailto:${EMAIL}`} className="inline-flex items-center gap-2 hover:text-white">
+                <FaEnvelope className="shrink-0 text-xs" aria-hidden /> {EMAIL}
+              </a>
+            </li>
+            <li className="flex items-start gap-2">
+              <FaMapMarkerAlt className="mt-1 shrink-0 text-xs" aria-hidden /> {ADDRESS.full}
+            </li>
+          </ul>
+        </div>
+        <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-4 xl:grid-cols-7">
           {FOOTER_COLUMNS.map((column) => (
             <div key={column.title} className={column.wide ? 'col-span-2' : ''}>
               <h3 className="mb-3 font-heading text-sm font-bold">{column.title}</h3>
@@ -60,25 +89,10 @@ const Footer = () => {
             </div>
           ))}
         </div>
+        </div>
 
-        <div className="mt-10 grid gap-6 border-t border-white/25 pt-6 md:grid-cols-[1.4fr_1fr] md:items-end">
-          <form onSubmit={handleNewsletterSubmit} className="flex max-w-md flex-col gap-2 sm:flex-row">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your email"
-              className="min-w-0 flex-1 rounded-xl bg-white px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-white"
-              aria-label="Email for newsletter"
-            />
-            <button
-              type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#7f1d2e]"
-            >
-              Subscribe
-              <FaArrowRight aria-hidden />
-            </button>
-          </form>
+        <div className="mt-10 flex flex-col gap-5 border-t border-white/25 pt-6 md:flex-row md:items-center md:justify-between">
+          <p className="text-sm text-white/80">© {new Date().getFullYear()} Gawri Ganga. All rights reserved.</p>
           <div className="flex flex-wrap gap-3 md:justify-end">
             <a href="https://www.facebook.com/profile.php?id=61589197491701" aria-label="Facebook" className="grid h-9 w-9 place-items-center rounded-full border border-white/60 hover:bg-white hover:text-[#7f1d2e]">
               <FaFacebookF className="text-sm" />
@@ -95,9 +109,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-6 text-sm text-white/80">
-          <p>© {new Date().getFullYear()} Gawri Ganga. All rights reserved.</p>
-          <p className="mt-1 text-xs">Gawri Ganga is owned by BNB Basket and Boxes Gifting Solutions Private Limited. Sector 27, Noida, Uttar Pradesh, 201301. support@gawriganga.com</p>
+        <div className="mt-4 text-xs text-white/70">
+          <p>Gawri Ganga is owned by BNB Basket and Boxes Gifting Solutions Private Limited. Sector 27, Noida, Uttar Pradesh, 201301. support@gawriganga.com</p>
         </div>
       </div>
     </footer>

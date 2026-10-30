@@ -49,6 +49,7 @@ import { trackViewContent } from "../../utils/analytics.js";
 import { getCardReviewCount } from "../../utils/reviewDisplayCount.js";
 import { productSeoCopy } from "../../utils/productSeoCopy.js";
 import RelatedGuides from "../../components/RelatedGuides.jsx";
+import { CategoryFaq } from "../../components/CategorySeo.jsx";
 import { ExploreLinks } from "../../components/Breadcrumbs.jsx";
 import { breadcrumbJsonLd as buildBreadcrumbJsonLd, cleanName, faqJsonLd, productCategory, productJsonLd as buildProductJsonLd, productMeta } from "../../seo/meta.js";
 import { mukhiFaqs, mukhiInfo } from "../../content/mukhi.js";
@@ -1459,20 +1460,6 @@ const ProductPage = () => {
               className="lg:hidden"
             />
 
-            <section className="rounded-2xl border border-orange-100 bg-white p-4 shadow-sm" aria-label="Product answers">
-              <h2 className="font-heading text-lg font-bold text-stone-900">Answers before you buy</h2>
-              <div className="mt-3 space-y-3">
-                {productFaqs.map((item) => (
-                  <div key={item.question}>
-                    <h3 className="text-sm font-semibold text-stone-900">{item.question}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-stone-600">{item.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <RelatedGuides slugs={seoCopy.related} title="Guides for this product" />
-
             {/* Accordion */}
             <div className="pt-2">
               <section>
@@ -1893,6 +1880,12 @@ const ProductPage = () => {
             )}
           </section>
         )}
+
+        {/* FAQs and guides close the page, after every product section */}
+        <div className="mt-8 border-t border-gray-200 pt-4 sm:mt-12">
+          <CategoryFaq faqs={productFaqs} title="Answers before you buy" />
+          <RelatedGuides slugs={seoCopy.related} title="Guides for this product" />
+        </div>
       </div>
 
       {/* Checkout Modal */}

@@ -9,6 +9,7 @@ import { pricingFromProduct } from '../../utils/productPricing'
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js'
 import { getShopCollection } from '../../content/shopCollections'
 import { collectionMeta } from '../../seo/meta'
+import { CATEGORY_FAQS } from '../../content/categoryFaqs'
 
 const ShopCollection = () => {
   const { slug } = useParams()
@@ -56,7 +57,7 @@ const ShopCollection = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFAEB] py-6">
-      <CollectionSchema name={collection.title} description={collection.description} path={`/shop/${collection.slug}`} faqs={collection.faqs} />
+      <CollectionSchema name={collection.title} description={collection.description} path={`/shop/${collection.slug}`} faqs={collection.faqs || CATEGORY_FAQS.general} />
       <div className="mx-auto w-full max-w-[1600px] px-4 md:px-8">
         <Breadcrumbs items={[{ name: collection.title, href: `/shop/${collection.slug}` }]} />
         <ExploreLinks />
@@ -91,9 +92,7 @@ const ShopCollection = () => {
             ))}
           </section>
         ) : null}
-        <div className="max-w-3xl">
-          <CategoryFaq faqs={collection.faqs} />
-        </div>
+        <CategoryFaq faqs={collection.faqs || CATEGORY_FAQS.general} />
       </div>
     </div>
   )
