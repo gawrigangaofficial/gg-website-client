@@ -28,10 +28,10 @@ const load = (rel) => import(pathToFileURL(path.join(ROOT, rel)).href)
 const meta = await load('src/seo/meta.js')
 const site = await load('src/config/site.js')
 const { mukhiInfo, mukhiFaqs, mukhiRashi } = await load('src/content/mukhi.js')
-const { SEO_GUIDES, MERGED_GUIDES } = await load('src/content/seoGuides.js')
-const { GUIDES, guideText } = await load('src/content/guides/index.js')
+const { GUIDES, GUIDE_REDIRECTS, GUIDE_TOPICS, guideText, relatedCards } = await load('src/content/guides/index.js')
 const { RASHIS, rashiMukhis, rashiPageMeta, rashiFaqs } = await load('src/content/rashi.js')
 const { CATEGORY_FAQS } = await load('src/content/categoryFaqs.js')
+const { MOVED_POSTS, blogFaqs } = await load('src/content/blog.js')
 // FAQs shown at the end of each static page (same lists as the React pages).
 const PAGE_FAQS = { '/rudraksha': CATEGORY_FAQS.rudraksha, '/tulsimala': CATEGORY_FAQS.tulsi, '/accessories': CATEGORY_FAQS.accessories, '/combos': CATEGORY_FAQS.combos, '/sprays': CATEGORY_FAQS.sprays, '/rashi': CATEGORY_FAQS.rashi }
 const { SHOP_COLLECTIONS } = await load('src/content/shopCollections.js')
@@ -77,7 +77,7 @@ for (const p of all?.data || []) if (!products.has(p.slug)) products.set(p.slug,
 if (products.size < 10) throw new Error(`prerender: only ${products.size} products loaded from ${API}; refusing to publish empty product pages`)
 
 const blogJson = await getJson('/api/blogs')
-const posts = (blogJson?.data || []).filter((b) => b.slug && b.is_published !== false)
+const posts = (blogJson?.data || []).filter((b) => b.slug && b.is_published !== false && !MOVED_POSTS[b.slug.toLowerCase()])
 const charges = await getJson('/api/delivery-charges')
 const shippingAmount = (charges?.data || []).find((r) => String(r.payment_type).toLowerCase() === 'prepaid')?.amount ?? null
 
@@ -90,7 +90,8 @@ const NAV = [
   ['/combos', 'Combos'],
   ['/sprays', 'Sprays'],
   ['/rashi', 'Rudraksha by Rashi'],
-  ['/blog', 'Guides'],
+  ['/guides', 'Guides'],
+  ['/blog', 'Blog'],
   ['/about', 'About'],
   ['/contact', 'Contact'],
 ]
@@ -141,7 +142,9 @@ if (!base.includes('<div id="root"></div>')) throw new Error('prerender: <div id
 
 const sitemap = []
 function emit(routePath, page, body = '') {
-  const html = base
+  // Hindi guides declare their language so search engines and screen readers treat the page as Hindi.
+  const doc = page.lang === 'hi' ? base.replace('<html lang="en-IN">', '<html lang="hi-IN">') : base
+  const html = doc
     .replace('</head>', `    ${headTags({ ...page, path: routePath })}\n  </head>`)
     .replace('<div id="root"></div>', `<div id="root">${body ? shell(body) : ''}</div>`)
   const file = routePath === '/' ? path.join(DIST, 'index.html') : path.join(DIST, `${routePath.slice(1)}.html`)
@@ -154,7 +157,7 @@ const crumbs = (...items) => [{ name: 'Home', path: '/' }, ...items]
 const page = (m, extra = {}) => ({ title: m.title, description: m.description, type: m.type, ...extra })
 
 // ---------- static and category pages ----------
-const PRIORITY = { '/': 1, '/rudraksha': 0.9, '/tulsimala': 0.8, '/accessories': 0.8, '/combos': 0.7, '/sprays': 0.7, '/rashi': 0.7, '/blog': 0.7 }
+const PRIORITY = { '/': 1, '/rudraksha': 0.9, '/tulsimala': 0.8, '/accessories': 0.8, '/combos': 0.7, '/sprays': 0.7, '/rashi': 0.7, '/guides': 0.8, '/blog': 0.6 }
 const mukhiProducts = (byCategoryPath['/rudraksha'] || []).filter((p) => meta.productKind(p) === 'mukhi')
 
 for (const [p, m] of Object.entries(meta.STATIC_META)) {
@@ -168,7 +171,7 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
   if (p === '/') {
     jsonLd.push(meta.organizationJsonLd(), meta.websiteJsonLd())
     inner += `<h2>Shop by mukhi</h2>${productLinks(mukhiProducts)}<h2>Shop by category</h2>${list(NAV.slice(0, 6).map(([h, l]) => link(h, l)))}`
-    inner += `<h2>Guides</h2>${list(GUIDES.map((g) => link(`/blog/${g.slug}`, g.title)))}`
+    inner += `<h2>Guides</h2>${list(GUIDES.filter((g) => g.lang !== "hi").slice(0, 8).map((g) => link(`/guides/${g.slug}`, g.title)))}<p>${link("/guides", "All guides")}</p>`
   }
   if (items.length) {
     jsonLd.push(meta.itemListJsonLd(items, m.h1))
@@ -184,8 +187,35 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
     )}`
   }
   if (p === '/rashi') inner += `<h2>Rudraksha for your rashi</h2>${list(RASHIS.map((r) => link(`/rashi/${r.slug}`, `${r.name} (${r.hindi}) · ${r.english}`)))}`
+  if (p === '/guides') {
+    // Every guide, grouped by topic, so all guide links are in the page for crawlers.
+    for (const topic of GUIDE_TOPICS) {
+      const inTopic = GUIDES.filter((g) => g.category === topic.key && g.lang !== 'hi')
+      if (inTopic.length) inner += `<h2>${esc(topic.key)}</h2><p>${esc(topic.blurb)}</p>${list(inTopic.map((g) => `${link(`/guides/${g.slug}`, g.title)}: ${esc(g.excerpt)}`))}`
+    }
+    const hindi = GUIDES.filter((g) => g.lang === 'hi')
+    if (hindi.length) inner += `<h2>हिंदी गाइड</h2>${list(hindi.map((g) => `${link(`/guides/${g.slug}`, g.title)}: ${esc(g.excerpt)}`))}`
+    inner += `<p>${link('/blog', 'Blog: festival posts, new arrivals and updates')}</p>`
+  }
   if (p === '/blog') {
-    inner += `<h2>Guides</h2>${list([...GUIDES.map((g) => link(`/blog/${g.slug}`, g.title)), ...SEO_GUIDES.map((g) => link(`/guides/${g.slug}`, g.title)), ...posts.map((b) => link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1))])}`
+    inner += `<h2>Posts</h2>${list(posts.map((b) => `${link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1)}${b.excerpt ? `: ${esc(b.excerpt)}` : ''}`))}<p>${link('/guides', 'Read our guides')}</p>`
+  }
+  if (p === '/about') {
+    inner += `<h2>Since ${site.FOUNDED_YEAR}</h2><p>Gawri Ganga is a family business from Noida that has served devotees since ${site.FOUNDED_YEAR}. Every bead is tested by the Kailasa Rudraksha and Gemological Lab and the Rudraksha and Gems Testing Lab, both ISO-certified, and the lab certificate comes with your order.</p>`
+    inner += `<h2>Shopping with us</h2>${list([
+      'Cash on delivery for most pin codes, with a ₹100 advance adjusted at delivery.',
+      `Returns within 2 days of delivery for damaged, defective or not-as-described items (${link('/refund-cancellation', 'returns policy')}).`,
+      `Answers on WhatsApp, Monday to Saturday, or through our ${link('/contact', 'contact page')}.`,
+    ])}<h2>Start here</h2>${list([link('/rudraksha', 'Rudraksha'), link('/tulsimala', 'Tulsi malas'), link('/guides/how-to-identify-original-rudraksha', 'How to identify an original Rudraksha'), link('/guides/rudraksha-lab-certificate-xray', 'What a Rudraksha lab certificate shows')])}`
+  }
+  // Spray pages are product pages with their own address: give crawlers the product text, price and FAQs.
+  const spray = [...products.values()].find((x) => meta.SPRAY_PAGES[x.slug] === p)
+  if (spray) {
+    inner += `<p>Price: ₹${Number(spray.price).toLocaleString('en-IN')}</p>`
+    if (spray.description) inner += `<h2>About this spray</h2><p>${esc(text(spray.description))}</p>`
+    inner += `<p>${link('/sprays', 'All aura sprays')} · ${link('/guides/smoke-free-aura-cleansing-sprays', 'Guide: smoke-free aura cleansing sprays')}</p>`
+    inner += faqHtml(CATEGORY_FAQS.sprays)
+    jsonLd.push(meta.productJsonLd(spray, { shippingAmount }), meta.faqJsonLd(CATEGORY_FAQS.sprays))
   }
   if (PAGE_FAQS[p]) {
     inner += faqHtml(PAGE_FAQS[p])
@@ -230,7 +260,7 @@ for (const p of products.values()) {
   }
   if (p.description) inner += `<h2>About this product</h2><p>${esc(text(p.description))}</p>`
   inner += faqHtml(faqs)
-  inner += `<p>${link(cat.path, `More ${cat.name}`)} · ${link('/blog', 'Guides')}</p>`
+  inner += `<p>${link(cat.path, `More ${cat.name}`)} · ${link('/guides', 'Guides')}</p>`
   const images = (p.images || []).filter(Boolean)
   emit(
     route,
@@ -246,14 +276,7 @@ for (const p of products.values()) {
 }
 
 // ---------- guides and blog posts ----------
-for (const g of SEO_GUIDES) {
-  const gm = meta.guideMeta(g.slug)
-  const route = `/guides/${g.slug}`
-  const trail = crumbs({ name: 'Guides', path: '/blog' }, { name: g.title, path: route })
-  const inner = `${crumbHtml(trail)}<h1>${esc(g.title)}</h1><p>${esc(g.description)}</p>${g.sections.map((s) => `<h2>${esc(s.heading)}</h2><p>${esc(s.body)}</p>`).join('')}<p>${link(g.cta.href, g.cta.label)}</p>`
-  emit(route, page(gm, { jsonLd: [meta.articleJsonLd({ path: route, title: g.title, description: g.description }), meta.breadcrumbJsonLd(trail)], priority: 0.6 }), inner)
-}
-// Long-form guides (src/content/guides) at /blog/<slug>, with live prices written into the text.
+// Guides (src/content/guides) at /guides/<slug>, with live prices written into the text.
 const priceOf = (slug) => (products.get(slug) ? `₹${Number(products.get(slug).price).toLocaleString('en-IN')}` : '')
 const gtext = (s) => esc(guideText(s, priceOf))
 const guideBlock = (b) =>
@@ -267,17 +290,20 @@ const guideBlock = (b) =>
             .join('')}</tbody></table>`
         : ''
 for (const g of GUIDES) {
-  const route = `/blog/${g.slug}`
-  const trail = crumbs({ name: 'Guides', path: '/blog' }, { name: g.title, path: route })
+  const route = `/guides/${g.slug}`
+  const trail = crumbs({ name: 'Guides', path: '/guides' }, { name: g.title, path: route })
   const sections = g.sections
-    .map((s) => `<h2>${esc(s.h2)}</h2>${(s.body || []).map(guideBlock).join('')}${(s.subs || []).map((sub) => `<h3>${esc(sub.h3)}</h3>${sub.body.map(guideBlock).join('')}`).join('')}`)
+    .map((s) => `<h2>${esc(s.h2)}</h2>${(s.body || []).map(guideBlock).join('')}${(s.subs || []).filter((sub) => sub && typeof sub === 'object').map((sub) => `<h3>${esc(sub.h3)}</h3>${(sub.body || []).map(guideBlock).join('')}`).join('')}`)
     .join('')
-  const inner = `${crumbHtml(trail)}<h1>${esc(g.title)}</h1><p>${esc(g.excerpt)}</p>${sections}${faqHtml(g.faqs)}${list((g.related?.pages || []).map((p) => link(p.to, p.label)))}`
+  const shop = [...new Set([...(g.related?.productSlugs || []), ...[...JSON.stringify(g.sections).matchAll(/\/product\/([a-z0-9-]+)/g)].map((m) => m[1])])].filter((x) => products.has(x)).slice(0, 6)
+  const shopHtml = shop.length ? `<h2>Products in this guide</h2>${list(shop.map((x) => `${link(`/product/${x}`, meta.cleanName(products.get(x).name))} ${priceOf(x)}`))}` : ''
+  const inner = `${crumbHtml(trail)}<h1>${esc(g.title)}</h1><p>${esc(g.excerpt)}</p>${sections}${faqHtml(g.faqs)}${shopHtml}<h2>Keep reading</h2>${list(relatedCards(g.slug, 3).map((r) => link(`/guides/${r.slug}`, r.title)))}${list((g.related?.pages || []).map((p) => link(p.to, p.label)))}`
   emit(
     route,
     page(
-      { title: `${g.seoTitle || g.title}${meta.SUFFIX}`, description: g.description, type: 'article' },
+      meta.guidePageMeta(g),
       {
+        lang: g.lang,
         image: g.heroImage,
         lastmod: g.updated || g.published,
         jsonLd: [
@@ -297,10 +323,16 @@ for (const b of posts) {
   if (guideSlugs.has(b.slug)) continue
   const bm = meta.blogPostMeta(b)
   const route = `/blog/${b.slug}`
-  const trail = crumbs({ name: 'Guides', path: '/blog' }, { name: bm.h1, path: route })
-  const body = text(b.html_content || '')
+  const trail = crumbs({ name: 'Blog', path: '/blog' }, { name: bm.h1, path: route })
+  const clean = String(b.html_content || '')
+    .replace(/<(style|script|head|title|iframe|object|embed)[\s\S]*?<\/\1>/gi, ' ')
+    .replace(/<\/?(html|body|meta|link|base|img)[^>]*>/gi, ' ')
+    .replace(/\s(style|class|on\w+)="[^"]*"/gi, '')
+    .replace(/<(\/?)h1\b/gi, '<$1h2')
+  const postShop = [...new Set([...`${b.primary_link_url || ''} ${clean}`.matchAll(/\/product\/([a-z0-9-]+)/g)].map((m) => m[1]))].filter((x) => products.has(x)).slice(0, 6)
+  const postShopHtml = postShop.length ? `<h2>Products in this post</h2>${list(postShop.map((x) => `${link(`/product/${x}`, meta.cleanName(products.get(x).name))} ${priceOf(x)}`))}` : ''
   const updated = (b.updated_at || b.published_at || BUILD_DATE).slice(0, 10)
-  const inner = `${crumbHtml(trail)}<h1>${esc(bm.h1)}</h1><p>${esc(body.slice(0, 4000))}</p><p>${link('/blog', 'More guides')}</p>`
+  const inner = `${crumbHtml(trail)}<h1>${esc(bm.h1)}</h1>${b.excerpt ? `<p>${esc(b.excerpt)}</p>` : ''}${clean}${postShopHtml}<p>${link('/blog', 'More posts')} · ${link('/guides', 'Guides')}</p>`
   emit(
     route,
     page(bm, {
@@ -309,6 +341,7 @@ for (const b of posts) {
       jsonLd: [
         meta.articleJsonLd({ path: route, title: bm.h1, description: bm.description, image: b.header_image_url || b.hero_image_url, published: b.published_at || b.created_at, updated: b.updated_at }),
         meta.breadcrumbJsonLd(trail),
+        meta.faqJsonLd(blogFaqs(clean)),
       ],
       priority: 0.6,
     }),
@@ -371,7 +404,8 @@ fs.writeFileSync(
 /sprays/amrat-dhara /sprays/amrat-bindu 301
 /signup /login 302
 /json.html / 301
-${Object.entries(MERGED_GUIDES).map(([from, to]) => `/guides/${from} /blog/${to} 301`).join('\n')}
+${Object.entries(GUIDE_REDIRECTS).map(([from, to]) => `/guides/${from} /guides/${to} 301`).join('\n')}
+${Object.entries(MOVED_POSTS).map(([from, to]) => `/blog/${from} ${to} 301`).join('\n')}
 `,
 )
 
@@ -385,5 +419,5 @@ fs.writeFileSync(
 for (const stale of ['json.html']) fs.rmSync(path.join(DIST, stale), { force: true })
 
 console.log(
-  `prerender: ${urls.length} URLs in sitemap · ${products.size} products · ${GUIDES.length} long guides · ${SEO_GUIDES.length} short guides · ${posts.length} blog posts · shipping ${shippingAmount ?? 'unknown'} · out: ${path.relative(ROOT, DIST)}`,
+  `prerender: ${urls.length} URLs in sitemap · ${products.size} products · ${GUIDES.length} long guides · ${posts.length} blog posts · shipping ${shippingAmount ?? 'unknown'} · out: ${path.relative(ROOT, DIST)}`,
 )

@@ -36,7 +36,8 @@ const OrderFailed = lazy(() => import('./Pages/Order/OrderFailed'))
 const About = lazy(() => import('./Pages/About/About'))
 const Blog = lazy(() => import('./Pages/Blog/Blog'))
 const BlogSlugPage = lazy(() => import('./Pages/Blog/BlogSlugPage'))
-const SeoGuidePage = lazy(() => import('./Pages/Blog/SeoGuidePage'))
+const GuidesIndex = lazy(() => import('./Pages/Guides/GuidesIndex'))
+const GuideSlugPage = lazy(() => import('./Pages/Guides/GuideSlugPage'))
 const Contact = lazy(() => import('./Pages/Contact/Contact'))
 const CorporateBulkOrder = lazy(() => import('./Pages/CorporateBulkOrder/CorporateBulkOrder'))
 const TermsOfService = lazy(() => import('./Pages/Policies/TermsOfService'))
@@ -102,7 +103,8 @@ const App = () => {
                   <Route path="/order-failed" element={<OrderFailed />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/blog" element={<Blog />} />
-                  <Route path="/guides/:slug" element={<SeoGuidePage />} />
+                  <Route path="/guides" element={<GuidesIndex />} />
+                  <Route path="/guides/:slug" element={<GuideSlugPage />} />
                   <Route path="/blog/:slug" element={<BlogSlugPage />} />
                   <Route path="/blogs" element={<Blog />} />
                   <Route path="/blogs/:slug" element={<BlogSlugPage />} />

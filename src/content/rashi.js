@@ -40,7 +40,7 @@ export function getRashi(slug) {
 export function rashiPageMeta(rashi) {
   const mukhis = rashiMukhis(rashi.value)
   return {
-    title: `Rudraksha for ${rashi.name} Rashi (${rashi.english}): Which Mukhi | Gawri Ganga`,
+    title: `${rashi.name} Rashi Rudraksha (${rashi.english}): Which Mukhi | Gawri Ganga`,
     description: `Which Rudraksha suits ${rashi.name} rashi (${rashi.hindi})? ${rashi.planet} rules ${rashi.english}, so tradition suggests ${mukhis.join(', ')}. How to wear it, and lab-tested beads.`,
     h1: `Rudraksha for ${rashi.name} Rashi (${rashi.hindi} राशि)`,
   }

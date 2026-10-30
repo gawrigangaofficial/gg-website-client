@@ -71,7 +71,7 @@ const FAQ_RULES = [
   {
     test: /original|fake|real|asli|nakli|certificate|certified|lab|genuine|authentic/,
     answer: `Every bead we sell is tested by ${LAB_LINE}, and the certificate comes with your order. You can also check a bead yourself: natural lines run top to bottom and the colour does not rub off.`,
-    link: { label: 'How to identify an original Rudraksha', to: '/blog/how-to-identify-original-rudraksha' },
+    link: { label: 'How to identify an original Rudraksha', to: '/guides/how-to-identify-original-rudraksha' },
   },
   {
     test: /\bcod\b|cash on delivery|cash/,
@@ -91,12 +91,12 @@ const FAQ_RULES = [
   {
     test: /how to wear|kaise pehne|kaise pahne|wearing|dharan|vidhi|mantra|which day/,
     answer: 'Wear it after bathing, ideally on a Monday morning: rinse the bead, chant its mantra or "Om Namah Shivaya" 108 times, and wear it on a thread or chain so it touches the skin.',
-    link: { label: 'How to wear Rudraksha', to: '/blog/how-to-wear-rudraksha' },
+    link: { label: 'How to wear Rudraksha', to: '/guides/how-to-wear-rudraksha' },
   },
   {
     test: /price list|rate list|kitne ka|price of|cost of|how much/,
     answer: 'Here is our live price list for 1 to 14 Mukhi Rudraksha, with deity and planet for each bead.',
-    link: { label: 'Rudraksha price list', to: '/blog/rudraksha-price-list' },
+    link: { label: 'Rudraksha price list', to: '/guides/rudraksha-price-list' },
   },
 ]
 

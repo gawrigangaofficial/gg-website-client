@@ -74,7 +74,8 @@ export const FOOTER_COLUMNS = [
   {
     title: 'Other',
     links: [
-      { name: 'Guides and blog', href: '/blog' },
+      { name: 'Guides', href: '/guides' },
+      { name: 'Blog', href: '/blog' },
       { name: 'Frequently asked questions', href: '/faq' },
       { name: 'Festivals and occasions', href: '/shop/festivals' },
       { name: 'Corporate and bulk', href: '/corporate-bulk-orders' },

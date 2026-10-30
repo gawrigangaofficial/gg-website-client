@@ -10,9 +10,13 @@ export default {
   excerpt:
     'Look at the lines, the surface and the hole. Skip the water and coin tests. For rare beads, ask for proof that goes beyond a photo.',
   category: 'Rudraksha',
+  keywords: {
+    primary: 'how to identify original rudraksha',
+    secondary: ['original rudraksha kaise pehchane', 'real vs fake rudraksha', 'rudraksha water test', 'rudraksha x-ray test', 'asli rudraksha ki pehchan'],
+  },
   readMinutes: 7,
   published: '2026-10-12',
-  updated: '2026-10-12',
+  updated: '2026-10-30',
   heroImage:
     'https://ggimg-images.s3.ap-south-1.amazonaws.com/products/1c61ddfe039240c28e53aaac1945b704-1.webp',
   heroAlt: 'Close view of a natural 5 Mukhi Rudraksha bead showing its lines running from top to bottom',
@@ -21,7 +25,7 @@ export default {
       h2: 'The short answer',
       body: [
         `An original Rudraksha is the seed of the Elaeocarpus ganitrus tree. You can judge most common beads by eye: the mukhi lines are natural clefts that run the full length of the bead from the top hole to the bottom, the surface is rough and uneven, and the hole goes through the bead naturally. No single test is perfect. For a rare bead such as a 1 Mukhi or a 14 Mukhi, a good look is not enough and you should ask for an X-ray or a written certificate from the seller.`,
-        `This guide gives you six checks you can do at home, explains why the popular home tests do not work, and tells you what to ask for when the bead is expensive.`,
+        `This guide gives you six checks you can do at home, explains why the popular home tests do not work, and tells you what to ask for when the bead is expensive. Hindi readers can find the same checks in [asli Rudraksha ki pehchan](/guides/asli-rudraksha-ki-pehchan).`,
       ],
     },
     {
@@ -50,7 +54,7 @@ export default {
         {
           h3: '4. Compare size and shape across the set',
           body: [
-            `Seeds grow. They are never identical. In a mala of 108 beads you should see small differences in size, shape and colour. Perfect uniformity across every bead is a warning sign, especially for large beads. One honest exception: smaller beads from Indonesia are naturally more even than larger Nepali beads, so judge uniformity against the type you are buying. Our guide on [Nepali vs Indonesian Rudraksha](/blog/nepali-vs-indonesian-rudraksha) explains the difference.`,
+            `Seeds grow. They are never identical. In a mala of 108 beads you should see small differences in size, shape and colour. Perfect uniformity across every bead is a warning sign, especially for large beads. One honest exception: smaller beads from Indonesia are naturally more even than larger Nepali beads, so judge uniformity against the type you are buying. Our guide on [Nepali vs Indonesian Rudraksha](/guides/nepali-vs-indonesian-rudraksha) explains the difference.`,
           ],
         },
         {
@@ -98,13 +102,13 @@ export default {
             ],
           },
         },
-        `If a seller tells you the water test is proof, treat that as a red flag. It shows they have nothing better to offer.`,
+        `If a seller tells you the water test is proof, take that as a red flag. It shows they have nothing better to offer.`,
       ],
     },
     {
       h2: 'When an X-ray or lab report is the right check',
       body: [
-        `Inside a genuine Rudraksha there are separate chambers, one for each face. An X-ray or CT scan shows these chambers, and their number usually matches the number of lines on the outside. This is why imaging is the standard way to check rare beads that are expensive to get wrong.`,
+        `Inside a genuine Rudraksha there are separate chambers, one for each face. An X-ray or CT scan shows these chambers, and their number usually matches the number of lines on the outside. This is why imaging is the standard way to check rare beads that are expensive to get wrong. We explain what a scan shows, and what a good report looks like, in more detail in our guide to [Rudraksha with an X-ray certificate](/guides/rudraksha-lab-certificate-xray).`,
         `You do not need an X-ray for a 5 Mukhi mala. You should ask for one, or for equivalent written proof, when the bead is any of these:`,
         {
           ul: [
@@ -154,7 +158,10 @@ export default {
       h2: 'What to do before you buy',
       body: [
         `Ask for close photos of each side of the bead, with a coin or ruler for scale. Ask what proof comes with it. Read the return policy. Our returns window is 2 days for unused products in original packaging.`,
-        `If you are not sure which bead you need, try [Rudraksha by rashi](/rashi), or read about our [authenticity process](/about). Most people begin with a [5 Mukhi Rudraksha](/product/5-mukhi-rudraksha), which is common, affordable and easy to check.`,
+        `If you are not sure which bead you need, try [Rudraksha by rashi](/rashi), or read about our [authenticity process](/about). Most people begin with a [5 Mukhi Rudraksha](/product/5-mukhi-rudraksha){{price:5-mukhi-rudraksha}}, which is common, affordable and easy to check.`,
+        `Price is the other thing to check before you pay. A 1 Mukhi priced like a 5 Mukhi cannot be what it claims, and our [Rudraksha price list](/guides/rudraksha-price-list) shows what each mukhi costs in our shop so you have a sensible range to compare against. If a 1 Mukhi is what you are after, read [1 Mukhi Rudraksha: forms, price and fakes](/guides/1-mukhi-rudraksha) first.`,
+        `Look-alikes are the other common problem. Some seeds sold as Rudraksha come from a different tree and are called bhadraksha. Our note on [Rudraksha vs bhadraksha](/guides/rudraksha-vs-bhadraksha) explains how they are sold and how to tell them apart.`,
+        `Finally, a plain point about expectations. Checking a bead is about knowing what you bought. Wearing Rudraksha is a spiritual practice, not a remedy for illness or a promise of any outcome, and a bead that is genuine does not need big claims attached to it.`,
       ],
     },
   ],
@@ -178,6 +185,14 @@ export default {
     {
       q: 'Do I need a certificate for a 5 Mukhi Rudraksha?',
       a: 'It is useful for any bead, because it ties the bead to a seller who stands behind it. For common beads the proof you need is mostly visual, and for rare beads it should include a scan.',
+    },
+    {
+      q: 'Can a real Rudraksha have a crack or a dent?',
+      a: 'Yes. Natural seeds can have small cracks, dents and uneven patches from drying. A fine hairline crack is not proof of a fake. A deep split that opens along a line, or glued joins, should be checked before you buy.',
+    },
+    {
+      q: 'How do I check the mukhi lines on a Rudraksha?',
+      a: 'Count the natural clefts that run from the top hole to the bottom hole. Each should be continuous and slightly sunken, not drawn or cut in. Use a magnifier and good light, and compare with the stated mukhi.',
     },
   ],
   related: {

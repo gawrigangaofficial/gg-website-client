@@ -5,7 +5,7 @@ const LINKS = [
   { to: '/shop/karungali-mala', label: 'Karungali Mala' },
   { to: '/tulsimala', label: 'Tulsi Mala' },
   { to: '/accessories', label: 'Rudraksha Bracelets' },
-  { to: '/blog', label: 'Guides' },
+  { to: '/guides', label: 'Guides' },
 ]
 
 /** Shown for any URL without a route. The server returns status 404 for these URLs (see scripts/prerender.mjs). */

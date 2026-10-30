@@ -1,39 +1,20 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { FaWhatsapp } from 'react-icons/fa';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
-import { apiFetch } from '../../config/api';
 import { WHATSAPP_NUMBER } from '../../config/site';
-import { articleJsonLd, cleanName, faqJsonLd } from '../../seo/meta';
+import { articleJsonLd, faqJsonLd, guidePageMeta } from '../../seo/meta';
 import { usePageSeo } from '../../seo/SeoContext';
 import { pricingFromProduct } from '../../utils/productPricing';
-import BlogExploreProductsSection from './BlogExploreProductsSection';
+import BlogExploreProductsSection from '../Blog/BlogExploreProductsSection';
+import { relatedCards } from '../../content/guides/lookup';
+import ShopStrip from '../../components/ShopStrip';
+import { linkedProductSlugs, useProductsBySlug } from '../../hooks/useProductsBySlug';
 
 const TOKEN = /(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\{\{(?:price|amount):[a-z0-9-]+\}\})/g;
 const inr = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9\p{Script=Devanagari}]+/gu, '-').replace(/^-|-$/g, '');
-
-/** Live products keyed by slug, loaded once for price tokens and the related-products row. */
-function useProducts() {
-  const [bySlug, setBySlug] = useState({});
-  useEffect(() => {
-    let cancelled = false;
-    apiFetch('/api/products?limit=200')
-      .then((r) => r.json())
-      .then((json) => {
-        if (cancelled) return;
-        const map = {};
-        for (const p of json?.data || []) map[p.slug] = p;
-        setBySlug(map);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-  return bySlug;
-}
 
 function RichText({ text, products }) {
   const parts = String(text).split(TOKEN).filter(Boolean);
@@ -125,17 +106,21 @@ function Block({ block, products }) {
 }
 
 const PROSE =
-  'text-[17px] leading-8 text-stone-700 [&_h2]:mt-10 [&_h2]:border-b [&_h2]:border-stone-200 [&_h2]:pb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-primary [&_h3]:mt-7 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-stone-900 [&_p]:my-4 [&_a]:font-semibold [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6 [&_strong]:text-stone-900';
+  '[&_h2]:scroll-mt-24 text-[17px] leading-8 text-stone-700 [&_h2]:mt-10 [&_h2]:border-b [&_h2]:border-stone-200 [&_h2]:pb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-primary [&_h3]:mt-7 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-stone-900 [&_p]:my-4 [&_a]:font-semibold [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline [&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6 [&_strong]:text-stone-900';
 
-/** Long-form guide from src/content/guides, at /blog/<slug>. */
+/** Long-form guide from src/content/guides, at /guides/<slug>. */
 const GuidePage = ({ guide }) => {
-  const products = useProducts();
-  usePageSeo({ title: `${guide.seoTitle || guide.title} | Gawri Ganga`, description: guide.description, image: guide.heroImage, type: 'article' });
+  const products = useProductsBySlug();
+  usePageSeo({ ...guidePageMeta(guide), image: guide.heroImage });
 
   const ctaAfter = Math.max(0, Math.ceil(guide.sections.length / 2) - 1);
-  const related = (guide.related?.productSlugs || []).map((slug) => products[slug]).filter(Boolean);
+  // Products to shop from this guide: the chosen ones first, then any product the text links to.
+  const shopSlugs = [...new Set([...(guide.related?.productSlugs || []), ...linkedProductSlugs(JSON.stringify(guide.sections))])];
+  const shop = shopSlugs.map((slug) => products[slug]).filter(Boolean);
+  const hi = guide.lang === 'hi';
+  const more = relatedCards(guide.slug, 3);
   const article = articleJsonLd({
-    path: `/blog/${guide.slug}`,
+    path: `/guides/${guide.slug}`,
     title: guide.title,
     description: guide.description,
     image: guide.heroImage,
@@ -151,9 +136,14 @@ const GuidePage = ({ guide }) => {
         {faqLd ? <script type="application/ld+json">{JSON.stringify(faqLd)}</script> : null}
       </Helmet>
       <article className="mx-auto w-full max-w-3xl px-5 py-6 sm:px-8 sm:py-10">
-        <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }, { name: guide.title, href: `/blog/${guide.slug}` }]} />
+        <Breadcrumbs items={[{ name: 'Guides', href: '/guides' }, { name: guide.title, href: `/guides/${guide.slug}` }]} />
         <ExploreLinks />
-        <h1 className="mt-5 font-heading text-3xl font-bold leading-tight text-stone-900 sm:text-4xl">{guide.title}</h1>
+        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+          <Link to={`/guides?topic=${encodeURIComponent(guide.category)}`} className="hover:underline">
+            {guide.category}
+          </Link>
+        </p>
+        <h1 className="mt-2 font-heading text-3xl font-bold leading-tight text-stone-900 sm:text-4xl">{guide.title}</h1>
         <p className="mt-3 text-sm text-stone-500">
           Gawri Ganga · Updated{' '}
           {new Date(guide.updated || guide.published).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -164,6 +154,26 @@ const GuidePage = ({ guide }) => {
         ) : null}
         <p className="mt-6 rounded-xl bg-orange-50 px-4 py-3 text-base leading-relaxed text-stone-700">{guide.excerpt}</p>
 
+        <nav className="mt-6 rounded-xl border border-stone-200 bg-white px-5 py-4" aria-label={guide.lang === 'hi' ? 'इस गाइड में' : 'In this guide'}>
+          <p className="text-sm font-semibold text-stone-900">{guide.lang === 'hi' ? 'इस गाइड में' : 'In this guide'}</p>
+          <ol className="mt-2 grid gap-x-6 gap-y-1 text-[15px] sm:grid-cols-2">
+            {guide.sections.map((s) => (
+              <li key={s.h2}>
+                <a href={`#${slugify(s.h2)}`} className="text-primary hover:underline">
+                  {s.h2}
+                </a>
+              </li>
+            ))}
+            {guide.faqs?.length ? (
+              <li>
+                <a href="#guide-faq" className="text-primary hover:underline">
+                  {guide.lang === 'hi' ? 'अक्सर पूछे जाने वाले सवाल' : 'Frequently asked questions'}
+                </a>
+              </li>
+            ) : null}
+          </ol>
+        </nav>
+
         <div className={PROSE}>
           {guide.sections.map((s, index) => (
             <Fragment key={s.h2}>
@@ -172,15 +182,18 @@ const GuidePage = ({ guide }) => {
                 {(s.body || []).map((b, k) => (
                   <Block key={k} block={b} products={products} />
                 ))}
-                {(s.subs || []).map((sub) => (
+                {(s.subs || []).filter((sub) => sub && typeof sub === 'object').map((sub) => (
                   <Fragment key={sub.h3}>
                     <h3>{sub.h3}</h3>
-                    {sub.body.map((b, k) => (
+                    {(sub.body || []).map((b, k) => (
                       <Block key={k} block={b} products={products} />
                     ))}
                   </Fragment>
                 ))}
               </section>
+              {index === 0 ? (
+                <ShopStrip compact products={shop.slice(0, 3)} id="guide-shop-top" lang={guide.lang} title={hi ? 'इस गाइड के प्रोडक्ट' : 'Shop this guide'} />
+              ) : null}
               {index === ctaAfter && guide.midCta ? (
                 <aside className="my-10 rounded-2xl border border-orange-200 bg-orange-50 p-6">
                   <p className="font-heading text-2xl font-bold text-stone-900">{guide.midCta.title}</p>
@@ -210,16 +223,20 @@ const GuidePage = ({ guide }) => {
           </section>
         ) : null}
 
-        {related.length ? (
-          <section className="mt-10" aria-labelledby="guide-products">
-            <h2 id="guide-products" className="text-2xl font-bold text-stone-900">Products in this guide</h2>
+        <ShopStrip products={shop.slice(0, 6)} id="guide-products" lang={guide.lang} title={hi ? 'इस गाइड में बताए गए प्रोडक्ट' : 'Products in this guide'} />
+
+        {more.length ? (
+          <section className="mt-12" aria-labelledby="keep-reading">
+            <h2 id="keep-reading" className="text-2xl font-bold text-stone-900">
+              {guide.lang === 'hi' ? 'और पढ़ें' : 'Keep reading'}
+            </h2>
             <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-              {related.map((p) => (
-                <li key={p.slug}>
-                  <Link to={`/product/${p.slug}`} className="flex h-full flex-col rounded-2xl border border-orange-100 bg-white p-3 shadow-sm hover:border-primary/40">
-                    {p.images?.[0] ? <img src={p.images[0]} alt={cleanName(p.name)} loading="lazy" className="aspect-square w-full rounded-xl object-cover" /> : null}
-                    <span className="mt-2 text-sm font-semibold text-stone-900">{cleanName(p.name)}</span>
-                    <span className="text-sm font-bold text-primary">{inr(pricingFromProduct(p).currentPrice)}</span>
+              {more.map((g) => (
+                <li key={g.slug}>
+                  <Link to={`/guides/${g.slug}`} className="flex h-full flex-col rounded-2xl border border-orange-100 bg-white p-4 shadow-sm hover:border-primary/40">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">{g.category}</span>
+                    <span className="mt-1 font-semibold leading-snug text-stone-900">{g.title}</span>
+                    <span className="mt-2 text-sm text-stone-500">{g.readMinutes} min read</span>
                   </Link>
                 </li>
               ))}

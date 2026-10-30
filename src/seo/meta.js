@@ -23,7 +23,6 @@ import {
 } from '../config/site.js'
 import { mukhiInfo } from '../content/mukhi.js'
 import { getRashi, rashiPageMeta } from '../content/rashi.js'
-import { getSeoGuide } from '../content/seoGuides.js'
 import { getShopCollection } from '../content/shopCollections.js'
 
 export const SUFFIX = ` | ${BRAND}`
@@ -139,11 +138,17 @@ export const STATIC_META = {
       'Serving devotees since 1982: original Nepali Rudraksha, Tulsi and Karungali malas from Noida, lab-tested and shipped with a certificate across India.',
     h1: 'About Gawri Ganga',
   },
-  '/blog': {
-    title: 'Rudraksha Guides: Benefits, Rules & How to Wear | Gawri Ganga',
+  '/guides': {
+    title: 'Rudraksha Guides: Price, Rules & How to Wear | Gawri Ganga',
     description:
-      'Guides to Rudraksha, Karungali and Tulsi: how to check an original bead, which mukhi to wear, wearing rules, care and buying tips from Gawri Ganga.',
+      'Guides to original Rudraksha, Karungali and Tulsi malas: price list, how to identify, which mukhi to wear, wearing rules and care. In English and Hindi.',
     h1: 'Rudraksha, Karungali and Tulsi Guides',
+  },
+  '/blog': {
+    title: 'Blog: Festival Posts, New Arrivals & Updates | Gawri Ganga',
+    description:
+      'News from Gawri Ganga: festival posts, new arrivals, product stories and updates from our Noida store. For how-to articles, see our guides.',
+    h1: 'Gawri Ganga Blog',
   },
   '/contact': {
     title: 'Contact Gawri Ganga: WhatsApp, Email & Address | Gawri Ganga',
@@ -254,14 +259,10 @@ function collectionMeta(slug) {
   }
 }
 
-function guideMeta(slug) {
-  const g = getSeoGuide(slug)
-  if (!g) return null
-  const t = `${g.title}${SUFFIX}`
-  return { title: t.length <= 65 ? t : g.title, description: clip(g.description), h1: g.title, type: 'article' }
+/** Meta for a guide object from src/content/guides. Used by the prerender and the guide page; takes the guide as an argument so the main bundle does not carry guide text. */
+export function guidePageMeta(g) {
+  return { title: `${g.seoTitle || g.title}${SUFFIX}`, description: clip(g.description), h1: g.title, type: 'article' }
 }
-
-// ---------- products ----------
 
 /** Hand-written titles for the products that carry the main buying keywords. */
 const PRODUCT_TITLES = {
@@ -339,6 +340,9 @@ export function productCategory(product = {}) {
   return { name: 'Bracelets and Malas', path: '/accessories' }
 }
 
+// Short product descriptions get the shop's trust line, so every snippet reaches a useful length.
+const withTrust = (d) => (d.length < 120 ? `${d} Since 1982, with 2-day returns.` : d)
+
 export function productMeta(product = {}) {
   const name = cleanName(product.name)
   const price = Number(product.price) || 0
@@ -361,7 +365,7 @@ export function productMeta(product = {}) {
   const lead = KIND_LEAD[productKind(product)]
   return {
     title,
-    description: clip(`${name} at ${inr(price)}: ${lead} COD and delivery across India.`),
+    description: clip(withTrust(`${name} at ${inr(price)}: ${lead} COD and delivery across India.`)),
     h1: name,
     canonicalPath,
     type: 'product',
@@ -397,8 +401,12 @@ export function routeMeta(pathname) {
   const shop = path.match(/^\/shop\/([^/]+)$/)?.[1]
   if (shop && collectionMeta(shop)) return collectionMeta(shop)
 
-  const guide = path.match(/^\/guides\/([^/]+)$/)?.[1]
-  if (guide && guideMeta(guide)) return guideMeta(guide)
+  // The guide page replaces this placeholder with the guide's own title and description once it has loaded.
+  const guideSlug = path.match(/^\/guides\/([^/]+)$/)?.[1]
+  if (guideSlug) {
+    const name = guideSlug.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
+    return { title: `${name}${SUFFIX}`, description: STATIC_META['/guides'].description, type: 'article' }
+  }
 
   const rashi = getRashi(path.match(/^\/rashi\/([^/]+)$/)?.[1])
   if (rashi) return rashiPageMeta(rashi)
@@ -409,11 +417,11 @@ export function routeMeta(pathname) {
     return { title: PRODUCT_TITLES[product] || `${name}${SUFFIX}`, description: STATIC_META['/'].description, type: 'product' }
   }
 
-  if (path.startsWith('/blog/')) return { title: `Guide${SUFFIX}`, description: STATIC_META['/blog'].description, type: 'article' }
+  if (path.startsWith('/blog/')) return { title: `Blog${SUFFIX}`, description: STATIC_META['/blog'].description, type: 'article' }
   return NOT_FOUND_META
 }
 
-export { collectionMeta, guideMeta }
+export { collectionMeta }
 
 const decode = (s = '') => String(s).replace(/&amp;/g, '&').replace(/&#39;|&apos;/g, "'").replace(/&quot;/g, '"').trim()
 

@@ -5,11 +5,10 @@ import ggLogo from '../../assets/gglogo.svg';
 import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import { formatBlogListDate, stripHtmlForExcerpt } from '../../utils/blogListDisplay';
-import { SEO_GUIDES } from '../../content/seoGuides';
-import { GUIDES } from '../../content/guides';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import { STATIC_META } from '../../seo/meta';
+import { SHOW_DRAFTS, isMovedPost } from '../../content/blog';
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
@@ -23,13 +22,13 @@ const Blog = () => {
       try {
         setLoading(true);
         setError('');
-        const response = await apiFetch('/api/blogs');
+        const response = await apiFetch(`/api/blogs${SHOW_DRAFTS ? '?include_drafts=true' : ''}`);
         const payload = await response.json();
         if (!response.ok || !payload?.success) {
           throw new Error(payload?.message || 'Failed to load blogs');
         }
         if (!cancelled) {
-          setPosts(Array.isArray(payload.data) ? payload.data : []);
+          setPosts((Array.isArray(payload.data) ? payload.data : []).filter((p) => !isMovedPost(p.slug)));
         }
       } catch (_error) {
         if (!cancelled) {
@@ -64,7 +63,7 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-[#FFFAEB]">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <Breadcrumbs items={[{ name: 'Guides', href: '/blog' }]} />
+        <Breadcrumbs items={[{ name: 'Blog', href: '/blog' }]} />
         <ExploreLinks />
         <div className="mb-10 flex justify-center">
           <img src={ggLogo} alt="Gawri Ganga" className="h-auto w-40 sm:w-48" loading="lazy" />
@@ -72,46 +71,19 @@ const Blog = () => {
         <header className="text-center">
           <h1 className="font-heading text-3xl font-bold text-stone-900 sm:text-4xl">{STATIC_META['/blog'].h1}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-stone-600">
-            Why people wear Nepali Rudraksha, a Karungali mala, a Tulsi mala, and a Rudraksha bracelet, plus how to choose and care for each one.
+            Festival posts, new arrivals and product stories from the Gawri Ganga team.
           </p>
         </header>
 
-        <section className="mt-10" aria-labelledby="in-depth-guides-heading">
-          <h2 id="in-depth-guides-heading" className="font-heading text-2xl font-bold text-stone-900">In-depth guides</h2>
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {GUIDES.map((guide) => (
-              <article key={guide.slug} lang={guide.lang || undefined} className="flex flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm">
-                {guide.heroImage ? (
-                  <img src={guide.heroImage} alt={guide.heroAlt || guide.title} loading="lazy" className="aspect-[16/9] w-full object-cover" />
-                ) : null}
-                <div className="flex flex-1 flex-col p-5">
-                  <h3 className="text-lg font-bold text-stone-900">{guide.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">{guide.excerpt}</p>
-                  <Link to={`/blog/${guide.slug}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    {guide.lang === 'hi' ? 'पूरा पढ़ें' : 'Read guide'}
-                    <FaArrowRight aria-hidden />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-10" aria-labelledby="buyer-guides-heading">
-          <h2 id="buyer-guides-heading" className="font-heading text-2xl font-bold text-stone-900">Importance and buyer guides</h2>
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {SEO_GUIDES.map((guide) => (
-              <article key={guide.slug} className="rounded-2xl border border-orange-100 bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-bold text-stone-900">{guide.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-stone-600">{guide.description}</p>
-                <Link to={`/guides/${guide.slug}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                  Read guide
-                  <FaArrowRight aria-hidden />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </section>
+        <aside className="mx-auto mt-8 max-w-3xl rounded-2xl border border-orange-200 bg-white p-5 text-center shadow-sm">
+          <p className="text-stone-700">
+            Looking for how-to articles on choosing and wearing Rudraksha, Karungali and Tulsi malas?{' '}
+            <Link to="/guides" className="font-semibold text-primary hover:underline">
+              Read our guides
+            </Link>
+            .
+          </p>
+        </aside>
 
         {loading ? (
           <div className="mt-12 flex items-center justify-center">
@@ -120,7 +92,7 @@ const Blog = () => {
         ) : error ? (
           <p className="mt-12 text-center text-sm font-medium text-red-600">{error}</p>
         ) : cards.length === 0 ? (
-          <p className="mt-12 text-center text-stone-600">No published blog posts yet. Please check back soon.</p>
+          <p className="mt-12 text-center text-stone-600">No blog posts yet. Please check back soon, or read our guides.</p>
         ) : (
           <section className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((post) => (

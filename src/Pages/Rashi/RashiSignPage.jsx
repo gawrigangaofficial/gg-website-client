@@ -98,8 +98,8 @@ const RashiSignPage = () => {
           <h2 id="rashi-wear-heading" className="font-heading text-2xl font-bold text-stone-900">How to wear it</h2>
           <p className="mt-2 text-base leading-relaxed text-stone-700">
             Start on a calm morning after bathing, chant the bead&apos;s mantra 108 times and wear it on a thread or chain so it touches the skin.
-            Read the full steps in <Link to="/blog/how-to-wear-rudraksha" className="font-semibold text-primary">how to wear Rudraksha</Link> and{' '}
-            <Link to="/blog/rudraksha-by-rashi" className="font-semibold text-primary">Rudraksha by rashi</Link>.
+            Read the full steps in <Link to="/guides/how-to-wear-rudraksha" className="font-semibold text-primary">how to wear Rudraksha</Link> and{' '}
+            <Link to="/guides/rudraksha-by-rashi" className="font-semibold text-primary">Rudraksha by rashi</Link>.
           </p>
         </section>
 
