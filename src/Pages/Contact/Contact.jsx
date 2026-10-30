@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../../assets/gglogo.svg'
+import logo from '../../assets/gglogo-full.webp'
 import { FaEnvelope, FaMapMarkerAlt, FaClock, FaPaperPlane } from 'react-icons/fa'
 import { trackLead } from '../../utils/analytics.js'
 import { apiFetch } from '../../config/api'

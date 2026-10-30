@@ -1,4 +1,5 @@
 import React from 'react'
+import DeferredMount from '../../components/DeferredMount'
 import { Link } from 'react-router-dom'
 import RashiSection from '../Home/RashiSection'
 import FAQAccordion from '../Home/FAQAccordion'
@@ -86,14 +87,17 @@ const Home = () => {
       <AccessoriesProd />
       <TulsiProd />
       <Combos />
+      <DeferredMount minHeight={900}>
       <SectionDivider />
       <TestimonialsSection />
       <SectionDivider />
       <AuthenticCertifiedSection />
       <SectionDivider />
       <FeaturedProductsSection />
+      </DeferredMount>
       {/* <SectionDivider />
       <LimitedTimeCashbackOffer /> */}
+      <DeferredMount minHeight={1200}>
       <SectionDivider />
       <SpraySection />
       <SectionDivider />
@@ -104,6 +108,8 @@ const Home = () => {
       <div className="hidden md:block">
         <RashiSection />
       </div>
+      </DeferredMount>
+      <DeferredMount minHeight={1200}>
       <SectionDivider />
       <WhyTrustGawriGangaSection />
       <SectionDivider />
@@ -114,6 +120,7 @@ const Home = () => {
       <YouTubePodcastSection />
       <SectionDivider />
       <LatestPostsSection />
+      </DeferredMount>
       <SectionDivider />
       <SectionDivider />
       <section className="w-full bg-[#FFFAEB]">

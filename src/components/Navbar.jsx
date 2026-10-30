@@ -3,8 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { FaRegHeart, FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { CgShoppingBag } from "react-icons/cg";
 import { GiPrayerBeads } from "react-icons/gi";
-import logo from "../assets/gglogo.svg";
-import mobileIcon from "../assets/icon-m.png";
+import logo from "../assets/gglogo-full.webp";
+import mobileIcon from "../assets/icon-m.webp";
 import {
   LuCircleUserRound,
   LuGem,

@@ -8,7 +8,10 @@
     <link rel="apple-touch-icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Serif+Display&family=Lora:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,opsz,wght@0,18..144,400;0,18..144,700;1,18..144,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap">
+    <!-- Merriweather (all headings) loads without blocking the first paint. Other fonts are used on a few pages only. -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Serif+Display&family=Lora:wght@400;700&family=Playfair+Display:wght@500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap"></noscript>
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#ff914d" />
     <meta name="application-name" content="Gawri Ganga" />

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
-import ggLogo from '../../assets/gglogo.svg';
+import ggLogo from '../../assets/gglogo-full.webp';
 import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import { formatBlogListDate, stripHtmlForExcerpt } from '../../utils/blogListDisplay';

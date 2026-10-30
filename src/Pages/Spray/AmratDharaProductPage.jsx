@@ -14,10 +14,10 @@ import OtherSpraysSection from '../../components/OtherSpraysSection';
 import { submitPreorderRequest } from '../../utils/preorderRequest';
 import { trackViewContent } from '../../utils/analytics.js';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
-import amratDharaBg from '../../assets/Sprayelem/Amratdhara/amratdharabg.png';
-import bigWave from '../../assets/Sprayelem/Amratdhara/bigwave.png';
-import smallWave from '../../assets/Sprayelem/Amratdhara/small wave.png';
-import smallWave2 from '../../assets/Sprayelem/Amratdhara/smallwave2.png';
+import amratDharaBg from '../../assets/Sprayelem/Amratdhara/amratdharabg.webp';
+import bigWave from '../../assets/Sprayelem/Amratdhara/bigwave.webp';
+import smallWave from '../../assets/Sprayelem/Amratdhara/small wave.webp';
+import smallWave2 from '../../assets/Sprayelem/Amratdhara/smallwave2.webp';
 
 const AmratDharaProductPage = () => {
   const { addToCart } = useCart();

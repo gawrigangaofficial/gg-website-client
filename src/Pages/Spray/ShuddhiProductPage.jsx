@@ -14,7 +14,7 @@ import OtherSpraysSection from '../../components/OtherSpraysSection';
 import { submitPreorderRequest } from '../../utils/preorderRequest';
 import { trackViewContent } from '../../utils/analytics.js';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
-import shuddhiBg from '../../assets/Sprayelem/shuddhi/shuddhibg.png';
+import shuddhiBg from '../../assets/Sprayelem/shuddhi/shuddhibg.webp';
 import bigLeave from '../../assets/Sprayelem/shuddhi/bigleave.png';
 import smallLeave from '../../assets/Sprayelem/shuddhi/smallleave.png';
 import halfLeaf from '../../assets/Sprayelem/shuddhi/half.png';

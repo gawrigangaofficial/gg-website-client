@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ggLogo from '../../assets/gglogo.svg';
+import ggLogo from '../../assets/gglogo-full.webp';
 
 const HL =
   'font-semibold text-primary underline decoration-primary/40 decoration-2 underline-offset-[5px] transition-colors hover:text-primary/85 hover:decoration-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FFFAEB] rounded-sm';

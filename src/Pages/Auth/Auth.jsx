@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../components/Toaster';
 import { trackLogin } from '../../utils/analytics.js';
 import OtpInput from '../../components/OtpInput.jsx';
-import ggLogo from '../../assets/gglogo.svg';
+import ggLogo from '../../assets/gglogo-full.webp';
 
 const TRUST_POINTS = [
   {

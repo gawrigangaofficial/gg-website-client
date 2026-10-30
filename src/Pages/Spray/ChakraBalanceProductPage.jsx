@@ -14,7 +14,7 @@ import OtherSpraysSection from '../../components/OtherSpraysSection';
 import { submitPreorderRequest } from '../../utils/preorderRequest';
 import { trackViewContent } from '../../utils/analytics.js';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
-import chakraBg from '../../assets/Sprayelem/chakrabalance/cbbg.png';
+import chakraBg from '../../assets/Sprayelem/chakrabalance/cbbg.webp';
 import chakraIcon from '../../assets/Sprayelem/chakrabalance/chakra.png';
 import petalsBig from '../../assets/Sprayelem/chakrabalance/petalsbig.png';
 import petals1 from '../../assets/Sprayelem/chakrabalance/4patel1.png';

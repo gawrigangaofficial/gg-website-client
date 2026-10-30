@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
-import logo from '../../assets/gglogo.svg'
+import logo from '../../assets/gglogo-full.webp'
 import { FaCheckCircle, FaBuilding, FaHandshake, FaTruck } from 'react-icons/fa'
 import CorporateBulkInquiryForm from '../../components/CorporateBulkInquiryForm'
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
