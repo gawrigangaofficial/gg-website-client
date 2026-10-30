@@ -27,8 +27,8 @@ export const SOCIAL = [
   'https://www.facebook.com/profile.php?id=61589197491701',
 ]
 
-/** Matches src/Pages/Policies/RefundCancellation.jsx ("within 7 days of receiving the product"). */
-export const RETURN_WINDOW_DAYS = 7
+/** Return window in days (owner confirmed 2 days, Oct 2026). RefundCancellation.jsx, product pages and schema all read this. */
+export const RETURN_WINDOW_DAYS = 2
 
 /** Matches src/Pages/Policies/ShippingPolicy.jsx: dispatch in 2–4 business days, delivery in 5–14. */
 export const HANDLING_DAYS = [2, 4]
@@ -41,5 +41,5 @@ export const OG_IMAGE = '/favicon.png'
 export const LABS = ['Kailasa Rudraksha and Gemological Lab', 'Rudraksha and Gems Testing Lab']
 export const LAB_LINE = `${LABS.join(' and ')} (ISO-certified labs)`
 
-/** The family business has served devotees for 40 years (owner confirmed, Oct 2026). */
-export const YEARS_OF_TRUST = 40
+/** The family business has served devotees since 1982 (owner confirmed, Oct 2026). */
+export const FOUNDED_YEAR = 1982

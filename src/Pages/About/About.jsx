@@ -9,7 +9,7 @@ import {
 } from 'react-icons/fa'
 import RelatedGuides from '../../components/RelatedGuides'
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
-import { LAB_LINE } from '../../config/site'
+import { FOUNDED_YEAR, LAB_LINE } from '../../config/site'
 
 const GOLD_DIVIDER = 'border-amber-800/40'
 const GOLD_ACCENT = 'text-amber-800/90'
@@ -37,7 +37,7 @@ const About = () => {
             About Gawri Ganga — Nepali Rudraksha, Tulsi, and Karungali
           </h1>
           <p className="about-heading mt-3 text-xl font-medium text-stone-700 sm:text-2xl">
-            40 Years of Sacred Trust
+            Since {FOUNDED_YEAR} · 40+ Years of Sacred Trust
           </p>
           <div
             className={`mt-6 mx-auto w-24 sm:w-32 h-px border-t ${GOLD_DIVIDER}`}

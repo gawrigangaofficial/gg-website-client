@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
+import { RETURN_WINDOW_DAYS } from '../../config/site'
 
 const RefundCancellation = () => {
   return (
@@ -36,7 +37,7 @@ const RefundCancellation = () => {
               2. Refund Eligibility
             </h2>
             <p>
-              We offer refunds or replacements for products that are defective, damaged in transit, or not as described. Refund requests must be raised within 7 days of receiving the product. Please retain the original packaging and share images of the issue where applicable.
+              We offer refunds or replacements for products that are defective, damaged in transit, or not as described. Refund requests must be raised within {RETURN_WINDOW_DAYS} days of receiving the product. Please retain the original packaging and share images of the issue where applicable.
             </p>
           </section>
           <section>

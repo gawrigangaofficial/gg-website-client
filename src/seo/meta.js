@@ -19,6 +19,7 @@ import {
   HANDLING_DAYS,
   TRANSIT_DAYS,
   OG_IMAGE,
+  FOUNDED_YEAR,
 } from '../config/site.js'
 import { mukhiInfo } from '../content/mukhi.js'
 import { getSeoGuide } from '../content/seoGuides.js'
@@ -134,7 +135,7 @@ export const STATIC_META = {
   '/about': {
     title: 'About Gawri Ganga: Nepali Rudraksha Store, Noida | Gawri Ganga',
     description:
-      'Gawri Ganga is a Noida store for original Nepali Rudraksha, Tulsi and Karungali malas. Who we are, how we source beads and how we ship across India.',
+      'Serving devotees since 1982: original Nepali Rudraksha, Tulsi and Karungali malas from Noida, lab-tested and shipped with a certificate across India.',
     h1: 'About Gawri Ganga',
   },
   '/blog': {
@@ -441,6 +442,7 @@ export function organizationJsonLd() {
     '@id': ORG_ID,
     name: BRAND,
     legalName: LEGAL_ENTITY,
+    foundingDate: String(FOUNDED_YEAR),
     url: `${SITE_URL}/`,
     logo: absUrl(OG_IMAGE),
     email: EMAIL,
