@@ -76,8 +76,10 @@ const all = await getJson('/api/products?limit=200')
 for (const p of all?.data || []) if (!products.has(p.slug)) products.set(p.slug, p)
 if (products.size < 10) throw new Error(`prerender: only ${products.size} products loaded from ${API}; refusing to publish empty product pages`)
 
-const blogJson = await getJson('/api/blogs')
-const posts = (blogJson?.data || []).filter((b) => b.slug && b.is_published !== false && !MOVED_POSTS[b.slug.toLowerCase()])
+// PRERENDER_DRAFTS=1 builds unpublished posts too, to audit them before they go live. Never use it for a deploy build.
+const withDrafts = process.env.PRERENDER_DRAFTS === '1'
+const blogJson = await getJson(`/api/blogs${withDrafts ? '?include_drafts=true' : ''}`)
+const posts = (blogJson?.data || []).filter((b) => b.slug && (withDrafts || b.is_published !== false) && !MOVED_POSTS[b.slug.toLowerCase()])
 const charges = await getJson('/api/delivery-charges')
 const shippingAmount = (charges?.data || []).find((r) => String(r.payment_type).toLowerCase() === 'prepaid')?.amount ?? null
 

@@ -443,7 +443,9 @@ export function blogPostMeta(post = {}) {
         .trim()
   const h1 = docTitle || fallback
   const description = clip(docDesc || post.excerpt || `${h1}: a guide from Gawri Ganga.`)
-  return { title: `${h1}${SUFFIX}`, description, h1, type: 'article' }
+  // The brand suffix is dropped when it would push the title past what search results show (about 60 characters).
+  const title = h1.length + SUFFIX.length <= 62 ? `${h1}${SUFFIX}` : h1
+  return { title, description, h1, type: 'article' }
 }
 
 // ---------- structured data ----------
