@@ -20,6 +20,7 @@ const ChakraBalanceProductPage = lazy(() => import('./Pages/Spray/ChakraBalanceP
 const ShuddhiProductPage = lazy(() => import('./Pages/Spray/ShuddhiProductPage'))
 const Rudraksh = lazy(() => import('./Pages/Rudraksh/Rudraksh'))
 const Rashi = lazy(() => import('./Pages/Rashi/Rashi'))
+const RashiSignPage = lazy(() => import('./Pages/Rashi/RashiSignPage'))
 const Accessories = lazy(() => import('./Pages/Accessories/Accessories'))
 const TulsiMala = lazy(() => import('./Pages/TulsiMala/TulsiMala'))
 const ProductPage = lazy(() => import('./Pages/ProductPage/ProductPage'))
@@ -86,6 +87,7 @@ const App = () => {
                   <Route path="/rudraksha" element={<Rudraksh />} />
                   <Route path="/tulsimala" element={<TulsiMala />} />
                   <Route path="/rashi" element={<Rashi />} />
+                  <Route path="/rashi/:slug" element={<RashiSignPage />} />
                   <Route path="/accessories" element={<Accessories />} />
                   <Route path="/purpose-products" element={<PurposeProducts />} />
                   <Route path="/shop/:slug" element={<ShopCollection />} />

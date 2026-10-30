@@ -10,6 +10,7 @@ import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
 import RelatedGuides from '../../components/RelatedGuides';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import { STATIC_META } from '../../seo/meta';
+import { RASHIS, rashiMukhis } from '../../content/rashi';
 
 // Zodiac dropdown images from local assets (Client/src/assets/Zodiac)
 // Filenames can be lowercase (e.g. aries.jpg) or capitalized (Aries.png); keys are normalized to match rashi values.
@@ -56,21 +57,8 @@ const Rashi = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // All 12 Rashis (Zodiac Signs)
-  const rashis = [
-    { value: 'Aries', label: 'Aries (मेष)', english: 'Aries', hindi: 'मेष', planet: 'Mars', element: 'Fire' },
-    { value: 'Taurus', label: 'Taurus (वृषभ)', english: 'Taurus', hindi: 'वृषभ', planet: 'Venus', element: 'Earth' },
-    { value: 'Gemini', label: 'Gemini (मिथुन)', english: 'Gemini', hindi: 'मिथुन', planet: 'Mercury', element: 'Air' },
-    { value: 'Cancer', label: 'Cancer (कर्क)', english: 'Cancer', hindi: 'कर्क', planet: 'Moon', element: 'Water' },
-    { value: 'Leo', label: 'Leo (सिंह)', english: 'Leo', hindi: 'सिंह', planet: 'Sun', element: 'Fire' },
-    { value: 'Virgo', label: 'Virgo (कन्या)', english: 'Virgo', hindi: 'कन्या', planet: 'Mercury', element: 'Earth' },
-    { value: 'Libra', label: 'Libra (तुला)', english: 'Libra', hindi: 'तुला', planet: 'Venus', element: 'Air' },
-    { value: 'Scorpio', label: 'Scorpio (वृश्चिक)', english: 'Scorpio', hindi: 'वृश्चिक', planet: 'Mars', element: 'Water' },
-    { value: 'Sagittarius', label: 'Sagittarius (धनु)', english: 'Sagittarius', hindi: 'धनु', planet: 'Jupiter', element: 'Fire' },
-    { value: 'Capricorn', label: 'Capricorn (मकर)', english: 'Capricorn', hindi: 'मकर', planet: 'Saturn', element: 'Earth' },
-    { value: 'Aquarius', label: 'Aquarius (कुम्भ)', english: 'Aquarius', hindi: 'कुम्भ', planet: 'Saturn', element: 'Air' },
-    { value: 'Pisces', label: 'Pisces (मीन)', english: 'Pisces', hindi: 'मीन', planet: 'Jupiter', element: 'Water' }
-  ];
+  // All 12 Rashis, Hindi name first (src/content/rashi.js)
+  const rashis = RASHIS;
 
   // Rashi Information Database
   const rashiDetails = {
@@ -185,20 +173,8 @@ const Rashi = () => {
   };
 
   // Mapping of Rashi to Suggested Rudraksha Mukhi (1-14 Mukhi)
-  const rashiToRudrakshaMapping = {
-    'Aries': ['1 Mukhi', '3 Mukhi', '11 Mukhi'],
-    'Taurus': ['2 Mukhi', '6 Mukhi', '14 Mukhi'],
-    'Gemini': ['3 Mukhi', '5 Mukhi', '12 Mukhi'],
-    'Cancer': ['2 Mukhi', '4 Mukhi', '7 Mukhi'],
-    'Leo': ['1 Mukhi', '5 Mukhi', '9 Mukhi'],
-    'Virgo': ['6 Mukhi', '10 Mukhi', '14 Mukhi'],
-    'Libra': ['2 Mukhi', '7 Mukhi', '11 Mukhi'],
-    'Scorpio': ['3 Mukhi', '8 Mukhi', '13 Mukhi'],
-    'Sagittarius': ['4 Mukhi', '9 Mukhi', '12 Mukhi'],
-    'Capricorn': ['6 Mukhi', '10 Mukhi', '14 Mukhi'],
-    'Aquarius': ['5 Mukhi', '11 Mukhi', '13 Mukhi'],
-    'Pisces': ['4 Mukhi', '7 Mukhi', '12 Mukhi']
-  };
+  // Mukhis by ruling planet, plus 5 Mukhi for every sign; same rule as the rashi guide and product FAQs.
+  const rashiToRudrakshaMapping = Object.fromEntries(RASHIS.map((r) => [r.value, rashiMukhis(r.value)]));
 
   // Detailed information about each Mukhi (1-14)
   const mukhiDetails = {
@@ -435,9 +411,23 @@ const Rashi = () => {
             <p className="text-sm sm:text-base text-gray-600">
               Choose a Nepali Rudraksha mukhi for your rashi. The bead is for japa and daily wear. It is a traditional match, not a medical or financial result.
             </p>
+            <nav aria-label="Rudraksha for each rashi" className="mt-4">
+              <ul className="flex flex-wrap gap-2">
+                {RASHIS.map((r) => (
+                  <li key={r.slug}>
+                    <Link
+                      to={`/rashi/${r.slug}`}
+                      className="inline-flex rounded-full border border-orange-200 bg-white px-3 py-1.5 text-xs font-semibold text-primary sm:text-sm"
+                    >
+                      {r.name} ({r.hindi})
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
           <RelatedGuides
-            slugs={['importance-of-wearing-rudraksha', '5-mukhi-rudraksha-how-to-choose', 'why-wear-a-rudraksha-bracelet']}
+            slugs={['importance-of-wearing-rudraksha', 'why-wear-a-rudraksha-bracelet', 'can-you-wear-rudraksha-while-bathing']}
             title="Rudraksha guides"
           />
 

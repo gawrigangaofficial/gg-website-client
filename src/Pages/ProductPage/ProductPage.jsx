@@ -52,6 +52,7 @@ import RelatedGuides from "../../components/RelatedGuides.jsx";
 import { ExploreLinks } from "../../components/Breadcrumbs.jsx";
 import { breadcrumbJsonLd as buildBreadcrumbJsonLd, cleanName, faqJsonLd, productCategory, productJsonLd as buildProductJsonLd, productMeta } from "../../seo/meta.js";
 import { mukhiFaqs, mukhiInfo } from "../../content/mukhi.js";
+import { RASHIS, rashiMukhis } from "../../content/rashi.js";
 import { LAB_LINE, RETURN_WINDOW_DAYS } from "../../config/site.js";
 import { fetchDeliveryCharges } from "../../utils/deliveryCharges.js";
 import { usePageSeo } from "../../seo/SeoContext.jsx";
@@ -534,21 +535,8 @@ const ProductPage = () => {
     Combos: "/combos",
   };
 
-  // Rashi → recommended Rudraksha Mukhi (matches Rashi page logic)
-  const rashiToRudrakshaMapping = {
-    Aries: ["1 Mukhi", "3 Mukhi", "11 Mukhi"],
-    Taurus: ["2 Mukhi", "6 Mukhi", "14 Mukhi"],
-    Gemini: ["3 Mukhi", "5 Mukhi", "12 Mukhi"],
-    Cancer: ["2 Mukhi", "4 Mukhi", "7 Mukhi"],
-    Leo: ["1 Mukhi", "5 Mukhi", "9 Mukhi"],
-    Virgo: ["6 Mukhi", "10 Mukhi", "14 Mukhi"],
-    Libra: ["2 Mukhi", "7 Mukhi", "11 Mukhi"],
-    Scorpio: ["3 Mukhi", "8 Mukhi", "13 Mukhi"],
-    Sagittarius: ["4 Mukhi", "9 Mukhi", "12 Mukhi"],
-    Capricorn: ["6 Mukhi", "10 Mukhi", "14 Mukhi"],
-    Aquarius: ["5 Mukhi", "11 Mukhi", "13 Mukhi"],
-    Pisces: ["4 Mukhi", "7 Mukhi", "12 Mukhi"],
-  };
+  // Rashi → recommended Rudraksha Mukhi (same rule as the Rashi page: src/content/rashi.js)
+  const rashiToRudrakshaMapping = Object.fromEntries(RASHIS.map((r) => [r.value, rashiMukhis(r.value)]));
 
   useEffect(() => {
     fetchProduct();
@@ -1016,14 +1004,10 @@ const ProductPage = () => {
     const text = `${product.subcategory || ""} ${product.name || ""}`.toLowerCase();
     const rashis = [];
     Object.entries(rashiToRudrakshaMapping).forEach(([rashi, mukhis]) => {
+      // Match whole numbers only, so "11 mukhi" never counts as "1 mukhi".
       const matches = mukhis.some((m) => {
-        const mLower = m.toLowerCase();
         const num = m.replace(/\s*mukhi$/i, "").trim();
-        return (
-          text.includes(mLower) ||
-          text.includes(num + " mukhi") ||
-          text.includes(num + "mukhi")
-        );
+        return new RegExp(`(^|\\D)${num}\\s*mukhi`).test(text);
       });
       if (matches) rashis.push(rashi);
     });
@@ -1330,12 +1314,12 @@ const ProductPage = () => {
               <div className="flex flex-wrap items-center gap-2 py-2">
                 <span className="text-sm font-semibold text-gray-700">Recommended for:</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {recommendedRashis.map((r) => (
+                  {(recommendedRashis.length === RASHIS.length ? ["All 12 rashis"] : recommendedRashis).map((r) => (
                     <span
                       key={r}
                       className="px-2.5 py-1 bg-primary/10 text-primary border border-primary/30 rounded-md text-xs font-semibold"
                     >
-                      {r}
+                      {RASHIS.find((x) => x.value === r)?.name || r}
                     </span>
                   ))}
                 </div>

@@ -22,6 +22,7 @@ import {
   FOUNDED_YEAR,
 } from '../config/site.js'
 import { mukhiInfo } from '../content/mukhi.js'
+import { getRashi, rashiPageMeta } from '../content/rashi.js'
 import { getSeoGuide } from '../content/seoGuides.js'
 import { getShopCollection } from '../content/shopCollections.js'
 
@@ -398,6 +399,9 @@ export function routeMeta(pathname) {
 
   const guide = path.match(/^\/guides\/([^/]+)$/)?.[1]
   if (guide && guideMeta(guide)) return guideMeta(guide)
+
+  const rashi = getRashi(path.match(/^\/rashi\/([^/]+)$/)?.[1])
+  if (rashi) return rashiPageMeta(rashi)
 
   const product = path.match(/^\/product\/([^/]+)$/)?.[1]
   if (product) {

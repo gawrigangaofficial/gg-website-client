@@ -365,6 +365,30 @@ export const MERGED_GUIDES = {
   '5-mukhi-rudraksha-how-to-choose': '5-mukhi-rudraksha-benefits',
 }
 
+/** Card text for the fuller guides that replaced them, so related-guide lists keep a link (to /blog). */
+const MERGED_CARDS = {
+  'how-to-identify-original-rudraksha': {
+    title: 'How to identify an original Rudraksha',
+    description: 'Six checks for the lines, surface, hole and colour, why water and coin tests fail, and when to ask for a lab certificate.',
+  },
+  'karungali-mala-benefits-and-how-to-wear': {
+    title: 'Karungali mala: benefits and how to wear it',
+    description: 'What Karungali is worn for, how to tell real ebony from dyed wood, wearing rules and care.',
+  },
+  '5-mukhi-rudraksha-benefits': {
+    title: '5 Mukhi Rudraksha: benefits, price and how to wear',
+    description: 'Who wears the 5 Mukhi, its deity and mantra, Nepali vs Indonesian beads and first-wearing steps.',
+  },
+}
+
+/** A related-guide card for any slug: a /guides page, or the /blog guide that replaced a merged one. */
+export function guideCard(slug) {
+  const target = MERGED_GUIDES[slug]
+  if (target) return { slug: target, href: `/blog/${target}`, ...MERGED_CARDS[target] }
+  const guide = SEO_GUIDES.find((g) => g.slug === slug)
+  return guide ? { slug, href: `/guides/${slug}`, title: guide.title, description: guide.description } : null
+}
+
 export const SEO_GUIDES = ALL_SEO_GUIDES.filter((guide) => !MERGED_GUIDES[guide.slug])
 
 const CLUSTERS = [

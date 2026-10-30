@@ -30,6 +30,7 @@ const site = await load('src/config/site.js')
 const { mukhiInfo, mukhiFaqs, mukhiRashi } = await load('src/content/mukhi.js')
 const { SEO_GUIDES, MERGED_GUIDES } = await load('src/content/seoGuides.js')
 const { GUIDES, guideText } = await load('src/content/guides/index.js')
+const { RASHIS, rashiMukhis, rashiPageMeta, rashiFaqs } = await load('src/content/rashi.js')
 const { SHOP_COLLECTIONS } = await load('src/content/shopCollections.js')
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -179,6 +180,7 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
       rows.map(({ x, mk }) => `${link(productHref(x), `${mk.number} Mukhi`)}: ${esc(mk.deity)}, ${esc(mk.planet)}, ₹${Number(x.price).toLocaleString('en-IN')}`),
     )}`
   }
+  if (p === '/rashi') inner += `<h2>Rudraksha for your rashi</h2>${list(RASHIS.map((r) => link(`/rashi/${r.slug}`, `${r.name} (${r.hindi}) · ${r.english}`)))}`
   if (p === '/blog') {
     inner += `<h2>Guides</h2>${list([...GUIDES.map((g) => link(`/blog/${g.slug}`, g.title)), ...SEO_GUIDES.map((g) => link(`/guides/${g.slug}`, g.title)), ...posts.map((b) => link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1))])}`
   }
@@ -305,6 +307,20 @@ for (const b of posts) {
     }),
     inner,
   )
+}
+
+// ---------- rashi landing pages ----------
+for (const r of RASHIS) {
+  const m = rashiPageMeta(r)
+  const route = `/rashi/${r.slug}`
+  const trail = crumbs({ name: 'Rudraksha by rashi', path: '/rashi' }, { name: `${r.name} rashi`, path: route })
+  const nums = rashiMukhis(r.value).map((x) => Number.parseInt(x, 10))
+  const items = (byCategoryPath['/rudraksha'] || []).filter((p) => meta.productKind(p) === 'mukhi' && nums.includes(mukhiInfo(meta.cleanName(p.name))?.number))
+  const faqs = rashiFaqs(r)
+  const inner = `${crumbHtml(trail)}<h1>${esc(m.h1)}</h1><p>${esc(m.description)}</p><h2>Rudraksha traditionally suggested for ${esc(r.name)}</h2>${list(
+    nums.map((n) => { const k = mukhiInfo(n); return `${n} Mukhi: ${esc(k.deity)}, ${esc(k.planet)}, mantra ${esc(k.mantra)}` }),
+  )}${items.length ? `<h2>Shop Rudraksha for ${esc(r.name)} rashi</h2>${productLinks(items)}` : ''}${faqHtml(faqs)}${list(RASHIS.filter((x) => x !== r).map((x) => link(`/rashi/${x.slug}`, `Rudraksha for ${x.name} rashi`)))}`
+  emit(route, page(m, { jsonLd: [meta.itemListJsonLd(items, m.h1), meta.breadcrumbJsonLd(trail), meta.faqJsonLd(faqs)], priority: 0.6 }), inner)
 }
 
 // ---------- 404 (also the app shell for /orders/<id> and products added after this build) ----------

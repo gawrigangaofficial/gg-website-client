@@ -183,14 +183,14 @@ const Home = () => {
               The importance of wearing Rudraksha is the habit it supports: a seed linked with Shiva that you can hold, count, and keep with you.
               A guide explains <Link to="/guides/importance-of-wearing-rudraksha" className="font-semibold text-primary">why people wear Rudraksha</Link> and how a mukhi count is only a face count, not a promise.
               {' '}<Link to="/guides/why-wear-a-rudraksha-bracelet" className="font-semibold text-primary">Why wear a Rudraksha bracelet</Link> covers daily wrist wear, metal caps, and how to check the lines on the bead.
-              {' '}<Link to="/guides/how-to-check-original-rudraksha-bracelet" className="font-semibold text-primary">How to check an original Rudraksha bracelet</Link> and <Link to="/guides/5-mukhi-rudraksha-how-to-choose" className="font-semibold text-primary">how to choose a 5 Mukhi Rudraksha</Link> sit beside it.
+              {' '}<Link to="/blog/how-to-identify-original-rudraksha" className="font-semibold text-primary">How to check an original Rudraksha bracelet</Link> and <Link to="/guides/5-mukhi-rudraksha-how-to-choose" className="font-semibold text-primary">how to choose a 5 Mukhi Rudraksha</Link> sit beside it.
               {' '}<Link to="/guides/can-you-wear-rudraksha-while-bathing" className="font-semibold text-primary">Wearing Rudraksha while bathing</Link> explains soap, sweat, and the washroom.
             </p>
           </StoryPanel>
           <StoryPanel title="Karungali, Tulsi, and sprays" tone="cream">
             <p>
               People wear a Karungali mala because the dark ebony beads are smooth and traditionally kept for steadiness.
-              Read <Link to="/guides/benefits-of-wearing-karungali-mala" className="font-semibold text-primary">why wear a Karungali mala</Link> and <Link to="/guides/karungali-mala-price-and-care" className="font-semibold text-primary">Karungali mala price and care</Link> before you order the wood.
+              Read <Link to="/blog/karungali-mala-benefits-and-how-to-wear" className="font-semibold text-primary">why wear a Karungali mala</Link> and <Link to="/guides/karungali-mala-price-and-care" className="font-semibold text-primary">Karungali mala price and care</Link> before you order the wood.
               A Tulsi mala matters for japa in the Vishnu tradition.
               {' '}<Link to="/guides/importance-of-tulsi-mala" className="font-semibold text-primary">The importance of a Tulsi mala</Link>, <Link to="/guides/shyam-tulsi-vs-rama-tulsi-mala" className="font-semibold text-primary">Shyam Tulsi and Rama Tulsi</Link>, and the <Link to="/guides/original-tulsi-mala-buying-guide" className="font-semibold text-primary">original Tulsi mala buying guide</Link> explain colour and care.
               Colour alone is not a certificate.

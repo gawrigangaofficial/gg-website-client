@@ -8,12 +8,15 @@ import karungali from './karungali-mala-benefits-and-how-to-wear.js'
 import tulsi from './tulsi-mala-rules-and-benefits.js'
 import priceList from './rudraksha-price-list.js'
 import asliPehchan from './asli-rudraksha-ki-pehchan.js'
+import panchMukhiHindi from './5-mukhi-rudraksha-ke-fayde.js'
+import karungaliHindi from './karungali-mala-ke-fayde.js'
+import tulsiHindi from './tulsi-mala-ke-niyam.js'
 
 /**
  * Long-form guides served at /blog/<slug>, newest first. They render without an API call,
  * so scripts/prerender.mjs writes their full text into the HTML.
  */
-export const GUIDES = [identify, whichMukhi, fiveMukhi, howToWear, byRashi, nepaliIndonesian, karungali, tulsi, priceList, asliPehchan].sort(
+export const GUIDES = [identify, whichMukhi, fiveMukhi, howToWear, byRashi, nepaliIndonesian, karungali, tulsi, priceList, asliPehchan, panchMukhiHindi, karungaliHindi, tulsiHindi].sort(
   (a, b) => String(b.published).localeCompare(String(a.published)),
 )
 
