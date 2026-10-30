@@ -156,9 +156,10 @@ const ShopAssistant = () => {
   return (
     <>
       {!open ? (
-        <div className="fixed bottom-[calc(var(--gg-tabbar-offset)+0.75rem)] right-4 z-120 md:bottom-5">
+        // Desktop and tablet only: on a phone the button and diya cover content and the bottom tab bar.
+        <div className="fixed bottom-5 right-4 z-120 hidden md:block">
           {/* A diya rests on top of the button; its flame is on the left */}
-          <DiyaLamp className="absolute bottom-full left-1/2 -mb-[3px] -translate-x-1/2 scale-90 md:scale-100" />
+          <DiyaLamp className="absolute bottom-full left-1/2 -mb-[3px] -translate-x-1/2" />
           <button
             type="button"
             onClick={() => setOpen(true)}
