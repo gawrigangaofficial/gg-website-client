@@ -7,6 +7,7 @@ import { RASHIS } from '../content/rashi'
 import { QUICK_REPLIES, answer, productTitle } from '../utils/shopAssistant'
 import { pricingFromProduct } from '../utils/productPricing'
 import { trackLead } from '../utils/analytics.js'
+import DiyaLamp from './DiyaLamp'
 
 const GREETING = {
   from: 'bot',
@@ -155,15 +156,19 @@ const ShopAssistant = () => {
   return (
     <>
       {!open ? (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Open the shopping assistant"
-          className="fixed bottom-[calc(var(--gg-tabbar-offset)+0.75rem)] right-4 z-120 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-white shadow-lg transition-all duration-300 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:bottom-5"
-        >
-          <FaCommentDots className="text-xl" aria-hidden />
-          <span className="text-sm font-semibold">Need help?</span>
-        </button>
+        <div className="fixed bottom-[calc(var(--gg-tabbar-offset)+0.75rem)] right-4 z-120 md:bottom-5">
+          {/* A diya rests on top of the button; its flame is on the left */}
+          <DiyaLamp className="absolute bottom-full left-1/2 -mb-[3px] -translate-x-1/2 scale-90 md:scale-100" />
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open the shopping assistant"
+            className="relative inline-flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-white shadow-lg transition-all duration-300 hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <FaCommentDots className="text-xl" aria-hidden />
+            <span className="text-sm font-semibold">Need help?</span>
+          </button>
+        </div>
       ) : null}
 
       {open ? (

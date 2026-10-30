@@ -1,13 +1,13 @@
 /**
- * Decorative incense holder with three dhoop battis and a small diya, fixed at the bottom-left on wide screens
+ * Decorative incense holder with three dhoop battis, fixed at the bottom-left on wide screens
  * (xl and up; scaled down below 2xl so it covers less of the page). Each stick has a glowing tip and its own column of soft smoke
  * that billows, sways and drifts up most of the page before fading.
  *
- * Pure SVG and CSS (keyframes gg-puff, gg-ember-glow, gg-diya-flicker in index.css), no images. Clicks pass through
+ * Pure SVG and CSS (keyframes gg-puff and gg-ember-glow in index.css; the diya lives in DiyaLamp), no images. Clicks pass through
  * everything. Still for visitors whose device is set to reduce motion.
  */
 
-const W = 240
+const W = 170
 const H = 230
 
 /** Three sticks fanned out from the bowl. Angles in degrees from vertical, lengths in px, base on the sand. */
@@ -79,7 +79,6 @@ const DhoopDecor = () => (
 
       {/* Ground shadow */}
       <ellipse cx="85" cy="216" rx="70" ry="8" fill="#000" opacity="0.12" />
-      <ellipse cx="190" cy="214" rx="38" ry="6" fill="#000" opacity="0.1" />
 
       {/* Sticks: unburnt wood, burnt ash near the tip, glowing ember */}
       {STICKS.map(({ bx, by, angle, len }, i) => (
@@ -100,16 +99,6 @@ const DhoopDecor = () => (
       <ellipse cx="85" cy="166" rx="67" ry="13" fill="#e9b85a" />
       <ellipse cx="85" cy="167" rx="59" ry="10" fill="#8c6a38" />
       <ellipse cx="85" cy="168" rx="52" ry="7" fill="#a58450" opacity="0.8" />
-
-      {/* Small diya with a flickering flame */}
-      <path d="M156 196 Q190 226 224 196 Z" fill="url(#gg-brass)" />
-      <ellipse cx="190" cy="196" rx="34" ry="7" fill="#e9b85a" />
-      <ellipse cx="190" cy="197" rx="26" ry="4.5" fill="#8f5f1a" opacity="0.6" />
-      <path d="M214 196 Q219 190 225 192 Q221 198 214 199 Z" fill="url(#gg-brass)" />
-      <g className="gg-diya-flame">
-        <path d="M222 168 C 217 177, 217 187, 222 191 C 227 187, 227 177, 222 168 Z" fill="#ffb347" />
-        <path d="M222 175 C 219.5 181, 219.5 186, 222 188.5 C 224.5 186, 224.5 181, 222 175 Z" fill="#fff1b8" />
-      </g>
     </svg>
   </div>
 )
