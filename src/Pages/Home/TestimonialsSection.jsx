@@ -56,10 +56,38 @@ function StarRow({ rating, size = 'text-sm' }) {
   );
 }
 
+/**
+ * Fixed-height card: photo (the customer's, else the product's) beside the name and product, then the quote.
+ * Short reviews get larger type, so a one-line review still fills the card instead of leaving a blank box.
+ */
 function ReviewCard({ item }) {
+  const short = String(item.quote).length < 60;
+  const photo = item.image || item.productImage;
   return (
-    <article className="flex h-full w-[280px] shrink-0 flex-col rounded-2xl border-2 border-amber-300/85 bg-white p-5 shadow-[0_8px_24px_-6px_rgba(62,47,28,0.22)] sm:w-[320px]">
-      <div className="flex items-center justify-between gap-2">
+    <article className="flex h-[230px] w-[280px] shrink-0 flex-col rounded-2xl border-2 border-amber-300/85 bg-white p-5 shadow-[0_8px_24px_-6px_rgba(62,47,28,0.22)] sm:w-[320px]">
+      <header className="flex items-center gap-3">
+        {photo ? (
+          <img src={photo} alt={item.image ? `Photo from ${item.name}` : item.product} loading="lazy" className="h-14 w-14 shrink-0 rounded-xl object-cover ring-1 ring-amber-200" />
+        ) : (
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-amber-50 font-heading text-xl font-bold text-amber-800 ring-1 ring-amber-200" aria-hidden>
+            {String(item.name).trim().charAt(0).toUpperCase()}
+          </span>
+        )}
+        <div className="min-w-0">
+          <p className="truncate font-heading text-sm font-bold text-stone-900">{item.name}</p>
+          {item.product ? (
+            item.slug ? (
+              <Link to={`/product/${item.slug}`} className="block truncate text-xs font-semibold text-amber-800 hover:underline">
+                {item.product}
+              </Link>
+            ) : (
+              <p className="truncate text-xs font-semibold text-amber-800">{item.product}</p>
+            )
+          ) : null}
+          {item.location ? <p className="truncate text-xs text-stone-500">{item.location}</p> : null}
+        </div>
+      </header>
+      <div className="mt-3 flex items-center justify-between gap-2">
         <StarRow rating={item.rating} />
         {item.verified ? (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
@@ -67,28 +95,11 @@ function ReviewCard({ item }) {
           </span>
         ) : null}
       </div>
-      {item.image ? (
-        <img src={item.image} alt={`Photo from ${item.name}`} loading="lazy" className="mt-3 h-36 w-full rounded-xl object-cover" />
-      ) : null}
-      <blockquote className="mt-3 line-clamp-6 flex-1 text-sm leading-relaxed text-stone-700">&ldquo;{item.quote}&rdquo;</blockquote>
-      <footer className="mt-4 border-t border-amber-200/60 pt-3">
-        <p className="font-heading text-sm font-bold text-stone-900">{item.name}</p>
-        {item.location ? <p className="mt-0.5 text-xs text-stone-500">{item.location}</p> : null}
-        {item.product ? (
-          item.slug ? (
-            <Link
-              to={`/product/${item.slug}`}
-              className="mt-2 inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200/80 hover:bg-amber-100"
-            >
-              {item.product}
-            </Link>
-          ) : (
-            <p className="mt-2 inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200/80">
-              {item.product}
-            </p>
-          )
-        ) : null}
-      </footer>
+      <blockquote
+        className={`mt-3 text-stone-700 ${short ? "flex flex-1 items-center font-heading text-xl leading-snug text-stone-800" : "line-clamp-4 text-sm leading-relaxed"}`}
+      >
+        &ldquo;{item.quote}&rdquo;
+      </blockquote>
     </article>
   );
 }
@@ -281,13 +292,19 @@ const TestimonialsSection = () => {
     };
   }, []);
 
+  // Products give each card a photo and fill the product list in the write tab.
   useEffect(() => {
-    if (tab !== 'write' || products.length) return;
+    let cancelled = false;
     apiFetch('/api/products?limit=200')
       .then((r) => r.json())
-      .then((json) => setProducts(json?.data || []))
+      .then((json) => {
+        if (!cancelled) setProducts(json?.data || []);
+      })
       .catch(() => {});
-  }, [tab, products.length]);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const items = useMemo(() => {
     const fromDb = reviews
@@ -300,10 +317,11 @@ const TestimonialsSection = () => {
         quote: r.comment,
         rating: r.rating,
         image: r.image_url,
+        productImage: products.find((p) => p.slug === r.product_slug)?.images?.[0],
         verified: r.verified,
       }));
     return [...fromDb, ...TESTIMONIALS];
-  }, [reviews]);
+  }, [reviews, products]);
 
   const average = items.length ? items.reduce((sum, r) => sum + Number(r.rating), 0) / items.length : 0;
 
