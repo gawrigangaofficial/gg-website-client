@@ -1,13 +1,17 @@
 /**
  * Blog rules shared by the blog pages and the prerender.
- * The blog is for timely posts (festivals, seasons, launches). Evergreen "how to / which / price" answers are guides.
+ * Where things live:
+ *   Guides (/guides): about what we sell. A product or product type, and how to choose, check, wear, use, care for or
+ *   price it: Rudraksha, Karungali, Tulsi, bracelets and stones, sprays, combos.
+ *   Blog (/blog): universal topics. Festivals, rituals, traditions, seasons, home and gifting occasions, brand news.
+ *   Products appear in a blog post only as suggestions that link on to the guides and product pages.
  */
 
 /** Posts that were really guides or product pages, and where they now live. Their old addresses redirect (301). */
 export const MOVED_POSTS = {
   '7-mukhi-rudraksha-blog': '/guides/7-mukhi-rudraksha',
-  'amrat-bindu-blog': '/sprays/amrat-bindu',
-  'maitri-aura-spray-blog': '/sprays/maitri',
+  'amrat-bindu-blog': '/guides/amrat-bindu-aura-spray',
+  'maitri-aura-spray-blog': '/guides/maitri-aura-spray',
   'gawri-ganga-blog': '/about',
 }
 

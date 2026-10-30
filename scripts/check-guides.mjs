@@ -19,7 +19,7 @@ const ROOT = path.resolve('.')
 const DIR = path.join(ROOT, 'src', 'content', 'guides')
 const only = process.argv.slice(2)
 
-const CATEGORIES = ['Rudraksha', 'Karungali', 'Tulsi', 'Bracelets and stones', 'Rashi and purpose', 'Sprays and gifts']
+const CATEGORIES = ['Rudraksha', 'Karungali', 'Tulsi', 'Bracelets and stones', 'Rashi and purpose', 'Sprays', 'Gifts and combos']
 const STATIC_PATHS = new Set(['/', '/rudraksha', '/tulsimala', '/accessories', '/combos', '/sprays', '/rashi', '/about', '/faq', '/contact', '/guides', '/blog', '/shipping-policy', '/refund-cancellation', '/corporate-bulk-orders', '/purpose-products', '/shop/karungali-mala', '/shop/sphatik', '/shop/pyrite', '/shop/evil-eye', '/shop/japa-malas', '/shop/wealth-bracelets', '/shop/pendants', '/shop/festivals'])
 const RASHI_SLUGS = ['mesh', 'vrishabh', 'mithun', 'kark', 'simha', 'kanya', 'tula', 'vrishchik', 'dhanu', 'makar', 'kumbh', 'meen']
 const SPRAY_PAGES = ['/sprays/shuddhi', '/sprays/maitri', '/sprays/chakra-balance', '/sprays/amrat-bindu']

@@ -6,7 +6,7 @@ export default {
     'A pooja room spray gives you a fresh, fragrant room without dhoop smoke. How to use one, which of our four sprays to pick, and what a spray cannot do.',
   excerpt:
     'When dhoop smoke is not practical, a room mist can still set the mood for puja. How to use one, and what our four sprays smell like.',
-  category: 'Sprays and gifts',
+  category: 'Sprays',
   keywords: {
     primary: 'pooja room spray',
     secondary: [

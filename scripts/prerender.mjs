@@ -195,7 +195,7 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
     }
     const hindi = GUIDES.filter((g) => g.lang === 'hi')
     if (hindi.length) inner += `<h2>हिंदी गाइड</h2>${list(hindi.map((g) => `${link(`/guides/${g.slug}`, g.title)}: ${esc(g.excerpt)}`))}`
-    inner += `<p>${link('/blog', 'Blog: festival posts, new arrivals and updates')}</p>`
+    inner += `<p>${link('/blog', 'Blog: festivals, rituals and spiritual living')}</p>`
   }
   if (p === '/blog') {
     inner += `<h2>Posts</h2>${list(posts.map((b) => `${link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1)}${b.excerpt ? `: ${esc(b.excerpt)}` : ''}`))}<p>${link('/guides', 'Read our guides')}</p>`

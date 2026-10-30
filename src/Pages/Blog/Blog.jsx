@@ -71,13 +71,13 @@ const Blog = () => {
         <header className="text-center">
           <h1 className="font-heading text-3xl font-bold text-stone-900 sm:text-4xl">{STATIC_META['/blog'].h1}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-stone-600">
-            Festival posts, new arrivals and product stories from the Gawri Ganga team.
+            Festival dates and puja vidhi, traditions, seasons and gifting ideas from the Gawri Ganga family.
           </p>
         </header>
 
         <aside className="mx-auto mt-8 max-w-3xl rounded-2xl border border-orange-200 bg-white p-5 text-center shadow-sm">
           <p className="text-stone-700">
-            Looking for how-to articles on choosing and wearing Rudraksha, Karungali and Tulsi malas?{' '}
+            Choosing, checking or wearing a Rudraksha, Karungali, Tulsi mala or spray?{' '}
             <Link to="/guides" className="font-semibold text-primary hover:underline">
               Read our guides
             </Link>

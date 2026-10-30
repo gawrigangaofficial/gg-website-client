@@ -75,7 +75,7 @@ const GuidesIndex = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Gawri Ganga guides</p>
           <h1 className="mt-2 font-heading text-3xl font-bold leading-tight text-stone-900 sm:text-4xl">{meta.h1}</h1>
           <p className="mt-4 text-lg leading-relaxed text-stone-600">
-            Plain-English guides on choosing, checking and wearing Rudraksha, Karungali and Tulsi malas, from a family business serving devotees since{' '}
+            Plain-English guides to what we sell: how to choose, check, wear and care for Rudraksha, Karungali and Tulsi malas, bracelets and aura sprays, from a family business serving devotees since{' '}
             {FOUNDED_YEAR}. {GUIDES.length} guides, {hindi.length} of them in Hindi.
           </p>
         </header>
@@ -143,7 +143,7 @@ const GuidesIndex = () => {
         <section className="mt-14 grid gap-4 rounded-2xl border border-orange-200 bg-white p-6 shadow-sm md:grid-cols-2">
           <div>
             <h2 className="font-heading text-xl font-bold text-stone-900">Looking for news and festival posts?</h2>
-            <p className="mt-2 text-stone-600">Our blog has festival posts, new arrivals and product stories from the Gawri Ganga team.</p>
+            <p className="mt-2 text-stone-600">Festival dates, puja vidhi, traditions and gifting ideas live on our blog.</p>
             <Link to="/blog" className="mt-4 inline-flex items-center gap-2 font-semibold text-primary">
               Read the blog <FaArrowRight aria-hidden />
             </Link>

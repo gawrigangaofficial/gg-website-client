@@ -366,10 +366,50 @@ export const GUIDE_CARDS = [
     "updated": "2026-10-30"
   },
   {
+    "slug": "amrat-bindu-aura-spray",
+    "title": "Amrat Bindu Spray: Camphor, Peppermint and Lavender Room Spray",
+    "excerpt": "A cool, fresh mist of camphor, peppermint and lavender for rooms and clothes. How to use it, what to know first, and which of our four sprays to pick.",
+    "category": "Sprays",
+    "readMinutes": 7,
+    "heroImage": "https://ggimg-images.s3.ap-south-1.amazonaws.com/products/082998c3c3e74e54b362615daa5e3aaa-1.webp",
+    "published": "2026-10-30",
+    "updated": "2026-10-30"
+  },
+  {
+    "slug": "chakra-balance-aura-spray",
+    "title": "Chakra Balance Spray: A Gulhar Room Spray for Meditation",
+    "excerpt": "Chakra Balance is a floral room spray with gulhar, harshringar, kadam and gulab. What it smells like, how to use it before meditation, and what it cannot do.",
+    "category": "Sprays",
+    "readMinutes": 7,
+    "heroImage": "https://ggimg-images.s3.ap-south-1.amazonaws.com/products/a55c2fb4a2e84bc7963e6cf9e29ce8c6-1.webp",
+    "published": "2026-10-30",
+    "updated": "2026-10-30"
+  },
+  {
+    "slug": "maitri-aura-spray",
+    "title": "Maitri Aura Spray: Lavender, Mogra and Gulab Room Spray",
+    "excerpt": "A soft floral mist of lavender, mogra and gulab. How to use Maitri, when people reach for it, and which of our four sprays suits you.",
+    "category": "Sprays",
+    "readMinutes": 7,
+    "heroImage": "https://ggimg-images.s3.ap-south-1.amazonaws.com/products/136bcd93d91d465a953d44f399aecaf1-1.webp",
+    "published": "2026-10-30",
+    "updated": "2026-10-30"
+  },
+  {
     "slug": "smoke-free-aura-cleansing-sprays",
     "title": "Pooja Room Spray: A Smoke-Free Alternative to Dhoop",
     "excerpt": "When dhoop smoke is not practical, a room mist can still set the mood for puja. How to use one, and what our four sprays smell like.",
-    "category": "Sprays and gifts",
+    "category": "Sprays",
+    "readMinutes": 7,
+    "heroImage": "https://ggimg-images.s3.ap-south-1.amazonaws.com/products/367efa90fefb4069860912b437483230-1.webp",
+    "published": "2026-10-30",
+    "updated": "2026-10-30"
+  },
+  {
+    "slug": "shuddhi-aura-spray",
+    "title": "Shuddhi Spray: Kewda and Mogra Room Spray for Your Pooja Room",
+    "excerpt": "Shuddhi is a fresh room spray with kewda, mogra, lemongrass and rosemary. What it smells like, where to use it, and an honest look at negative energy claims.",
+    "category": "Sprays",
     "readMinutes": 7,
     "heroImage": "https://ggimg-images.s3.ap-south-1.amazonaws.com/products/367efa90fefb4069860912b437483230-1.webp",
     "published": "2026-10-30",
@@ -379,7 +419,7 @@ export const GUIDE_CARDS = [
     "slug": "spiritual-gift-hampers-india",
     "title": "Spiritual Gift Hamper Ideas for Diwali, Weddings and More",
     "excerpt": "Gift ideas built around Rudraksha, Tulsi, Karungali, bracelets and room sprays, sorted by occasion and budget, with a note on what to write on the card.",
-    "category": "Sprays and gifts",
+    "category": "Gifts and combos",
     "readMinutes": 8,
     "heroImage": "https://ggimg-images.s3.ap-south-1.amazonaws.com/products/cf41b4f7a2cf4ce49e84aa8e234a54cd-1.webp",
     "published": "2026-10-30",

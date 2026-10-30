@@ -10,7 +10,8 @@ export const GUIDE_TOPICS = [
   { key: 'Tulsi', blurb: 'Tulsi kanthi and japa malas: tradition, rules and how to buy an original.' },
   { key: 'Bracelets and stones', blurb: 'Rudraksha, Sphatik and pyrite bracelets and malas: what they are and how to wear them.' },
   { key: 'Rashi and purpose', blurb: 'Which Rudraksha for your rashi, for study, or for work, as tradition describes it.' },
-  { key: 'Sprays and gifts', blurb: 'Pooja room sprays and spiritual gift ideas for festivals and weddings.' },
+  { key: 'Sprays', blurb: 'Smoke-free aura and pooja room sprays: what is in each one, how to use it and where it fits.' },
+  { key: 'Gifts and combos', blurb: 'Hampers and combos of malas, bracelets and sprays for festivals, weddings and housewarmings.' },
 ]
 
 /** Older guide addresses that were merged into a fuller guide. They redirect (301 in production). */

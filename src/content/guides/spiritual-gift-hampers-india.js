@@ -6,7 +6,7 @@ export default {
     'Build a spiritual gift hamper in India: Rudraksha, Tulsi mala and bracelet ideas for Diwali, weddings and return gifts, by budget, plus bulk orders.',
   excerpt:
     'Gift ideas built around Rudraksha, Tulsi, Karungali, bracelets and room sprays, sorted by occasion and budget, with a note on what to write on the card.',
-  category: 'Sprays and gifts',
+  category: 'Gifts and combos',
   keywords: {
     primary: 'spiritual gift hamper',
     secondary: [

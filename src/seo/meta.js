@@ -141,13 +141,13 @@ export const STATIC_META = {
   '/guides': {
     title: 'Rudraksha Guides: Price, Rules & How to Wear | Gawri Ganga',
     description:
-      'Guides to original Rudraksha, Karungali and Tulsi malas: price list, how to identify, which mukhi to wear, wearing rules and care. In English and Hindi.',
-    h1: 'Rudraksha, Karungali and Tulsi Guides',
+      'Product guides for Rudraksha, Karungali, Tulsi malas, bracelets and aura sprays: price, how to identify, which to choose, how to wear or use. English and Hindi.',
+    h1: 'Product Guides: Rudraksha, Karungali, Tulsi and Sprays',
   },
   '/blog': {
-    title: 'Blog: Festival Posts, New Arrivals & Updates | Gawri Ganga',
+    title: 'Blog: Festivals, Rituals & Spiritual Living | Gawri Ganga',
     description:
-      'News from Gawri Ganga: festival posts, new arrivals, product stories and updates from our Noida store. For how-to articles, see our guides.',
+      'Festival dates, puja vidhi, traditions and gifting ideas from the Gawri Ganga family in Noida. Looking for product advice? See our guides.',
     h1: 'Gawri Ganga Blog',
   },
   '/contact': {
