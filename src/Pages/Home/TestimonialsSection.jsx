@@ -58,10 +58,8 @@ function StarRow({ rating, size = 'text-sm' }) {
 
 /**
  * Fixed-height card: photo (the customer's, else the product's) beside the name and product, then the quote.
- * Short reviews get larger type, so a one-line review still fills the card instead of leaving a blank box.
  */
 function ReviewCard({ item }) {
-  const short = String(item.quote).length < 60;
   const photo = item.image || item.productImage;
   return (
     <article className="flex h-[230px] w-[280px] shrink-0 flex-col rounded-2xl border-2 border-amber-300/85 bg-white p-5 shadow-[0_8px_24px_-6px_rgba(62,47,28,0.22)] sm:w-[320px]">
@@ -96,7 +94,7 @@ function ReviewCard({ item }) {
         ) : null}
       </div>
       <blockquote
-        className={`mt-3 text-stone-700 ${short ? "flex flex-1 items-center font-heading text-xl leading-snug text-stone-800" : "line-clamp-4 text-sm leading-relaxed"}`}
+        className="mt-3 line-clamp-4 text-[15px] leading-relaxed text-stone-700"
       >
         &ldquo;{item.quote}&rdquo;
       </blockquote>
