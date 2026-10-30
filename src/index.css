@@ -619,3 +619,44 @@ main [class~="bg-[#FFFAEB]"] {
   .gg-marquee { overflow-x: auto; }
   .gg-marquee-track { animation: none; }
 }
+
+/* Dhoop batti decoration (DhoopDecor): smoke wisps rise, sway and fade; the tip glows; the diya flame flickers. */
+@keyframes gg-smoke-rise {
+  0% { stroke-dasharray: 0 400; stroke-dashoffset: 0; opacity: 0; transform: translateY(0) scaleX(1); }
+  15% { opacity: 0.9; }
+  60% { stroke-dasharray: 220 400; opacity: 0.6; }
+  100% { stroke-dasharray: 260 400; stroke-dashoffset: -140; opacity: 0; transform: translateY(-26px) scaleX(1.25); }
+}
+@keyframes gg-ember-glow {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+@keyframes gg-diya-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(-2deg); }
+  30% { transform: scale(0.94, 1.08) rotate(2deg); }
+  60% { transform: scale(1.05, 0.95) rotate(-1deg); }
+}
+.gg-dhoop .gg-smoke {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: gg-smoke-rise 6s ease-out infinite;
+  will-change: transform, opacity;
+}
+.gg-dhoop .gg-smoke-2 { animation-delay: 2s; animation-duration: 6.5s; }
+.gg-dhoop .gg-smoke-3 { animation-delay: 4s; animation-duration: 5.5s; }
+.gg-dhoop .gg-ember {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gg-ember-glow 2.4s ease-in-out infinite;
+}
+.gg-dhoop .gg-diya-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: gg-diya-flicker 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gg-dhoop .gg-smoke,
+  .gg-dhoop .gg-ember,
+  .gg-dhoop .gg-diya-flame { animation: none; }
+  .gg-dhoop .gg-smoke { stroke-dasharray: 180 400; opacity: 0.45; }
+}

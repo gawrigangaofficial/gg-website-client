@@ -5,6 +5,7 @@ import CookieConsent from './components/CookieConsent'
 import RouteSeo from './components/RouteSeo'
 import Footer from './components/Footer'
 import ShopAssistant from './components/ShopAssistant'
+import DhoopDecor from './components/DhoopDecor'
 import Loader from './components/Loader'
 import { ToastProvider } from './components/Toaster'
 import { CartProvider } from './context/CartContext'
@@ -127,6 +128,7 @@ const App = () => {
                 )}
               </main>
               <ShopAssistant />
+              <DhoopDecor />
               <Footer />
             </div>
           </WishlistProvider>
