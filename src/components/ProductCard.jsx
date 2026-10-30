@@ -7,6 +7,7 @@ import { useToast } from './Toaster';
 import { pricingFromProduct } from '../utils/productPricing';
 import { isProductPreorder } from '../utils/productPreorder';
 import { formatMeasuresSummary } from '../utils/productMeasures';
+import { useProductRating } from '../utils/reviewDisplayCount.js';
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -28,7 +29,6 @@ const ProductCard = ({
   variant = 'default', // 'rudraksh', 'spray', 'rashi', 'default'
   size = 'default', // 'default' | 'lg' — larger image, type, and actions
   calculatePricing,
-  getReviewCount,
   getEssence,
   onAddToCart
 }) => {
@@ -43,7 +43,7 @@ const ProductCard = ({
   const pricing = calculatePricing ? calculatePricing(product) : pricingFromProduct(product);
 
   // Get review count
-  const reviewCount = getReviewCount ? getReviewCount(product.id) : 5;
+  const { average: ratingAverage, count: reviewCount } = useProductRating(product.id);
 
   // Get essence for spray variant
   const essence = variant === 'spray' && getEssence ? getEssence(product.subcategory) : null;
@@ -174,6 +174,7 @@ const ProductCard = ({
         {reviewCount > 0 ? (
           <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
             <FaStar className="text-[10px] text-emerald-600" aria-hidden />
+            <span className="font-semibold text-stone-700">{ratingAverage.toFixed(1)}</span>
             <span>({reviewCount})</span>
           </p>
         ) : null}
@@ -282,13 +283,13 @@ const ProductCard = ({
               {[...Array(5)].map((_, i) => (
                 <FaStar
                   key={i}
-                  className={`text-primary fill-current ${large ? 'text-[10px] sm:text-xs' : 'text-[9px] sm:text-[10px] lg:text-sm'}`}
+                  className={`${i < Math.round(ratingAverage) ? 'text-primary fill-current' : 'text-gray-300'} ${large ? 'text-[10px] sm:text-xs' : 'text-[9px] sm:text-[10px] lg:text-sm'}`}
                 />
               ))}
             </div>
             <span className={`text-gray-500 font-medium ${large ? 'text-[10px] sm:text-xs ml-0.5' : 'text-[9px] sm:text-[10px] lg:text-xs ml-0.5 lg:ml-1'}`}
             >
-              ({reviewCount} reviews)
+              {ratingAverage.toFixed(1)} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
             </span>
           </div>
         ) : null}

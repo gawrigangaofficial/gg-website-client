@@ -36,3 +36,10 @@ export const TRANSIT_DAYS = [5, 14]
 
 /** Default share image (1200×630 recommended). */
 export const OG_IMAGE = '/favicon.png'
+
+/** Testing labs that certify our beads (owner confirmed, Oct 2026). Both are ISO-certified. */
+export const LABS = ['Kailasa Rudraksha and Gemological Lab', 'Rudraksha and Gems Testing Lab']
+export const LAB_LINE = `${LABS.join(' and ')} (ISO-certified labs)`
+
+/** The family business has served devotees for 40 years (owner confirmed, Oct 2026). */
+export const YEARS_OF_TRUST = 40

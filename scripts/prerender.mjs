@@ -202,7 +202,7 @@ for (const p of products.values()) {
   const name = meta.cleanName(p.name)
   const cat = meta.productCategory(p)
   const mk = meta.productKind(p) === 'mukhi' ? mukhiInfo(name) : null
-  const faqs = mk ? mukhiFaqs(mk.number, { returnDays: site.RETURN_WINDOW_DAYS }) : []
+  const faqs = mk ? mukhiFaqs(mk.number, { returnDays: site.RETURN_WINDOW_DAYS, labLine: site.LAB_LINE }) : []
   const route = `/product/${p.slug}`
   const trail = crumbs(cat, { name, path: pm.canonicalPath })
   let inner = `${crumbHtml(trail)}<h1>${esc(pm.h1)}</h1><p>₹${Number(p.price).toLocaleString('en-IN')} · ${Number(p.stock) > 0 ? 'In stock' : 'Out of stock'} · Cash on delivery available</p>`

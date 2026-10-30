@@ -347,7 +347,7 @@ export function productMeta(product = {}) {
     return {
       title: `${mk.number} Mukhi Rudraksha Price: Original Nepali${SUFFIX}`,
       description: clip(
-        `Buy original Nepali ${mk.number} Mukhi Rudraksha at ${inr(price)} with an authenticity certificate. Linked with ${mk.deity} and ${mk.planet}. How to wear it, and COD.`,
+        `Buy original Nepali ${mk.number} Mukhi Rudraksha at ${inr(price)} with a lab-tested certificate. Linked with ${mk.deity} and ${mk.planet}. How to wear it, and COD.`,
       ),
       h1: `${mk.number} Mukhi Rudraksha (Nepali)`,
       canonicalPath,

@@ -9,6 +9,7 @@ import {
 } from 'react-icons/fa'
 import RelatedGuides from '../../components/RelatedGuides'
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
+import { LAB_LINE } from '../../config/site'
 
 const GOLD_DIVIDER = 'border-amber-800/40'
 const GOLD_ACCENT = 'text-amber-800/90'
@@ -36,15 +37,16 @@ const About = () => {
             About Gawri Ganga — Nepali Rudraksha, Tulsi, and Karungali
           </h1>
           <p className="about-heading mt-3 text-xl font-medium text-stone-700 sm:text-2xl">
-            Original Nepali Rudraksha, certified bead by bead
+            40 Years of Sacred Trust
           </p>
           <div
             className={`mt-6 mx-auto w-24 sm:w-32 h-px border-t ${GOLD_DIVIDER}`}
             aria-hidden
           />
           <p className="about-body mt-6 text-stone-600 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            We source Rudraksha from Nepal and ship each bead with its authenticity certificate,
-            from our store in Noida to homes across India.
+            Four decades of devotion to authentic Rudraksha—bringing tradition,
+            purity, and trust to every bead we offer. Every bead is tested by {LAB_LINE}, and its
+            certificate comes with your order.
           </p>
         </header>
 

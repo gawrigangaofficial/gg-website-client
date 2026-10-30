@@ -19,7 +19,7 @@ import OurCollection from './OurCollection'
 import InstagramFeedSection from './InstagramFeedSection'
 import YouTubePodcastSection from './YouTubePodcastSection'
 import LatestPostsSection from './LatestPostsSection'
-import HomeReviewsSection from './HomeReviewsSection'
+import TestimonialsSection from './TestimonialsSection'
 import TrustStrip from './TrustStrip'
 import Combos from './Combos'
 import MobileAppHome from './MobileAppHome'
@@ -87,9 +87,7 @@ const Home = () => {
       <SectionDivider />
       <LatestPostsSection />
       <SectionDivider />
-      <div className="hidden md:block">
-        <HomeReviewsSection />
-      </div>
+      <TestimonialsSection />
       <SectionDivider />
       <SectionDivider />
       <AuthenticCertifiedSection />

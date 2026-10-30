@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaHeart, FaRegHeart, FaStar, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { apiFetch } from '../../config/api.js';
 import { pricingFromProduct } from '../../utils/productPricing';
-import { getCardReviewCount } from '../../utils/reviewDisplayCount.js';
+import { useProductRating } from '../../utils/reviewDisplayCount.js';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useToast } from '../../components/Toaster';
@@ -19,7 +19,7 @@ function DealCard({ product }) {
   const toast = useToast();
   const pricing = pricingFromProduct(product);
   const inWishlist = isInWishlist(product.id);
-  const reviewCount = getCardReviewCount(product.id);
+  const { average: ratingAverage, count: reviewCount } = useProductRating(product.id);
   const label = product.subcategory || product.category || 'Sacred';
 
   const onCart = (event) => {
@@ -86,6 +86,7 @@ function DealCard({ product }) {
           {reviewCount > 0 ? (
             <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-600">
               <FaStar className="text-[10px] text-emerald-600" aria-hidden />
+              <span className="font-semibold text-stone-700">{ratingAverage.toFixed(1)}</span>
               <span>({reviewCount})</span>
             </p>
           ) : null}

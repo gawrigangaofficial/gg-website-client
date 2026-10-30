@@ -52,7 +52,7 @@ import RelatedGuides from "../../components/RelatedGuides.jsx";
 import { ExploreLinks } from "../../components/Breadcrumbs.jsx";
 import { breadcrumbJsonLd as buildBreadcrumbJsonLd, cleanName, faqJsonLd, productCategory, productJsonLd as buildProductJsonLd, productMeta } from "../../seo/meta.js";
 import { mukhiFaqs, mukhiInfo } from "../../content/mukhi.js";
-import { RETURN_WINDOW_DAYS } from "../../config/site.js";
+import { LAB_LINE, RETURN_WINDOW_DAYS } from "../../config/site.js";
 import { fetchDeliveryCharges } from "../../utils/deliveryCharges.js";
 import { usePageSeo } from "../../seo/SeoContext.jsx";
 import { normalizeProductMedia } from "../../utils/productMedia.js";
@@ -185,19 +185,19 @@ function ProductLabCertificateBlock() {
         </div>
         <div className="min-w-0 flex-1 text-center sm:text-left">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:text-[11px]">
-            Authenticity certificate
+            Lab-tested authenticity
           </p>
           <h2 className="mt-1 font-heading text-base font-bold leading-snug text-stone-900 sm:text-lg">
             Certificate-backed. Not just claimed.
           </h2>
           <p className="mt-1.5 text-xs leading-relaxed text-stone-600 sm:text-sm">
-            Every piece goes through verified quality checks. You receive genuine spiritual goods with
-            documentation you can trust, not marketplace guesswork.
+            Tested by {LAB_LINE}. Your certificate comes with the order, so you have documentation
+            you can trust, not marketplace guesswork.
           </p>
           <ul className="mt-2.5 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] font-semibold text-stone-700 sm:justify-start sm:text-xs">
             <li className="inline-flex items-center gap-1.5">
               <FaCertificate className="text-primary" aria-hidden />
-              Certificate with your order
+              ISO-certified lab
             </li>
             <li className="inline-flex items-center gap-1.5">
               <FaCheckCircle className="text-emerald-600" aria-hidden />
@@ -234,7 +234,7 @@ function ProductTrustBesidePrice({ deliveryLabel }) {
       <div className="rounded-lg border border-amber-200 bg-amber-50/80 px-2.5 py-2">
         <p className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-900 sm:text-xs">
           <FaCertificate className="text-primary" aria-hidden />
-          Certificate included
+          Lab certified
         </p>
         <p className="mt-0.5 text-[10px] leading-snug text-amber-800/90 sm:text-[11px]">
           Quality checked
@@ -988,7 +988,7 @@ const ProductPage = () => {
   // Single mukhi beads answer what people search for (rashi, planet, god, how many) before the generic questions.
   const productFaqs = [
     ...(mukhi && !/mala|combo|bracelet/i.test(product.name)
-      ? mukhiFaqs(mukhi.number, { returnDays: RETURN_WINDOW_DAYS }).map((f) => ({ question: f.q, answer: f.a }))
+      ? mukhiFaqs(mukhi.number, { returnDays: RETURN_WINDOW_DAYS, labLine: LAB_LINE }).map((f) => ({ question: f.q, answer: f.a }))
       : []),
     ...seoCopy.faqs,
   ];

@@ -168,7 +168,7 @@ export function mukhiRashi(n) {
  * (which rashi, which planet, which god, who can wear, how many, side effects).
  * Answers describe tradition only and make no policy promises beyond src/config/site.js.
  */
-export function mukhiFaqs(n, { returnDays } = {}) {
+export function mukhiFaqs(n, { returnDays, labLine } = {}) {
   const info = n ? MUKHI[n] : null
   if (!info) return []
   const name = `${n} Mukhi Rudraksha`
@@ -201,6 +201,12 @@ export function mukhiFaqs(n, { returnDays } = {}) {
       a: "Rudraksha is a natural dried seed and has no medical effects, good or bad. Remove it for soap and swimming so the bead and thread last longer.",
     },
   ]
+  if (labLine) {
+    faqs.push({
+      q: `Is this ${name} lab certified?`,
+      a: `Yes. It is tested by ${labLine}, and the certificate comes with your order.`,
+    })
+  }
   if (returnDays) {
     faqs.push({
       q: "Can I return it?",

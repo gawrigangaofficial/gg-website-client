@@ -603,3 +603,19 @@ main [class~="bg-[#FFFAEB]"] {
     color: #fff;
   }
 }
+/* Home reviews: continuous scroll (TestimonialsSection). The track holds the list twice, so -50% loops seamlessly. */
+@keyframes gg-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.gg-marquee-track {
+  animation: gg-marquee var(--gg-marquee-duration, 40s) linear infinite;
+}
+.gg-marquee:hover .gg-marquee-track,
+.gg-marquee:focus-within .gg-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gg-marquee { overflow-x: auto; }
+  .gg-marquee-track { animation: none; }
+}
