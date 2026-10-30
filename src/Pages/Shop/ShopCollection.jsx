@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import ProductCard from '../../components/ProductCard'
 import Loader from '../../components/Loader'
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
-import { CollectionSchema } from '../../components/CategorySeo'
+import { CategoryFaq, CollectionSchema } from '../../components/CategorySeo'
 import { apiFetch } from '../../config/api.js'
 import { pricingFromProduct } from '../../utils/productPricing'
 import { getCardReviewCount } from '../../utils/reviewDisplayCount.js'
@@ -56,7 +56,7 @@ const ShopCollection = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFAEB] py-6">
-      <CollectionSchema name={collection.title} description={collection.description} path={`/shop/${collection.slug}`} />
+      <CollectionSchema name={collection.title} description={collection.description} path={`/shop/${collection.slug}`} faqs={collection.faqs} />
       <div className="mx-auto w-full max-w-[1600px] px-4 md:px-8">
         <Breadcrumbs items={[{ name: collection.title, href: `/shop/${collection.slug}` }]} />
         <ExploreLinks />
@@ -81,6 +81,19 @@ const ShopCollection = () => {
             ))}
           </div>
         )}
+        {collection.sections?.length ? (
+          <section className="mt-10 max-w-3xl space-y-6" aria-label="Buying guide">
+            {collection.sections.map((section) => (
+              <div key={section.heading}>
+                <h2 className="font-heading text-xl font-bold text-stone-900 md:text-2xl">{section.heading}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-stone-700 md:text-base">{section.body}</p>
+              </div>
+            ))}
+          </section>
+        ) : null}
+        <div className="max-w-3xl">
+          <CategoryFaq faqs={collection.faqs} />
+        </div>
       </div>
     </div>
   )

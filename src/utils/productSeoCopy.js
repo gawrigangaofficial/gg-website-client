@@ -45,7 +45,7 @@ export function productSeoCopy(product) {
           answer: 'Do not soak the beads, spray perfume on them, or leave them in a hot car. Wipe them dry and store them in a cloth pouch.',
         },
       ],
-      { href: '/guides/benefits-of-wearing-karungali-mala', label: 'Why wear a Karungali mala' },
+      { href: '/blog/karungali-mala-benefits-and-how-to-wear', label: 'Karungali mala: benefits and how to wear it' },
       ['benefits-of-wearing-karungali-mala', 'karungali-mala-price-and-care', 'why-rudraksha-karungali-and-tulsi-matter'],
     );
   }
@@ -103,7 +103,7 @@ export function productSeoCopy(product) {
           answer: 'Take it off for bathing with soap. A quick rinse of your hands is fine. Do not leave the bead soaking.',
         },
       ],
-      { href: '/guides/importance-of-wearing-rudraksha', label: 'Importance of Rudraksha' },
+      { href: '/blog/how-to-wear-rudraksha', label: 'How to wear Rudraksha' },
       ['importance-of-wearing-rudraksha', '5-mukhi-rudraksha-how-to-choose', 'can-you-wear-rudraksha-while-bathing'],
     );
   }

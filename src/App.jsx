@@ -33,7 +33,7 @@ const OrderSuccess = lazy(() => import('./Pages/Order/OrderSuccess'))
 const OrderFailed = lazy(() => import('./Pages/Order/OrderFailed'))
 const About = lazy(() => import('./Pages/About/About'))
 const Blog = lazy(() => import('./Pages/Blog/Blog'))
-const BlogPostPage = lazy(() => import('./Pages/Blog/BlogPostPage'))
+const BlogSlugPage = lazy(() => import('./Pages/Blog/BlogSlugPage'))
 const SeoGuidePage = lazy(() => import('./Pages/Blog/SeoGuidePage'))
 const Contact = lazy(() => import('./Pages/Contact/Contact'))
 const CorporateBulkOrder = lazy(() => import('./Pages/CorporateBulkOrder/CorporateBulkOrder'))
@@ -100,9 +100,9 @@ const App = () => {
                   <Route path="/about" element={<About />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/guides/:slug" element={<SeoGuidePage />} />
-                  <Route path="/blog/:slug" element={<BlogPostPage />} />
+                  <Route path="/blog/:slug" element={<BlogSlugPage />} />
                   <Route path="/blogs" element={<Blog />} />
-                  <Route path="/blogs/:slug" element={<BlogPostPage />} />
+                  <Route path="/blogs/:slug" element={<BlogSlugPage />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/corporate-bulk-orders" element={<CorporateBulkOrder />} />
                   <Route path="/terms-of-service" element={<TermsOfService />} />

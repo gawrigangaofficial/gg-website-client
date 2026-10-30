@@ -1,7 +1,7 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { FaArrowLeft } from 'react-icons/fa'
-import { getSeoGuide, relatedGuideSlugs } from '../../content/seoGuides'
+import { MERGED_GUIDES, getSeoGuide, relatedGuideSlugs } from '../../content/seoGuides'
 import RelatedGuides from '../../components/RelatedGuides'
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs'
 
@@ -10,7 +10,7 @@ const SITE = (import.meta.env.VITE_SITE_URL || 'https://www.gawriganga.com').rep
 const SeoGuidePage = () => {
   const { slug } = useParams()
   const guide = getSeoGuide(slug)
-  if (!guide) return <Navigate to="/blog" replace />
+  if (!guide) return <Navigate to={MERGED_GUIDES[slug] ? `/blog/${MERGED_GUIDES[slug]}` : '/blog'} replace />
 
   const url = `${SITE}/guides/${guide.slug}`
   const articleLd = {

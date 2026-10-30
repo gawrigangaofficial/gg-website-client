@@ -25,6 +25,8 @@ import Combos from './Combos'
 import MobileAppHome from './MobileAppHome'
 import DesktopHomeShowcase from './DesktopHomeShowcase'
 import BhaiDoojSection from './BhaiDoojSection'
+import { FOUNDED_YEAR, LAB_LINE } from '../../config/site'
+import { STATIC_META } from '../../seo/meta'
 
 
 function StoryPanel({ title, tone = 'white', wide = false, children }) {
@@ -43,6 +45,27 @@ function StoryPanel({ title, tone = 'white', wide = false, children }) {
   )
 }
 
+/** The page H1 and the reason to buy, right under the banner. Same H1 as the prerendered HTML (src/seo/meta.js). */
+function HomeIntro() {
+  return (
+    <section className="mx-auto w-[92%] max-w-5xl py-6 text-center md:py-10">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Since {FOUNDED_YEAR} · Lab-tested · COD across India</p>
+      <h1 className="mt-2 font-heading text-2xl font-bold leading-tight text-stone-900 md:text-4xl">{STATIC_META['/'].h1}</h1>
+      <p className="mx-auto mt-3 max-w-3xl text-sm leading-relaxed text-stone-600 md:text-base">
+        Original Nepali Rudraksha from 1 to 14 Mukhi, Karungali and Tulsi malas. Every bead is tested by {LAB_LINE}, and the certificate comes with your order.
+      </p>
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
+        <Link to="/rudraksha" className="inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white">
+          Shop original Rudraksha
+        </Link>
+        <Link to="/blog/rudraksha-price-list" className="inline-flex rounded-full border border-orange-300 bg-white px-5 py-2.5 text-sm font-semibold text-primary">
+          See the price list
+        </Link>
+      </div>
+    </section>
+  )
+}
+
 const SectionDivider = () => (
   <div className="mx-auto hidden w-[92%] max-w-7xl items-center justify-center py-3 sm:py-4 md:flex">
     <div className="h-[2px] w-full rounded-full bg-linear-to-r from-transparent via-orange-300/90 to-transparent" />
@@ -55,13 +78,18 @@ const Home = () => {
       <MobileAppHome />
       <DesktopHomeShowcase />
       <BhaiDoojSection />
+      <HomeIntro />
       <TrustStrip />
       {/* <GawriGangaIntroSection /> */}
       <SectionDivider />
-      <AccessoriesProd />
       <RudrakhshaProd />
+      <AccessoriesProd />
       <TulsiProd />
       <Combos />
+      <SectionDivider />
+      <TestimonialsSection />
+      <SectionDivider />
+      <AuthenticCertifiedSection />
       <SectionDivider />
       <FeaturedProductsSection />
       {/* <SectionDivider />
@@ -87,10 +115,7 @@ const Home = () => {
       <SectionDivider />
       <LatestPostsSection />
       <SectionDivider />
-      <TestimonialsSection />
       <SectionDivider />
-      <SectionDivider />
-      <AuthenticCertifiedSection />
       <section className="w-full bg-[#FFFAEB]">
         <img
           src={OriginImg}
@@ -111,9 +136,9 @@ const Home = () => {
       <section className="mx-auto w-[92%] max-w-6xl py-8 md:py-12">
         <header className="mb-5 text-center md:mb-7">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">From the Noida studio</p>
-          <h1 className="mt-2 font-heading text-2xl font-bold text-stone-900 md:text-4xl">
+          <h2 className="mt-2 font-heading text-2xl font-bold text-stone-900 md:text-4xl">
             Nepali Rudraksha, Tulsi and Karungali at Gawri Ganga
-          </h1>
+          </h2>
         </header>
         <div className="grid grid-cols-1 items-stretch gap-2 md:grid-cols-2">
           <StoryPanel title="The shop">

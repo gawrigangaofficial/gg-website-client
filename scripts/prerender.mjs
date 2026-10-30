@@ -28,7 +28,8 @@ const load = (rel) => import(pathToFileURL(path.join(ROOT, rel)).href)
 const meta = await load('src/seo/meta.js')
 const site = await load('src/config/site.js')
 const { mukhiInfo, mukhiFaqs, mukhiRashi } = await load('src/content/mukhi.js')
-const { SEO_GUIDES } = await load('src/content/seoGuides.js')
+const { SEO_GUIDES, MERGED_GUIDES } = await load('src/content/seoGuides.js')
+const { GUIDES, guideText } = await load('src/content/guides/index.js')
 const { SHOP_COLLECTIONS } = await load('src/content/shopCollections.js')
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -163,7 +164,7 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
   if (p === '/') {
     jsonLd.push(meta.organizationJsonLd(), meta.websiteJsonLd())
     inner += `<h2>Shop by mukhi</h2>${productLinks(mukhiProducts)}<h2>Shop by category</h2>${list(NAV.slice(0, 6).map(([h, l]) => link(h, l)))}`
-    inner += `<h2>Guides</h2>${list(SEO_GUIDES.slice(0, 8).map((g) => link(`/guides/${g.slug}`, g.title)))}`
+    inner += `<h2>Guides</h2>${list(GUIDES.map((g) => link(`/blog/${g.slug}`, g.title)))}`
   }
   if (items.length) {
     jsonLd.push(meta.itemListJsonLd(items, m.h1))
@@ -179,7 +180,7 @@ for (const [p, m] of Object.entries(meta.STATIC_META)) {
     )}`
   }
   if (p === '/blog') {
-    inner += `<h2>Guides</h2>${list([...SEO_GUIDES.map((g) => link(`/guides/${g.slug}`, g.title)), ...posts.map((b) => link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1))])}`
+    inner += `<h2>Guides</h2>${list([...GUIDES.map((g) => link(`/blog/${g.slug}`, g.title)), ...SEO_GUIDES.map((g) => link(`/guides/${g.slug}`, g.title)), ...posts.map((b) => link(`/blog/${b.slug}`, meta.blogPostMeta(b).h1))])}`
   }
   if (p !== '/') jsonLd.push(meta.breadcrumbJsonLd(crumbs({ name: m.h1 || m.title, path: p })))
   emit(p, page(m, { jsonLd, priority: PRIORITY[p] ?? 0.4 }), inner)
@@ -192,8 +193,8 @@ for (const c of SHOP_COLLECTIONS) {
     c.test ? c.test(p) : (Array.isArray(p.purposes) ? p.purposes : String(p.purposes || '').split(',')).some((x) => String(x).trim().toLowerCase() === String(c.purpose).toLowerCase()),
   )
   const route = `/shop/${c.slug}`
-  const inner = `${crumbHtml(crumbs({ name: m.h1, path: route }))}<h1>${esc(m.h1)}</h1><p>${esc(m.description)}</p>${items.length ? `<h2>Products</h2>${productLinks(items)}` : ''}`
-  emit(route, page(m, { jsonLd: [meta.itemListJsonLd(items, m.h1), meta.breadcrumbJsonLd(crumbs({ name: m.h1, path: route }))], priority: c.slug === 'karungali-mala' ? 0.8 : 0.5 }), inner)
+  const inner = `${crumbHtml(crumbs({ name: m.h1, path: route }))}<h1>${esc(m.h1)}</h1><p>${esc(m.description)}</p>${items.length ? `<h2>Products</h2>${productLinks(items)}` : ''}${(c.sections || []).map((x) => `<h2>${esc(x.heading)}</h2><p>${esc(x.body)}</p>`).join('')}${faqHtml(c.faqs || [])}`
+  emit(route, page(m, { jsonLd: [meta.itemListJsonLd(items, m.h1), meta.breadcrumbJsonLd(crumbs({ name: m.h1, path: route })), meta.faqJsonLd(c.faqs || [])], priority: c.slug === 'karungali-mala' ? 0.8 : 0.5 }), inner)
 }
 
 // ---------- products ----------
@@ -243,7 +244,48 @@ for (const g of SEO_GUIDES) {
   const inner = `${crumbHtml(trail)}<h1>${esc(g.title)}</h1><p>${esc(g.description)}</p>${g.sections.map((s) => `<h2>${esc(s.heading)}</h2><p>${esc(s.body)}</p>`).join('')}<p>${link(g.cta.href, g.cta.label)}</p>`
   emit(route, page(gm, { jsonLd: [meta.articleJsonLd({ path: route, title: g.title, description: g.description }), meta.breadcrumbJsonLd(trail)], priority: 0.6 }), inner)
 }
+// Long-form guides (src/content/guides) at /blog/<slug>, with live prices written into the text.
+const priceOf = (slug) => (products.get(slug) ? `₹${Number(products.get(slug).price).toLocaleString('en-IN')}` : '')
+const gtext = (s) => esc(guideText(s, priceOf))
+const guideBlock = (b) =>
+  typeof b === 'string'
+    ? `<p>${gtext(b)}</p>`
+    : b?.ul
+      ? list(b.ul.map(gtext))
+      : b?.table
+        ? `<table><thead><tr>${b.table.head.map((h) => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.table.rows
+            .map((r) => `<tr>${r.map((c) => `<td>${gtext(c)}</td>`).join('')}</tr>`)
+            .join('')}</tbody></table>`
+        : ''
+for (const g of GUIDES) {
+  const route = `/blog/${g.slug}`
+  const trail = crumbs({ name: 'Guides', path: '/blog' }, { name: g.title, path: route })
+  const sections = g.sections
+    .map((s) => `<h2>${esc(s.h2)}</h2>${(s.body || []).map(guideBlock).join('')}${(s.subs || []).map((sub) => `<h3>${esc(sub.h3)}</h3>${sub.body.map(guideBlock).join('')}`).join('')}`)
+    .join('')
+  const inner = `${crumbHtml(trail)}<h1>${esc(g.title)}</h1><p>${esc(g.excerpt)}</p>${sections}${faqHtml(g.faqs)}${list((g.related?.pages || []).map((p) => link(p.to, p.label)))}`
+  emit(
+    route,
+    page(
+      { title: `${g.seoTitle || g.title}${meta.SUFFIX}`, description: g.description, type: 'article' },
+      {
+        image: g.heroImage,
+        lastmod: g.updated || g.published,
+        jsonLd: [
+          meta.articleJsonLd({ path: route, title: g.title, description: g.description, image: g.heroImage, published: g.published, updated: g.updated }),
+          meta.breadcrumbJsonLd(trail),
+          meta.faqJsonLd(g.faqs || []),
+        ],
+        priority: 0.8,
+      },
+    ),
+    inner,
+  )
+}
+const guideSlugs = new Set(GUIDES.map((g) => g.slug))
+
 for (const b of posts) {
+  if (guideSlugs.has(b.slug)) continue
   const bm = meta.blogPostMeta(b)
   const route = `/blog/${b.slug}`
   const trail = crumbs({ name: 'Guides', path: '/blog' }, { name: bm.h1, path: route })
@@ -306,6 +348,7 @@ fs.writeFileSync(
 /sprays/amrat-dhara /sprays/amrat-bindu 301
 /signup /login 302
 /json.html / 301
+${Object.entries(MERGED_GUIDES).map(([from, to]) => `/guides/${from} /blog/${to} 301`).join('\n')}
 `,
 )
 
@@ -319,5 +362,5 @@ fs.writeFileSync(
 for (const stale of ['json.html']) fs.rmSync(path.join(DIST, stale), { force: true })
 
 console.log(
-  `prerender: ${urls.length} URLs in sitemap · ${products.size} products · ${SEO_GUIDES.length} guides · ${posts.length} blog posts · shipping ${shippingAmount ?? 'unknown'} · out: ${path.relative(ROOT, DIST)}`,
+  `prerender: ${urls.length} URLs in sitemap · ${products.size} products · ${GUIDES.length} long guides · ${SEO_GUIDES.length} short guides · ${posts.length} blog posts · shipping ${shippingAmount ?? 'unknown'} · out: ${path.relative(ROOT, DIST)}`,
 )

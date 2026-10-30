@@ -1,4 +1,4 @@
-export const SEO_GUIDES = [
+const ALL_SEO_GUIDES = [
   {
     slug: 'how-to-check-original-rudraksha-bracelet',
     title: 'How to check an original Rudraksha bracelet',
@@ -354,6 +354,18 @@ export const SEO_GUIDES = [
     ],
   },
 ]
+
+/**
+ * These /guides pages were merged into fuller guides at /blog/<slug> (src/content/guides);
+ * their URLs 301 there (scripts/prerender.mjs, SeoGuidePage), so they are left out of every list.
+ */
+export const MERGED_GUIDES = {
+  'how-to-check-original-rudraksha-bracelet': 'how-to-identify-original-rudraksha',
+  'benefits-of-wearing-karungali-mala': 'karungali-mala-benefits-and-how-to-wear',
+  '5-mukhi-rudraksha-how-to-choose': '5-mukhi-rudraksha-benefits',
+}
+
+export const SEO_GUIDES = ALL_SEO_GUIDES.filter((guide) => !MERGED_GUIDES[guide.slug])
 
 const CLUSTERS = [
   ['rudraksha', 'mukhi', 'washroom', 'bathing'],

@@ -6,6 +6,7 @@ import Loader from '../../components/Loader';
 import { apiFetch } from '../../config/api';
 import { formatBlogListDate, stripHtmlForExcerpt } from '../../utils/blogListDisplay';
 import { SEO_GUIDES } from '../../content/seoGuides';
+import { GUIDES } from '../../content/guides';
 import BlogExploreProductsSection from './BlogExploreProductsSection';
 import Breadcrumbs, { ExploreLinks } from '../../components/Breadcrumbs';
 import { STATIC_META } from '../../seo/meta';
@@ -74,6 +75,27 @@ const Blog = () => {
             Why people wear Nepali Rudraksha, a Karungali mala, a Tulsi mala, and a Rudraksha bracelet, plus how to choose and care for each one.
           </p>
         </header>
+
+        <section className="mt-10" aria-labelledby="in-depth-guides-heading">
+          <h2 id="in-depth-guides-heading" className="font-heading text-2xl font-bold text-stone-900">In-depth guides</h2>
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {GUIDES.map((guide) => (
+              <article key={guide.slug} lang={guide.lang || undefined} className="flex flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm">
+                {guide.heroImage ? (
+                  <img src={guide.heroImage} alt={guide.heroAlt || guide.title} loading="lazy" className="aspect-[16/9] w-full object-cover" />
+                ) : null}
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="text-lg font-bold text-stone-900">{guide.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">{guide.excerpt}</p>
+                  <Link to={`/blog/${guide.slug}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                    {guide.lang === 'hi' ? 'पूरा पढ़ें' : 'Read guide'}
+                    <FaArrowRight aria-hidden />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <section className="mt-10" aria-labelledby="buyer-guides-heading">
           <h2 id="buyer-guides-heading" className="font-heading text-2xl font-bold text-stone-900">Importance and buyer guides</h2>
