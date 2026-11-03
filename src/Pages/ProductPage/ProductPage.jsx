@@ -296,7 +296,7 @@ function ProductStoryBlock({ product, stockStatus }) {
   );
 }
 
-function ProductBelowGalleryMedia({ videoUrl, posterUrl, productName, className = "" }) {
+function ProductBelowGalleryMedia({ videoUrl, posterUrl, productName, className = "", hideCertificate = false }) {
   const rdcFrameClass =
     "block w-full rounded-xl border-2 border-primary/20 object-contain";
 
@@ -344,6 +344,9 @@ function ProductBelowGalleryMedia({ videoUrl, posterUrl, productName, className 
       </div>
     );
   }
+
+  // The certificate graphic is about Rudraksha beads, so products without it (sprays) show nothing here.
+  if (hideCertificate) return null;
 
   return (
     <div className={`w-full max-w-[min(100%,700px)] mx-auto min-w-0 ${className}`}>
@@ -468,6 +471,8 @@ const ProductPage = () => {
   const isRudrakshaProduct =
     product?.category === "Rudraksha" || product?.category === "Rudrakshas";
   const isComboProduct = product?.category === "Combos";
+  // Lab testing and certificates apply to the beads, not to aura sprays.
+  const isSprayProduct = product?.category === "Sprays";
 
   // Normalize API review to UI shape
   const normalizeReview = (r) => ({
@@ -1164,6 +1169,7 @@ const ProductPage = () => {
                   posterUrl={product.images?.[0]}
                   productName={product.name}
                   className="hidden lg:block"
+                  hideCertificate={isSprayProduct}
                 />
               </div>
             </div>
@@ -1450,7 +1456,7 @@ const ProductPage = () => {
                 Secure checkout
               </span>
             </p>
-            <ProductLabCertificateBlock />
+            {!isSprayProduct && <ProductLabCertificateBlock />}
 
 
             <ProductBelowGalleryMedia
@@ -1458,6 +1464,7 @@ const ProductPage = () => {
               posterUrl={product.images?.[0]}
               productName={product.name}
               className="lg:hidden"
+              hideCertificate={isSprayProduct}
             />
 
             {/* Accordion */}
